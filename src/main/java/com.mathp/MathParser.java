@@ -326,6 +326,27 @@ public class MathParser {
         return lexemes;
     }
 
+    public static class Precision {
+        private static final int POW10[] = {1, 10, 100, 1000, 10000, 100000, 1000000};
+
+        public static String _format(double value, int precision) {
+            StringBuilder _string = new StringBuilder();
+            if (value < 0) {
+                _string.append('-');
+                value = -value;
+            }
+            int exp = POW10[precision];
+            long lvalue = (long)(value * exp + 0.5);
+            _string.append(lvalue / exp).append('.');
+            long fvalue = lvalue % exp;
+            for (int p = precision - 1; p > 0 && fvalue < POW10[p]; p--) {
+                _string.append('0');
+            }
+            _string.append(fvalue);
+            return _string.toString();
+        }
+    }
+
     public static class Syntax {
         public static double EXPRESSION(LexemeBuffer _lexemes) throws SyntaxParseException {
             Lexeme lexeme = _lexemes.next();
@@ -393,7 +414,11 @@ public class MathParser {
                     double positive_value = FACTOR(_lexemes);
                     return -positive_value;
                 case NUMBER:
-                    return Double.parseDouble(lexeme.string);
+                    try {
+                        return Double.valueOf(lexeme.string);
+                    } catch (NumberFormatException e) {
+                        e.getMessage();
+                    }
                 case LEFT:
                     double value = EXPRESSION(_lexemes);
                     lexeme = _lexemes.next();
@@ -471,9 +496,38 @@ public class MathParser {
 
             String variable = this.getVariable();
 
-            StringBuilder _expr = new StringBuilder(this.deleteDeclaration());
+            String equation = new FunctionHandle(this.expression).deleteDeclaration();
+            StringBuilder _split = new StringBuilder(equation);
+            String splitter = "V";
+            int entry = 0;
 
-            return new FunctionHandle(_expr.toString().replace(variable, java.lang.Double.toString(value)));
+            for (int i = 0; i < equation.length(); i++) {
+                String current = Character.toString(_split.charAt(i));
+                char left = (i != 0) ? _split.charAt(i - 1) : ' ';
+                char right = (i != equation.length() - 1) ? _split.charAt(i + 1) : ' ';
+
+                if ((current.equals(variable)) && (!(Character.isLetter(left))) && (!(Character.isLetter(right)))) {
+                    entry++;
+                }
+            }
+
+            for (int i = 0; i < entry * 2; i++) {
+                _split.append(" ");
+            }
+
+            for (int i = 0; i < equation.length() + entry * 2; i++) {
+                String current = Character.toString(_split.charAt(i));
+                char left = (i != 0) ? _split.charAt(i - 1) : ' ';
+                char right = (i != equation.length() - 1) ? _split.charAt(i + 1) : ' ';
+
+                if ((current.equals(variable)) & (!Character.isLetter(left)) & (!Character.isLetter(right))) {
+                    _split.insert(i, splitter);
+                }
+            }
+
+
+
+            return new FunctionHandle(_split.toString().replace(splitter + variable, java.lang.Double.toString(value)));
         }
 
         public HashMap<String, List<Integer>> getCoeffs(String variable) {
@@ -483,12 +537,7 @@ public class MathParser {
             HashMap<String, List<Integer>> _coeffs = new HashMap<>();
 
             for (String name: _functionMap.keySet()) {
-                if (name.contains(variable)) {
-                    _expression = new StringBuilder(_expression.toString().replace(name.replace(variable, ""), ""));
-                }
-                else {
-                    _expression = new StringBuilder(_expression.toString().replace(name, ""));
-                }
+                _expression = new StringBuilder(_expression.toString().replace(name, ""));
             }
 
             String[] _symbols = new String[] {"\\+", "\\-",
@@ -501,8 +550,6 @@ public class MathParser {
             for (String s: symbols) {
                 _expression = new StringBuilder(_expression.toString().replace(s, ""));
             }
-
-            System.out.println("function test = " + _expression.toString());
 
             for (int i = 0; i < _expression.length(); i++) {
                 if (!(Character.isDigit(_expression.charAt(i))) & ((Character.isLetter(_expression.charAt(i))))) {
@@ -543,7 +590,34 @@ public class MathParser {
         }
 
         public FunctionHandle replaceCoeff(String coeff, double value) {
-            String original = new FunctionHandle(this.expression).deleteDeclaration();
+            String equation = new FunctionHandle(this.expression).deleteDeclaration();
+            StringBuilder _split = new StringBuilder(equation);
+            String splitter = "C";
+            int entry = 0;
+
+            for (int i = 0; i < equation.length(); i++) {
+                String current = Character.toString(_split.charAt(i));
+                char left = (i != 0) ? _split.charAt(i - 1) : ' ';
+                char right = (i != equation.length() - 1) ? _split.charAt(i + 1) : ' ';
+
+                if ((current.equals(coeff)) && (!(Character.isLetter(left))) && (!(Character.isLetter(right)))) {
+                    entry++;
+                }
+            }
+
+            for (int i = 0; i < entry * 2; i++) {
+                _split.append(" ");
+            }
+
+            for (int i = 0; i < equation.length() + entry * 2; i++) {
+                String current = Character.toString(_split.charAt(i));
+                char left = (i != 0) ? _split.charAt(i - 1) : ' ';
+                char right = (i != equation.length() - 1) ? _split.charAt(i + 1) : ' ';
+
+                if ((current.equals(coeff)) & (!Character.isLetter(left)) & (!Character.isLetter(right))) {
+                    _split.insert(i, splitter);
+                }
+            }
 
 //            List<String> names = new ArrayList<>();
 //            names.addAll(this.get_coeffs().keySet());
@@ -561,7 +635,7 @@ public class MathParser {
 //                }
 //            }
 
-            return new FunctionHandle(original.replace(coeff, java.lang.Double.toString(value)));
+            return new FunctionHandle(_split.toString().replace(splitter + coeff, java.lang.Double.toString(value)));
         }
 
         public String toString() {

@@ -1,102 +1,48 @@
 package com.proj;
 
-// import java.util.*;
-import java.util.Scanner;
-import java.util.*;
+import com.mathp.MathParser;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        // Scanner in = new Scanner(System.in);
-        //int x = in.nextInt();
-        // System.out.println(j_factorial(x));
+        String function = "f(x) = max(x, A, B) + pow(x, 2)";
 
-        Scanner in = new Scanner(System.in);
-        String s = in.next();
-        String res = j_delete_char(s, 0);
-        // String res2 = Arrays.toString(s.toCharArray());
-        System.out.println(j_delete_all_chars(s, '2'));
-
-        in.close();
+        System.out.println(ULTRA_MAGIC_REPLACE(function, 'x', 3));
     }
 
-    public static float j_avg(int a, int b) {
+    public static String ULTRA_MAGIC_REPLACE(String SOURCE, char K, double value) {
+        int count = 0;
+        StringBuilder _split = new StringBuilder(SOURCE);
+        String splitter = "_";
 
-        return ((float)a + (float)b) / (float)2;
-    }
+        for (int i = 0; i < SOURCE.length(); i++) {
+            String current = Character.toString(_split.charAt(i));
+            char left = (i != 0) ? _split.charAt(i - 1) : ' ';
+            char right = (i != SOURCE.length() - 1) ? _split.charAt(i + 1) : ' ';
 
-    public static int j_factorial(int n) {
-        if (n == 0 | n == 1) {
-            return 1;
-        }
-        return n * j_factorial(n - 1);
-    }
-
-    public static String j_delete_char(String s, int index) {
-        if (index >= s.length()) {
-            return s;
-        }
-
-        char[] s_array = s.toCharArray();
-        char[] ret_s_array = new char[s.length() - 1];
-
-        for (int i = index; i < s.length() - 1; i++) {
-            s_array[i] = s_array[i + 1];
-        }
-
-        for (int i = 0; i < s.length() - 1; i++) {
-            ret_s_array[i] = s_array[i];
-        }
-
-        return Arrays.toString(ret_s_array);
-    }
-
-    public static String j_delete_all_chars(String s, char to_del) {
-        char[] s_array = s.toCharArray();
-        int to_del_cnt = 0;
-        for (int i = 0; i < s.length(); i++) {
-            if (s_array[i] == to_del) {
-                to_del_cnt += 1;
+            if ((current.equals(Character.toString(K))) && (!(Character.isLetter(left))) && (!(Character.isLetter(right)))) {
+                count++;
             }
         }
 
-        String[] ds = new String[to_del_cnt + 1];
-        ds[0] = s;
-
-        for (int StringIndex = 0; StringIndex < to_del_cnt; StringIndex++) {
-            char[] ds_char_array = ds[StringIndex].toCharArray();
-            int i = 0;
-            boolean found_to_del = false;
-            while (!found_to_del) {
-                if (ds_char_array[i] == to_del) {
-                    ds[StringIndex + 1] = j_delete_char(ds[StringIndex], i);
-                    found_to_del = true;
-                }
-                i++;
-            }
-
+        for (int i = 0; i < count * 2; i++) {
+            _split.append(" ");
         }
-        return Arrays.toString(ds[to_del_cnt].toCharArray());
+
+        for (int i = 0; i < SOURCE.length() + count * 2; i++) {
+            String current = Character.toString(_split.charAt(i));
+            char left = (i != 0) ? _split.charAt(i - 1) : ' ';
+            char right = (i != SOURCE.length() - 1) ? _split.charAt(i + 1) : ' ';
+
+            if ((current.equals(Character.toString(K))) && (!(Character.isLetter(left))) && (!(Character.isLetter(right)))) {
+                _split.insert(i, "y");
+            }
+        }
+
+
+
+        return _split.toString();
     }
 
-
-//        for (int i = 0; i < dslen; i++) {
-//            if (cs[j] != to_del) {
-//                new_cs[i] = cs[j];
-//            }
-//            if (cs[j] == to_del) {
-//                j++;
-//            }
-//            j++;
-//        }
-
-//        for (int i = 0; i < s.length(); i++) {
-//            if (cs[i] == to_del) {
-//                for (int p = i; p < s.length() - 1; p++) {
-//                    cs[p] = cs[p + 1];
-//                }
-//            }
-//        }
-//        return Arrays.toString(new_cs);
 }
