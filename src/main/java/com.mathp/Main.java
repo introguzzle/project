@@ -2,6 +2,7 @@ package com.mathp;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,9 +32,13 @@ public class Main {
         List<String> list_of_coeffs = new ArrayList<>();
         list_of_coeffs.addAll(new MathParser.FunctionHandle(function.expression).getCoeffs(variable).keySet());
 
-        for (int i = 0; i < list_of_coeffs.size(); i++) {
-            function = function.replaceCoeff(list_of_coeffs.get(i), list_of_coeff_values.get(i));
+        if (list_of_coeffs.size() > 0) {
+            for (int i = 0; i < list_of_coeffs.size(); i++) {
+                function = function.replaceCoeff(list_of_coeffs.get(i), list_of_coeff_values.get(i));
+            }
         }
+
+        System.out.println(function);
 
         List<MathParser.Lexeme> _lexeme_list = MathParser.lexParse(function.toString());
         MathParser.LexemeBuffer _lexeme_buff = new MathParser.LexemeBuffer(_lexeme_list);
@@ -46,13 +51,13 @@ public class Main {
         // f(x) = max(A, x, B)
         String function = "f(x) = sqrt(x)";
 
-        List<Double> coeffs = new ArrayList<>(Arrays.asList(1.0, 2.0));
+        List<Double> coeffs = new ArrayList<>(Arrays.asList());
 
         List<Double> xvals = new ArrayList<>();
 
         List<Double> yvals = new ArrayList<>();
 
-        for (double x = 0.0; x < 10.0; x = x + 0.1) {
+        for (double x = -10.0; x < 10.0; x = x + 0.01) {
             xvals.add(x);
             yvals.add(functionEval(function, x, coeffs));
         }
@@ -66,7 +71,7 @@ public class Main {
         }
 
 // Create Chart
-        XYChart chart = QuickChart.getChart("Sample Chart", "X", "Y", "y(x)", xData, yData);
+        XYChart chart = QuickChart.getChart("Sample Chart", "X", "Y", function, xData, yData);
 
 // Show it
         new SwingWrapper(chart).displayChart();

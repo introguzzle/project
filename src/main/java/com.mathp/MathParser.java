@@ -1,5 +1,6 @@
 package com.mathp;
 
+import java.text.DecimalFormat;
 import java.util.*;
 
 public class MathParser {
@@ -345,6 +346,18 @@ public class MathParser {
             _string.append(fvalue);
             return _string.toString();
         }
+
+        public static String _fformat(double value)
+        {
+            DecimalFormat formatter;
+
+            if(value - (int)value > 0.0)
+                formatter = new DecimalFormat("0.0000000000");
+            else
+                formatter = new DecimalFormat("0.0000000000");
+
+            return formatter.format(value).replace(",",".");
+        }
     }
 
     public static class Syntax {
@@ -415,7 +428,7 @@ public class MathParser {
                     return -positive_value;
                 case NUMBER:
                     try {
-                        return Double.valueOf(lexeme.string);
+                        return Double.parseDouble(lexeme.string);
                     } catch (NumberFormatException e) {
                         e.getMessage();
                     }
@@ -525,9 +538,7 @@ public class MathParser {
                 }
             }
 
-
-
-            return new FunctionHandle(_split.toString().replace(splitter + variable, java.lang.Double.toString(value)));
+            return new FunctionHandle(_split.toString().replace(splitter + variable, MathParser.Precision._fformat(value)));
         }
 
         public HashMap<String, List<Integer>> getCoeffs(String variable) {
@@ -540,6 +551,8 @@ public class MathParser {
                 _expression = new StringBuilder(_expression.toString().replace(name, ""));
             }
 
+            _expression = new StringBuilder(_expression.toString().replace("E", ""));
+
             String[] _symbols = new String[] {"\\+", "\\-",
                     "\\*", "\\/",
                     "\\(", "\\)",
@@ -550,6 +563,8 @@ public class MathParser {
             for (String s: symbols) {
                 _expression = new StringBuilder(_expression.toString().replace(s, ""));
             }
+
+            _expression = new StringBuilder(_expression.toString().replaceAll("[\\-\\+\\^:,]",""));
 
             for (int i = 0; i < _expression.length(); i++) {
                 if (!(Character.isDigit(_expression.charAt(i))) & ((Character.isLetter(_expression.charAt(i))))) {
