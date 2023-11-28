@@ -169,7 +169,7 @@ public class MathParser {
         functionMap.put("arccos", args -> {
             if (args.size() != 1)
                 throw new RuntimeException();
-            return java.lang.Math.asin(args.get(0));
+            return java.lang.Math.acos(args.get(0));
         });
 
         functionMap.put("arctg", args -> {
@@ -189,6 +189,12 @@ public class MathParser {
                 throw new RuntimeException();
             double arg = args.get(0);
             return java.lang.Math.acos(arg / java.lang.Math.sqrt(1 + arg * arg));
+        });
+
+        functionMap.put("rand", args -> {
+            if (args.size() != 2)
+                throw new RuntimeException();
+            return (Math.random() * args.get(0) - args.get(0) + 1.0) - args.get(1);
         });
 
         return functionMap;
@@ -550,6 +556,8 @@ public class MathParser {
             for (String name: _functionMap.keySet()) {
                 _expression = new StringBuilder(_expression.toString().replace(name, ""));
             }
+
+            _expression = new StringBuilder(_expression.toString().replace("arc", ""));
 
             _expression = new StringBuilder(_expression.toString().replace("E", ""));
 

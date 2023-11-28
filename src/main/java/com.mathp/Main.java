@@ -38,8 +38,6 @@ public class Main {
             }
         }
 
-        System.out.println(function);
-
         List<MathParser.Lexeme> _lexeme_list = MathParser.lexParse(function.toString());
         MathParser.LexemeBuffer _lexeme_buff = new MathParser.LexemeBuffer(_lexeme_list);
         return MathParser.Syntax.EXPRESSION(_lexeme_buff);
@@ -49,7 +47,7 @@ public class Main {
         Scanner input = new Scanner(System.in);
 
         // f(x) = max(A, x, B)
-        String function = "f(x) = sqrt(x)";
+        String function = "f(x) = sin(sq(x))";
 
         List<Double> coeffs = new ArrayList<>(Arrays.asList());
 
@@ -57,7 +55,7 @@ public class Main {
 
         List<Double> yvals = new ArrayList<>();
 
-        for (double x = -10.0; x < 10.0; x = x + 0.01) {
+        for (double x = -5.0; x < 5.0; x = x + 0.01) {
             xvals.add(x);
             yvals.add(functionEval(function, x, coeffs));
         }
