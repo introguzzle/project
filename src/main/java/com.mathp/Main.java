@@ -1,5 +1,6 @@
 package com.mathp;
 
+import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -9,6 +10,8 @@ import java.util.List;
 import java.util.Scanner;
 
 import org.knowm.xchart.*;
+
+import javax.swing.event.SwingPropertyChangeSupport;
 
 public class Main {
 
@@ -43,43 +46,84 @@ public class Main {
         return MathParser.Syntax.EXPRESSION(_lexeme_buff);
     }
 
-    public static void main(String[] args) throws MathParser.SyntaxParseException, java.io.IOException {
-        Scanner input = new Scanner(System.in);
+    public static double[][] getScaledData(String function, double left, double right, List<Double> _coeffs, double precision)
+        throws MathParser.SyntaxParseException {
 
-        // f(x) = max(A, x, B)
-        String function = "f(x) = sin(sq(x))";
-
-        List<Double> coeffs = new ArrayList<>(Arrays.asList());
+        double scale = 16.0 / 9.0;
+        double step = 1.0 / Math.pow(10, precision);
 
         List<Double> xvals = new ArrayList<>();
-
         List<Double> yvals = new ArrayList<>();
 
-        for (double x = -5.0; x < 5.0; x = x + 0.01) {
+        for (double x = left; x < right; x = x + step) {
             xvals.add(x);
-            yvals.add(functionEval(function, x, coeffs));
+            double y = functionEval(function, x, _coeffs);
+            if (y < left / scale | y > right / scale) {
+                if (y <= left / scale)
+                    yvals.add(Double.NaN);
+                if (y >= right / scale)
+                    yvals.add(Double.NaN);
+            }
+            else
+                yvals.add(y);
         }
 
-        double[] xData = new double[xvals.size()];
-        double[] yData = new double[yvals.size()];
+        double[] x = new double[xvals.size()];
+        double[] y = new double[yvals.size()];
 
-        for (int index = 0; index < xvals.size(); index++) {
-            xData[index] = xvals.get(index);
-            yData[index] = yvals.get(index);
+        for (int i = 0; i < xvals.size(); i++) {
+            x[i] = xvals.get(i);
+            y[i] = yvals.get(i);
         }
 
-// Create Chart
-        XYChart chart = QuickChart.getChart("Sample Chart", "X", "Y", function, xData, yData);
+        return new double[][] {x, y};
+    }
 
-// Show it
+    public static double[][] getData(String function, double left, double right, List<Double> _coeffs)
+            throws MathParser.SyntaxParseException {
+
+        double precision = 3;
+        double step = (right - left) / Math.pow(10, precision);
+
+        List<Double> xvals = new ArrayList<>();
+        List<Double> yvals = new ArrayList<>();
+
+        for (double x = left; x < right; x = x + step) {
+            xvals.add(x);
+            yvals.add(functionEval(function, x, _coeffs));
+        }
+
+        double[] x = new double[xvals.size()];
+        double[] y = new double[yvals.size()];
+
+        for (int i = 0; i < xvals.size(); i++) {
+            x[i] = xvals.get(i);
+            y[i] = yvals.get(i);
+        }
+
+        return new double[][] {x, y};
+    }
+
+    public static void show(List<Double> _coeffs) {
+    }
+
+    public static void main(String[] args) throws MathParser.SyntaxParseException, java.io.IOException, InterruptedException {
+        Scanner input = new Scanner(System.in);
+
+        String function = input.nextLine();
+
+        double[][] data = getScaledData(function, -4.0, 4.0, new ArrayList<>(), 5.0);
+        double[] x = data[0];
+        double[] y = data[1];
+        double[] _x = new double[x.length];
+
+        for (int i = 0; i < x.length; i++) {
+            _x[i] = _round(x[i], 2);
+        }
+
+        XYChart chart = QuickChart.getChart("function", "x", "y", function, _x, y);
         new SwingWrapper(chart).displayChart();
-
-// Save it
-        BitmapEncoder.saveBitmap(chart, "./Sample_Chart", BitmapEncoder.BitmapFormat.PNG);
-
-// or save it in high-res
-        BitmapEncoder.saveBitmapWithDPI(chart, "./Sample_Chart_300_DPI", BitmapEncoder.BitmapFormat.PNG, 300);
-
     }
 }
+
 

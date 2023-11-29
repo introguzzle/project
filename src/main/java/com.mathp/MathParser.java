@@ -36,7 +36,6 @@ public class MathParser {
 
     private enum LexemeType {
         OPERATOR_ADD, OPERATOR_SUB, OPERATOR_MUL, OPERATOR_DIV,
-        OPERATOR_EXP,
         LEFT, RIGHT,
         NUMBER, COMMA, NAME,
         EOF
