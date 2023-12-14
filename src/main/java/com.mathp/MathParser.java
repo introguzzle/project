@@ -34,7 +34,7 @@ public class MathParser {
 //
 //
 
-    private enum LexemeType {
+    public enum LexemeType {
         OPERATOR_ADD, OPERATOR_SUB, OPERATOR_MUL, OPERATOR_DIV,
         LEFT, RIGHT,
         NUMBER, COMMA, NAME,
@@ -201,10 +201,6 @@ public class MathParser {
 
     public static HashMap<String, Function> _functionMap = getFunctionMap();
 
-    public static void _debug_function() {
-        System.out.println(_functionMap);
-    }
-
     public static class Lexeme {
         public LexemeType type;
         public String string;
@@ -356,7 +352,7 @@ public class MathParser {
         {
             DecimalFormat formatter;
 
-            if(value - (int)value > 0.0)
+            if (value - (int)value > 0.0)
                 formatter = new DecimalFormat("0.0000000000");
             else
                 formatter = new DecimalFormat("0.0000000000");
@@ -478,46 +474,106 @@ public class MathParser {
     }
 
     public static class FunctionHandle {
-        //
-        // f(x) = pow(x, 3) + sin(x)
-        //
 
-        public String expression;
+        private static final String FUNCTION_DECLARATION = "f(variable) = ";
 
-        public FunctionHandle() {
+        private static final String MATH_CONSTANTS_PREFIX = "mp_";
+        private static final List<String> MATH_CONSTANTS_NAMES = Arrays.asList(MATH_CONSTANTS_PREFIX + "pi",
+                MATH_CONSTANTS_PREFIX + "e",
+                MATH_CONSTANTS_PREFIX + "phi",
+                MATH_CONSTANTS_PREFIX + "m"
+        );
+        private static final List<Double> MATH_CONSTANTS_VALUES = Arrays.asList(3.14592, 2.71828, 1.61803, 0.57721);
+        private static final String VARIABLE_SPLITTER = "V";
+        private static final String COEFFICIENT_SPLITTER = "C";
+
+        // phi is the golden ratio
+        // m is the euler-mascheroni constant
+
+//        private static final HashMap<String, Double> MATH_CONSTANTS = new HashMap<>() {{
+//            MATH_CONSTANTS.put(_PI, _PI_VALUE);
+//
+//        }};
+
+        public static final HashMap<String, Double> MATH_CONSTANTS = zip(MATH_CONSTANTS_NAMES, MATH_CONSTANTS_VALUES);
+
+        private static HashMap<String, Double> zip(List<String> a, List<Double> b) {
+            try {
+                HashMap<String, Double> map = new HashMap<>();
+                for (int i = 0; i < a.size(); i++) {
+                    map.put(a.get(i), b.get(i));
+                }
+                return map;
+            } catch (IndexOutOfBoundsException e) {
+                e.printStackTrace();
+            }
+            return new HashMap<>();
         }
 
-        public FunctionHandle(String _expression) {
-            this.expression = _expression;
+        private static boolean equalsAnyOf(String string, HashMap<String, Double> map) {
+            int size = map.size();
+            for (int i = 0; i < size; i++) {
+                if (string.equals(map.get(i)))
+                    return true;
+            }
+            return false;
         }
 
-        public boolean isFunction() {
-            return (!((this.expression.indexOf("=") == -1) || (this.expression.indexOf("f(") == -1)));
+        public static boolean isFunction(String expression) {
+            return (expression.contains(FUNCTION_DECLARATION.substring(0, 2)));
         }
 
-        public String deleteDeclaration() {
-            int equals = this.expression.indexOf("=");
-            StringBuilder _expr = new StringBuilder(new StringBuilder(this.expression).substring(equals + 1));
+        public static String deleteDeclaration(String expression) {
+            int equals = expression.indexOf("=");
+            StringBuilder _expr = new StringBuilder(new StringBuilder(expression).substring(equals + 1));
             int index = 0;
             return _expr.toString().replace(" ", "");
         }
 
-        public String getVariable() {
-            int[] between_brackets = new int[] {expression.indexOf("("), expression.indexOf(")")};
-            return expression.charAt((between_brackets[0] + between_brackets[1]) / 2) + "";
-        }
+        public static String getVariable(String expression) {
+            int equalsSignIndex = expression.indexOf("=");
+            if (equalsSignIndex == -1)
+                return "-1";
 
-        public FunctionHandle replaceVariable(double value) {
-            if (!(isFunction())) {
-                return new FunctionHandle(expression);
+            String declaration = expression.substring(0, equalsSignIndex);
+
+            int leftBracketSignIndex = declaration.indexOf("(");
+            int rightBracketSignIndex = declaration.indexOf(")");
+            if (leftBracketSignIndex == -1 || rightBracketSignIndex == -1)
+                return "-1";
+
+            String inner = declaration.substring(leftBracketSignIndex + 1, rightBracketSignIndex);
+
+//            System.out.println(inner);
+//            int variablePosition = inner.indexOf("[a-zA-Z]");
+//            if (variablePosition == -1)
+//                return "-1";
+            String regex = "[a-zA-Z]";
+
+            String after = expression.substring(equalsSignIndex);
+            String trueVariable = "-1";
+
+            for (int i = 0; i < after.length(); i++) {
+                char left = (i != 0) ? after.charAt(i - 1) : ' ';
+                char right = (i != after.length() - 1) ? after.charAt(i + 1) : ' ';
+                if ((Character.toString(after.charAt(i)).equals(inner)) & (!Character.isLetter(left)) & (!Character.isLetter(right)))
+                    trueVariable = Character.toString(after.charAt(i));
             }
 
-            String variable = this.getVariable();
+            return trueVariable;
+        }
 
-            String equation = new FunctionHandle(this.expression).deleteDeclaration();
+        public static String replaceVariable(String expression, double value) {
+            if (!(isFunction(expression))) {
+                return expression;
+            }
+
+            String variable = getVariable(expression);
+
+            String equation = deleteDeclaration(expression);
             StringBuilder _split = new StringBuilder(equation);
-            String splitter = "V";
             int entry = 0;
+
 
             for (int i = 0; i < equation.length(); i++) {
                 String current = Character.toString(_split.charAt(i));
@@ -539,17 +595,31 @@ public class MathParser {
                 char right = (i != equation.length() - 1) ? _split.charAt(i + 1) : ' ';
 
                 if ((current.equals(variable)) & (!Character.isLetter(left)) & (!Character.isLetter(right))) {
-                    _split.insert(i, splitter);
+                    _split.insert(i, VARIABLE_SPLITTER);
                 }
             }
 
-            return new FunctionHandle(_split.toString().replace(splitter + variable, MathParser.Precision._fformat(value)));
+            return _split.toString().replace(VARIABLE_SPLITTER + variable, MathParser.Precision._fformat(value));
         }
 
-        public HashMap<String, List<Integer>> getCoeffs(String variable) {
-            String original = this.expression;
-            String _s = new FunctionHandle(this.expression).deleteDeclaration();
-            StringBuilder _expression = new StringBuilder(new FunctionHandle(this.expression).deleteDeclaration());
+        public static String replaceConstants(String expression) {
+            String equation = expression;
+            for (Map.Entry<String, Double> entry : MATH_CONSTANTS.entrySet()) {
+                String key = entry.getKey();
+                double value = entry.getValue();
+
+                equation = equation.replaceAll(key, MathParser.Precision._fformat(value));
+            }
+
+            return equation;
+        }
+
+        public static HashMap<String, List<Integer>> getCoeffs(String expression, String variable) {
+            String _s = deleteDeclaration(expression);
+
+            String _pre_string = deleteDeclaration(expression);
+            _pre_string = replaceConstants(_pre_string);
+            StringBuilder _expression = new StringBuilder(expression);
             HashMap<String, List<Integer>> _coeffs = new HashMap<>();
 
             for (String name: _functionMap.keySet()) {
@@ -611,10 +681,74 @@ public class MathParser {
             return _coeffs;
         }
 
-        public FunctionHandle replaceCoeff(String coeff, double value) {
-            String equation = new FunctionHandle(this.expression).deleteDeclaration();
+        public static HashMap<String, List<Integer>> getCoeffs(String expression) {
+            String variable = getVariable(expression);
+            boolean containsVariable = true;
+
+            if (getVariable(expression).equals("-1")) {
+                containsVariable = false;
+            }
+
+
+            String _s = deleteDeclaration(expression);
+            StringBuilder _expression = new StringBuilder(deleteDeclaration(expression));
+            HashMap<String, List<Integer>> _coeffs = new HashMap<>();
+
+            for (String name: _functionMap.keySet()) {
+                _expression = new StringBuilder(_expression.toString().replace(name, ""));
+            }
+
+            _expression = new StringBuilder(_expression.toString().replace("arc", ""));
+
+            _expression = new StringBuilder(_expression.toString().replace("E", ""));
+
+            String[] _symbols = new String[] {"\\+", "\\-",
+                    "\\*", "\\/",
+                    "\\(", "\\)",
+                    "\\,", "\\."};
+
+            List<String> symbols = new ArrayList<>(java.util.Arrays.asList(_symbols));
+
+            for (String s: symbols) {
+                _expression = new StringBuilder(_expression.toString().replace(s, ""));
+            }
+
+            _expression = new StringBuilder(_expression.toString().replaceAll("[\\-\\+\\^:,]",""));
+
+            for (int i = 0; i < _expression.length(); i++) {
+                if (!(Character.isDigit(_expression.charAt(i))) & ((Character.isLetter(_expression.charAt(i))))) {
+                    List<Integer> entries = new ArrayList<>();
+                    for (int _i = 0; _i < _s.length(); _i++) {
+                        char check_function_left = ' ';
+                        char check_function_right = ' ';
+                        if (_i != 0) {
+                            check_function_left = _s.charAt(_i - 1);
+                        }
+                        if (_i != _s.length() - 1) {
+                            check_function_right = _s.charAt(_i + 1);
+                        }
+                        if ((_s.charAt(_i) == _expression.charAt(i))
+                                && (!(Character.isLetter(check_function_left)))
+                                && (!(Character.isLetter(check_function_right)))
+                        ) {
+                            entries.add(_i);
+                        }
+                    }
+                    _coeffs.put(Character.toString(_expression.charAt(i)), entries);
+                }
+            }
+
+            if (_coeffs.containsKey(variable) && containsVariable) {
+                _coeffs.remove(variable);
+            }
+
+            return _coeffs;
+        }
+
+        public static String replaceCoeff(String expression, String coeff, double value) {
+            String equation = deleteDeclaration(expression);
+            equation = replaceConstants(equation);
             StringBuilder _split = new StringBuilder(equation);
-            String splitter = "C";
             int entry = 0;
 
             for (int i = 0; i < equation.length(); i++) {
@@ -637,31 +771,10 @@ public class MathParser {
                 char right = (i != equation.length() - 1) ? _split.charAt(i + 1) : ' ';
 
                 if ((current.equals(coeff)) & (!Character.isLetter(left)) & (!Character.isLetter(right))) {
-                    _split.insert(i, splitter);
+                    _split.insert(i, COEFFICIENT_SPLITTER);
                 }
             }
-
-//            List<String> names = new ArrayList<>();
-//            names.addAll(this.get_coeffs().keySet());
-//            List<List<Integer>> positions = new ArrayList<>();
-//            positions.addAll(this.get_coeffs().values());
-
-//            for (Map.Entry<String, List<Integer>> entry : this.get_coeffs().entrySet()) {
-//                String _coeff = entry.getKey();
-//                List<Integer> _positions = entry.getValue();
-//
-//               for (int position: _positions) {
-//                    String value_string = java.lang.Double.toString(value);
-//                    int value_length = java.lang.Double.toString(value).length();
-//                    equation = equation.replace(position, position + value_length, value_string);
-//                }
-//            }
-
-            return new FunctionHandle(_split.toString().replace(splitter + coeff, java.lang.Double.toString(value)));
-        }
-
-        public String toString() {
-            return this.expression;
+            return _split.toString().replace(COEFFICIENT_SPLITTER + coeff, java.lang.Double.toString(value));
         }
     }
 }
