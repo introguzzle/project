@@ -18,7 +18,7 @@ public class InputFunctionPanel0 extends JPanel {
     private static final Dimension DEFAULT_COMPONENT_SIZE = new Dimension(70, 70);
     private static final Font _FONT = Graph._Font(20);
 
-    private static final DefaultComboBoxModel<String> EMPTY_BOX_MODEL = new DefaultComboBoxModel<>();
+    private static final DefaultComboBoxModel<String> DEFAULT_COMBO_BOX_MODEL = new DefaultComboBoxModel<>();
     private static final double DEFAULT_COEFFICIENT_VALUE = 1.0;
 
     private InputFunctionPanel0 instance = this;
@@ -103,7 +103,7 @@ public class InputFunctionPanel0 extends JPanel {
                 state = InputState.COEFFS_SET_STATE;
                 additionButton.setEnabled(false);
 
-                Window win = SwingUtilities.getWindowAncestor(InputFunctionPanel0.this);
+                Window win = SwingUtilities.getWindowAncestor(instance);
 
                 selectionButton.setEnabled(true);
 
@@ -115,13 +115,21 @@ public class InputFunctionPanel0 extends JPanel {
 
                 coeffsSet.addAll(getCoeffs(_function).keySet());
                 coeffsArray = new String[coeffsSet.size()];
+                coeffsSet.toArray(coeffsArray);
+
+                if (Graph.getInvoke() > 1 && !Graph.getCoefficientMap().isEmpty()) {
+                    if (Graph.getCoefficientMap().get(coeffsArray[0]).toString().length() < 3) {
+                        coefficientInputTextField.setText(MathParser.Precision._format(Graph.getCoefficientMap().get(coeffsArray[0]), 2));
+                    }
+                    else
+                        coefficientInputTextField.setText(MathParser.Precision._format(Graph.getCoefficientMap().get(coeffsArray[0]), 2).substring(0, 3));
+                }
+
 
                 if (coeffsSet.size() > 0)
                     choiceBox.setEnabled(true);
 
-                choiceBox.setModel(new DefaultComboBoxModel<>(
-                            coeffsSet.toArray(coeffsArray))
-                );
+                choiceBox.setModel(new DefaultComboBoxModel<>(coeffsArray));
             }
         });
 
@@ -210,10 +218,10 @@ public class InputFunctionPanel0 extends JPanel {
             additionButton.setEnabled(true);
             selectionButton.setEnabled(false);
             choiceBox.setEnabled(false);
-            choiceBox.setModel(EMPTY_BOX_MODEL);
+            choiceBox.setModel(DEFAULT_COMBO_BOX_MODEL);
             functionInputTextField.setText("");
             coefficientInputTextField.setText("");
-            // coefficientInputTextField.setText(mapCoeffsToValues.get(choiceBox.getItemAt(0)));
+            coefficientInputTextField.setEnabled(false);
         }
 
         mapCoeffsToValues.entrySet().removeIf(condition -> mapCoeffsToValues.containsKey("null"));

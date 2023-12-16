@@ -5,39 +5,30 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="912ac5a4-e8a8-42a8-a147-180b456244bb" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com.mathp/DialogExample.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com.mathp/Frame.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com.mathp/Graph.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com.mathp/InfoFrame.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com.mathp/InfoFrame0.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com.mathp/InputFunctionPanel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com.mathp/InputFunctionPanel0.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com.mathp/InputState.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com.mathp/SteppingSlider.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Sample_Chart.png" beforeDir="false" afterPath="$PROJECT_DIR$/Sample_Chart.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/Argument.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/MathParser.org-mXparser.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com.mathp/IndexedMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com.mathp/Graph.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com.mathp/Graph.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com.mathp/InfoFrame0.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com.mathp/InfoFrame0.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com.mathp/InputFunctionPanel0.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com.mathp/InputFunctionPanel0.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com.mathp/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com.mathp/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com.mathp/MathParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com.mathp/MathParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com.proj/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com.proj/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lab1/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lab1/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com.mathp/SteppingSlider.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com.mathp/SteppingSlider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Graph$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Graph$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Graph$3.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Graph$4.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Graph$5.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$6.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Graph$6.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$7.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Graph$7.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$8.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Graph$8.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$9.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Graph$9.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Graph.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/InfoFrame0.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/InfoFrame0.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/InputFunctionPanel0$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/InputFunctionPanel0$3.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/InputFunctionPanel0$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/InputFunctionPanel0$4.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/InputFunctionPanel0$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/InputFunctionPanel0$5.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/InputFunctionPanel0.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/InputFunctionPanel0.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/MathParser$FunctionHandle.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/MathParser$FunctionHandle.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/MathParser$Lexeme.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/MathParser$Lexeme.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/MathParser$LexemeBuffer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/MathParser$LexemeBuffer.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/MathParser$LexemeType.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/MathParser$LexemeType.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/MathParser$Precision.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/MathParser$Precision.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/MathParser$Syntax.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/MathParser$Syntax.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/MathParser.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/MathParser.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/proj/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/proj/Main.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/SteppingSlider.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/SteppingSlider.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,8 +38,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="Enum" />
+        <option value="Class" />
       </list>
     </option>
   </component>

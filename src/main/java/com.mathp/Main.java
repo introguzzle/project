@@ -173,11 +173,9 @@ public class Main {
         //                                                                      //
         //////////////////////////////////////////////////////////////////////////
 
-        // f(x) = sq(x - C) + pow(x, mp_pi) - A * B
+        // f(x) = sq(x - c) + pow(x, mp_pi) - A * B
 
-        HashMap<String, Double> MAP = new HashMap<>();
-        MAP.put("a", 1.0);
-        MAP.put("b", 1.0);
+        Graph.main(args);
 
 
     }

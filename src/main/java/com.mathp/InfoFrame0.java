@@ -16,10 +16,10 @@ public class InfoFrame0 extends JFrame {
 
     private static final String _HTML_TEXT = "";
 
-    private static final String _TEXT = "grapher" + "\n" +
-            "introguzzle" + "\n" +
-            "1" + "\n" +
-            "2023";
+    private static final String _TEXT = "Курсовая работа, вариант 10" + "\n" +
+            "Батожаргалов Балдан" + "\n" +
+            "группа з-422п-10-1" + "\n" +
+            "ТУСУР, 2023";
 
     private static final Font _FONT = Graph._Font(22);
     

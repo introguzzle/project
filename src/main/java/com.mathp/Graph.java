@@ -24,8 +24,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 
-import static com.mathp.MathParser.FunctionHandle.*;
-
 public class Graph extends JFrame implements Zoomable, Serializable {
 
     private static final long serialVersionUID = 666L;
@@ -37,9 +35,19 @@ public class Graph extends JFrame implements Zoomable, Serializable {
     private static JButton resettingButton = new JButton();
     private static JButton settingsButton = new JButton();
     private static JButton adjustButton = new JButton();
+    private static JComboBox<String> coefficientBox = new JComboBox();
+
+    private static final DefaultComboBoxModel<String> DEFAULT_COMBO_BOX_MODEL = new DefaultComboBoxModel<>();
+    private static String[] coefficientArray = new String[]{};
+    private static final HashMap<String, String> coefficientStringMap = new HashMap<>();
+    private static final HashMap<String, Double> coefficientMap = new HashMap<>();
+
+    private static int invoke = 0;
 
     private static SteppingSlider zoomingSlider = new SteppingSlider();
     private static double current_zoom;
+
+    private static SteppingSlider coefficientSlider = new SteppingSlider();
 
     private static JDialog inputDialog;
     private static final InputFunctionPanel0 functionPanel = new InputFunctionPanel0();
@@ -47,8 +55,6 @@ public class Graph extends JFrame implements Zoomable, Serializable {
 
     private static final XYSeriesCollection currentXYSeriesCollection = new XYSeriesCollection();
     private static final ArrayList<String> currentXYSeriesCollectionFunctions = new ArrayList<>();
-    private static final HashMap<String, String> coefficientStringMap = new HashMap<>();
-    private static final HashMap<String, Double> coefficientMap = new HashMap<>();
 
     private static final ArrayList<Double> rangeMaxValues = new ArrayList<>();
     private static double rangeMaxValuesMinimum;
@@ -58,18 +64,59 @@ public class Graph extends JFrame implements Zoomable, Serializable {
 
     private static final String __FONT = "Courier New";
     private static final int __FONT_BUTTON_SIZE = 20;
-    private static final int __BUTTON_HEIGHT = 96;
-    private static final int __SLIDER_HEIGHT = 256;
+    private static final int __BUTTON_HEIGHT = 60;
+    private static final int __MAGIC_WIDTH = 66;
+    private static final int __SLIDER_HEIGHT = 366;
     private static final float __STROKE_WIDTH = 2.0f;
     private static final String __IMAGE_NAME = "logo.jpg";
+    private static final int __ZOOM_SLIDER_FONT_SIZE = 13;
+    private static final int __SLIDER_FONT_SIZE = 13;
 
     private static final Integer[] ZOOM_VALUES = new Integer[]
-            {10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200, 250, 300, 400, 600, 900, 1200};
+                        {1,
+                    3, 5, 7, 10, 12, 14, 16, 18, 20,
+                        25,
+                    30, 35, 40, 45, 50, 60, 70, 80, 90,
+                        100,
+                    125, 150, 175, 200, 225, 250, 275, 300, 350,
+                        400,
+                    450, 500, 550, 600, 650, 700, 750, 800,
+                        1000};
 
-    private static final int ZOOM_DEFAULT_VALUE = 9;
+//    private static final Integer[] ZOOM_VALUES = new Integer[]
+//                     {1,
+//                    3, 5, 7, 10, 12, 14, 16, 18, 20,
+//                      25,
+//                    30, 35, 40, 45, 50, 60, 70, 80, 90,
+//                      100,
+//                    125, 150, 175, 200, 225, 250, 275, 300, 350,
+//                      400,
+//                    450, 500, 550, 600, 650, 700, 750, 800,
+//                      1000};
 
-    private static final int PRECISION_DIGITS = 3;
+    private static final int ZOOM_DEFAULT_VALUE = ZOOM_VALUES.length / 2;
+    private static final int ZOOM_UPPER_QUARTER_INDEX = ZOOM_DEFAULT_VALUE + ZOOM_VALUES.length / 4;
+    private static final int ZOOM_LOWER_QUARTER_INDEX = ZOOM_DEFAULT_VALUE - ZOOM_VALUES.length / 4;
 
+    private static final Integer[] COEFFICIENT_SLIDER_VALUES = new Integer[]
+                        {-20,
+                    -19, -18, -17, -16, -15, -14, -13, -12, -11,
+                        -10,
+                    -9, -8, -7, -6, -5, -4, -3, -2, -1,
+                        0,
+                    1, 2, 3, 4, 5, 6, 7, 8, 9,
+                        10,
+                    11, 12, 13, 14, 15, 16, 17, 18,
+                        20};
+
+    private static int COEFFICIENT_SLIDER_DEFAULT_VALUE = COEFFICIENT_SLIDER_VALUES.length / 2;
+    private static int COEFFICIENT_SLIDER_UPPER_QUARTER_INDEX = COEFFICIENT_SLIDER_DEFAULT_VALUE + COEFFICIENT_SLIDER_VALUES.length / 4;
+    private static int COEFFICIENT_SLIDER_LOWER_QUARTER_INDEX = COEFFICIENT_SLIDER_DEFAULT_VALUE - COEFFICIENT_SLIDER_VALUES.length / 4;
+
+    private static double COEFFICIENT_SLIDER_VALUE_MULTIPLIER = 1.0;
+
+    private static final int PRECISION_DIGITS = 2;
+ 
     private static final double DEFAULT_X = 10.0;
     private static final double DEFAULT_Y = 8.0;
 
@@ -122,7 +169,7 @@ public class Graph extends JFrame implements Zoomable, Serializable {
         return Math.abs(_value) <= ASSUMABLE_INFINITY;
     }
 
-    private static NumberTickUnit normalNumberTickUnit(NumberAxis axis, String orientation) {
+    private static NumberTickUnit getNormalNumberTickUnit(NumberAxis axis, String orientation) {
         if (orientation.equals("x"))
             return new NumberTickUnit(Math.abs(axis.getUpperBound() - axis.getLowerBound()) / NUMBER_OF_TICKS / 2.0);
         else
@@ -130,7 +177,7 @@ public class Graph extends JFrame implements Zoomable, Serializable {
     }
 
     private static void normalizeTick(NumberAxis axis, String orientation) {
-        axis.setTickUnit(normalNumberTickUnit(axis, orientation));
+        axis.setTickUnit(getNormalNumberTickUnit(axis, orientation));
     }
 
     private static void resetSlider(SteppingSlider slider) {
@@ -192,33 +239,84 @@ public class Graph extends JFrame implements Zoomable, Serializable {
         Container container = this.getContentPane();
         container.setLayout(new FlowLayout());
 
-        Hashtable<Integer, JLabel> sliderT = new Hashtable<>();
+        Hashtable<Integer, JLabel> zoomTable = new Hashtable<>();
 
-            JLabel label25 = new JLabel("25%");
-            label25.setFont(_Font(14));
-            sliderT.put(25, label25);
-            JLabel label100 = new JLabel("100%");
-            label100.setFont(_Font(14));
-            sliderT.put(100, label100);
-            JLabel label400 = new JLabel("400%");
-            label400.setFont(_Font(14));
-            sliderT.put(400, label400);
+        JLabel maxValue = new JLabel(ZOOM_VALUES[ZOOM_VALUES.length - 1].toString() + "%");
+        maxValue.setFont(_Font(__ZOOM_SLIDER_FONT_SIZE));
+        zoomTable.put(ZOOM_VALUES.length - 1, maxValue);
 
-        zoomingSlider = new SteppingSlider(ZOOM_VALUES, sliderT, ZOOM_DEFAULT_VALUE);
+        JLabel upperQuarterValue = new JLabel(ZOOM_VALUES[ZOOM_UPPER_QUARTER_INDEX].toString() + "%");
+        upperQuarterValue.setFont(_Font(__ZOOM_SLIDER_FONT_SIZE));
+        zoomTable.put(ZOOM_UPPER_QUARTER_INDEX, upperQuarterValue);
 
-        zoomingSlider.setLabelTable(sliderT);
+        JLabel defaultValue = new JLabel(ZOOM_VALUES[ZOOM_VALUES.length / 2].toString() + "%");
+        defaultValue.setFont(_Font(__ZOOM_SLIDER_FONT_SIZE));
+        zoomTable.put(ZOOM_VALUES.length / 2, defaultValue);
+
+        JLabel lowerQuarterValue = new JLabel(ZOOM_VALUES[ZOOM_LOWER_QUARTER_INDEX].toString() + "%");
+        lowerQuarterValue.setFont(_Font(__ZOOM_SLIDER_FONT_SIZE));
+        zoomTable.put(ZOOM_LOWER_QUARTER_INDEX, lowerQuarterValue);
+
+        JLabel minValue = new JLabel(ZOOM_VALUES[0].toString() + "%");
+        minValue.setFont(_Font(__ZOOM_SLIDER_FONT_SIZE));
+        zoomTable.put(0, minValue);
+
+        Hashtable<Integer, JLabel> coefficientTable = new Hashtable<>();
+
+        JLabel _maxValue = new JLabel(COEFFICIENT_SLIDER_VALUES[COEFFICIENT_SLIDER_VALUES.length - 1].toString());
+        _maxValue.setFont(_Font(__SLIDER_FONT_SIZE));
+        coefficientTable.put(COEFFICIENT_SLIDER_VALUES.length - 1, _maxValue);
+
+        JLabel _upperQuarterValue = new JLabel(COEFFICIENT_SLIDER_VALUES[COEFFICIENT_SLIDER_UPPER_QUARTER_INDEX].toString());
+        _upperQuarterValue.setFont(_Font(__SLIDER_FONT_SIZE));
+        coefficientTable.put(COEFFICIENT_SLIDER_UPPER_QUARTER_INDEX, _upperQuarterValue);
+
+        JLabel _defaultValue = new JLabel(COEFFICIENT_SLIDER_VALUES[COEFFICIENT_SLIDER_DEFAULT_VALUE].toString());
+        _defaultValue.setFont(_Font(__SLIDER_FONT_SIZE));
+        coefficientTable.put(COEFFICIENT_SLIDER_DEFAULT_VALUE, _defaultValue);
+
+        JLabel _lowerQuarterValue = new JLabel(COEFFICIENT_SLIDER_VALUES[COEFFICIENT_SLIDER_LOWER_QUARTER_INDEX].toString());
+        _lowerQuarterValue.setFont(_Font(__SLIDER_FONT_SIZE));
+        coefficientTable.put(COEFFICIENT_SLIDER_LOWER_QUARTER_INDEX, _lowerQuarterValue);
+
+        JLabel _minValue = new JLabel(COEFFICIENT_SLIDER_VALUES[0].toString());
+        _minValue.setFont(_Font(__SLIDER_FONT_SIZE));
+        coefficientTable.put(0, _minValue);
+
+        coefficientSlider = new SteppingSlider(COEFFICIENT_SLIDER_VALUES, coefficientTable, COEFFICIENT_SLIDER_DEFAULT_VALUE);
+
+        coefficientSlider.setEnabled(false);
+        coefficientSlider.setPaintLabels(true);
+        coefficientSlider.setOrientation(JSlider.VERTICAL);
+        coefficientSlider.setFocusable(false);
+        coefficientSlider.setBackground(Color.WHITE);
+        coefficientSlider.setPreferredSize(new Dimension(20, __SLIDER_HEIGHT));
+        coefficientSlider.setForeground(Color.BLACK);
+        coefficientSlider.setFont(_Font(12));
+
+        coefficientSlider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                coefficientMap.put((String)coefficientBox.getSelectedItem(), coefficientSlider.getDomainValue() * COEFFICIENT_SLIDER_VALUE_MULTIPLIER);
+                updatePreviousXYSeries();
+            }
+        });
+
+        zoomingSlider = new SteppingSlider(ZOOM_VALUES, zoomTable, ZOOM_DEFAULT_VALUE);
+
+        zoomingSlider.setLabelTable(zoomTable);
         zoomingSlider.setPaintLabels(true);
         zoomingSlider.setOrientation(JSlider.VERTICAL);
         zoomingSlider.setFocusable(false);
         zoomingSlider.setBackground(Color.WHITE);
-
+        zoomingSlider.setPreferredSize(new Dimension(20, __SLIDER_HEIGHT));
         zoomingSlider.setForeground(Color.BLACK);
         zoomingSlider.setFont(_Font(12));
 
         zoomingSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                current_zoom = (double) zoomingSlider.getDomainValue() / 100;
+                current_zoom = (double)zoomingSlider.getDomainValue() / 100;
 
                 NumberAxis xAxis = (NumberAxis) chart.getXYPlot().getDomainAxis();
                 NumberAxis yAxis = (NumberAxis) chart.getXYPlot().getRangeAxis();
@@ -240,6 +338,9 @@ public class Graph extends JFrame implements Zoomable, Serializable {
                 if (inputDialog == null) {
                     inputDialog = new JDialog(instance, "Function Input", true);
                 }
+
+                invoke++;
+
                 inputDialog.getContentPane().add(functionPanel);
                 inputDialog.pack();
                 inputDialog.setLocationRelativeTo(instance);
@@ -254,6 +355,16 @@ public class Graph extends JFrame implements Zoomable, Serializable {
                     functionPanel.setState(InputState.FUNCTION_SET_STATE);
                     coefficientMap.putAll(functionPanel.getMap());
                     coefficientStringMap.putAll(functionPanel.getStringMap());
+                    coefficientArray = coefficientMap.keySet().toArray(new String[0]);
+
+                    if (invoke > 0 && !coefficientMap.isEmpty()) {
+                        coefficientBox.setEnabled(true);
+                        coefficientBox.setModel(new DefaultComboBoxModel<String>(coefficientArray));
+
+                        coefficientSlider.setEnabled(true);
+                        int value = coefficientMap.get((String)coefficientBox.getSelectedItem()).intValue();
+                        coefficientSlider.setDomainValue(value);
+                    }
 
                     updateXYSeries(createXYSeries(response));
                     updatePreviousXYSeries();
@@ -267,20 +378,6 @@ public class Graph extends JFrame implements Zoomable, Serializable {
         additionButton.setHorizontalTextPosition(JButton.CENTER);
         additionButton.setVerticalTextPosition(JButton.CENTER);
         additionButton.setBackground(Color.WHITE);
-        //container.add(addb);
-//
-//        addb.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent evt) {
-//                InputFunctionPanel p = new InputFunctionPanel();
-//                JFrame f = new JFrame();
-//                f.add(p);
-//                f.setVisible(true);
-//
-//                String eval = p.getInputFieldText();
-//                updateXYSeries(createXYSeries(eval, -11, 10));
-//            }
-//        });
 
         //////////////////////////
         //////////////////////////
@@ -291,7 +388,6 @@ public class Graph extends JFrame implements Zoomable, Serializable {
         clearingButton.setHorizontalTextPosition(JButton.CENTER);
         clearingButton.setVerticalTextPosition(JButton.CENTER);
         clearingButton.setBackground(Color.WHITE);
-        //container.add(rmb);
 
         clearingButton.addActionListener(new ActionListener() {
             @Override
@@ -321,21 +417,6 @@ public class Graph extends JFrame implements Zoomable, Serializable {
             }
         });
 
-        settingsButton.setFocusable(false);
-        settingsButton.setText("Settings");
-        settingsButton.setFont(_Font(__FONT_BUTTON_SIZE));
-        settingsButton.setHorizontalTextPosition(JButton.CENTER);
-        settingsButton.setVerticalTextPosition(JButton.CENTER);
-        settingsButton.setBackground(Color.WHITE);
-        //container.add(rmb);
-
-        settingsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                chartPanel.doEditChartProperties();
-            }
-        });
-
         adjustButton.setFocusable(false);
         adjustButton.setText("Adjust");
         adjustButton.setFont(_Font(__FONT_BUTTON_SIZE));
@@ -358,6 +439,33 @@ public class Graph extends JFrame implements Zoomable, Serializable {
                     normalizeTick(xAxis, "x");
                     normalizeTick(yAxis, "y");
                 }
+            }
+        });
+
+        settingsButton.setFocusable(false);
+        settingsButton.setText("Settings");
+        settingsButton.setFont(_Font(__FONT_BUTTON_SIZE));
+        settingsButton.setHorizontalTextPosition(JButton.CENTER);
+        settingsButton.setVerticalTextPosition(JButton.CENTER);
+        settingsButton.setBackground(Color.WHITE);
+
+        settingsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                chartPanel.doEditChartProperties();
+            }
+        });
+
+        coefficientBox.setFocusable(false);
+        coefficientBox.setEnabled(false);
+        coefficientBox.setFont(_Font(__FONT_BUTTON_SIZE));
+        coefficientBox.setBackground(Color.WHITE);
+
+        coefficientBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                int value = coefficientMap.get((String)coefficientBox.getSelectedItem()).intValue();
+                coefficientSlider.setDomainValue(value);
             }
         });
 
@@ -393,37 +501,45 @@ public class Graph extends JFrame implements Zoomable, Serializable {
         this.setJMenuBar(menuBar);
 
         JPanel HandlePanel = new JPanel();
-
         GroupLayout layout = new GroupLayout(HandlePanel);
         HandlePanel.setLayout(layout);
+
         layout.setHorizontalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(additionButton, javax.swing.GroupLayout.DEFAULT_SIZE, __BUTTON_HEIGHT, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(additionButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(clearingButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(resettingButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(adjustButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(settingsButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(zoomingSlider, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addContainerGap())
+                                        .addComponent(coefficientBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addComponent(coefficientSlider, javax.swing.GroupLayout.PREFERRED_SIZE, __MAGIC_WIDTH, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(zoomingSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
-                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(additionButton, GroupLayout.PREFERRED_SIZE, __BUTTON_HEIGHT, GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(clearingButton, GroupLayout.PREFERRED_SIZE, __BUTTON_HEIGHT, GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(resettingButton, GroupLayout.PREFERRED_SIZE, __BUTTON_HEIGHT, GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(adjustButton, GroupLayout.PREFERRED_SIZE, __BUTTON_HEIGHT, GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(settingsButton, GroupLayout.PREFERRED_SIZE, __BUTTON_HEIGHT, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(additionButton, javax.swing.GroupLayout.PREFERRED_SIZE, __BUTTON_HEIGHT, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(zoomingSlider, GroupLayout.DEFAULT_SIZE, __SLIDER_HEIGHT, Short.MAX_VALUE)
+                                .addComponent(clearingButton, javax.swing.GroupLayout.PREFERRED_SIZE, __BUTTON_HEIGHT, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(resettingButton, javax.swing.GroupLayout.PREFERRED_SIZE, __BUTTON_HEIGHT, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(adjustButton, javax.swing.GroupLayout.PREFERRED_SIZE, __BUTTON_HEIGHT, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(settingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, __BUTTON_HEIGHT, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(coefficientBox, javax.swing.GroupLayout.PREFERRED_SIZE, __BUTTON_HEIGHT, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(coefficientSlider, javax.swing.GroupLayout.DEFAULT_SIZE, __SLIDER_HEIGHT, Short.MAX_VALUE)
+                                        .addComponent(zoomingSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addContainerGap())
         );
 
@@ -437,8 +553,8 @@ public class Graph extends JFrame implements Zoomable, Serializable {
             public void keyPressed(KeyEvent e) {
                 int key = e.getKeyCode();
 
-                double xShift = normalNumberTickUnit((NumberAxis)chart.getXYPlot().getDomainAxis(), "x").getSize();
-                double yShift = normalNumberTickUnit((NumberAxis)chart.getXYPlot().getRangeAxis(), "y").getSize();
+                double xShift = getNormalNumberTickUnit((NumberAxis)chart.getXYPlot().getDomainAxis(), "x").getSize();
+                double yShift = getNormalNumberTickUnit((NumberAxis)chart.getXYPlot().getRangeAxis(), "y").getSize();
 
                 if (key == KeyEvent.VK_RIGHT) {
                     NumberAxis xAxis = (NumberAxis) chart.getXYPlot().getDomainAxis();
@@ -492,8 +608,17 @@ public class Graph extends JFrame implements Zoomable, Serializable {
                     zoomingSlider.setValue(zoomingSlider.getValue() + 1);
                 }
 
-                if (key == KeyEvent.VK_DELETE)
+                if (key == KeyEvent.VK_R) {
+                    resettingButton.doClick();
+                    resettingButton.doClick();
+                    resettingButton.doClick();
+                }
+
+                if (key == KeyEvent.VK_DELETE) {
                     clearingButton.doClick();
+                    clearingButton.doClick();
+                    clearingButton.doClick();
+                }
 
                 if (key == KeyEvent.VK_ESCAPE) {
                     exitMenu.doClick();
@@ -610,6 +735,10 @@ public class Graph extends JFrame implements Zoomable, Serializable {
 
     public static Range getComputationRange() {
         return COMPUTATION_RANGE;
+    }
+
+    public static int getInvoke() {
+        return invoke;
     }
 
     public static HashMap<String, Double> getCoefficientMap() {
