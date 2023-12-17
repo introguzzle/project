@@ -395,6 +395,9 @@ public class Graph extends JFrame implements Zoomable, Serializable {
                 currentXYSeriesCollection.removeAllSeries();
                 resetAxes(chart);
                 resetSlider(zoomingSlider);
+                coefficientBox.setEnabled(false);
+                coefficientBox.setModel(InputFunctionPanel0.getDefaultComboBoxModel());
+                coefficientSlider.setEnabled(false);
             }
         });
 
@@ -622,6 +625,25 @@ public class Graph extends JFrame implements Zoomable, Serializable {
 
                 if (key == KeyEvent.VK_ESCAPE) {
                     exitMenu.doClick();
+                }
+
+                if (key == KeyEvent.VK_1) {
+                    HandlePanel.setVisible(false);
+                }
+
+                if (key == KeyEvent.VK_2) {
+                    HandlePanel.setVisible(true);
+                }
+
+                if (key == KeyEvent.VK_3) {
+                    chartPanel.setBackground(new Color((int)(Math.random() * 0x1000000)));
+                    additionButton.setBackground(new Color((int)(Math.random() * 0x1000000)));
+                    settingsButton.setBackground(new Color((int)(Math.random() * 0x1000000)));
+                    adjustButton.setBackground(new Color((int)(Math.random() * 0x1000000)));
+                    resettingButton.setBackground(new Color((int)(Math.random() * 0x1000000)));
+                    clearingButton.setBackground(new Color((int)(Math.random() * 0x1000000)));
+                    zoomingSlider.setBackground(new Color((int)(Math.random() * 0x1000000)));
+                    coefficientSlider.setBackground(new Color((int)(Math.random() * 0x1000000)));
                 }
             }
 

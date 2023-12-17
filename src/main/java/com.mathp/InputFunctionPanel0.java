@@ -253,4 +253,8 @@ public class InputFunctionPanel0 extends JPanel {
     public JTextField getCoefficientInputTextField() {
         return coefficientInputTextField;
     }
+
+    public static DefaultComboBoxModel<String> getDefaultComboBoxModel() {
+        return DEFAULT_COMBO_BOX_MODEL;
+    }
 }

@@ -1,5 +1,6 @@
 package com.mathp;
 
+import javax.swing.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -175,8 +176,31 @@ public class Main {
 
         // f(x) = sq(x - c) + pow(x, mp_pi) - A * B
 
-        Graph.main(args);
+        List<String> g1 = new ArrayList<>();
+        g1.add("a");
+        g1.add("b");
 
+        List<Integer> g2 = new ArrayList<>();
+        g2.add(20);
+        g2.add(30);
+
+        List<String> g3 = new ArrayList<>();
+        g3.add("first");
+        g3.add("second");
+
+
+        IndexedMap<String, Integer, String> indexedMap = new IndexedMap<>(g1, g2, g3);
+        indexedMap.put("c", 3, "third");
+        indexedMap.put("d", 3, "fourth");
+
+        System.out.println(indexedMap);
+
+        indexedMap.putAll(new IndexedMap<>("e", 1, "fifth"));
+
+        System.out.println(indexedMap);
+
+        indexedMap.remove("a");
+        System.out.println(indexedMap);
 
     }
 }

@@ -604,7 +604,7 @@ public class MathParser {
 
         public static String replaceConstants(String expression) {
             String equation = expression;
-            for (Map.Entry<String, Double> entry : MATH_CONSTANTS.entrySet()) {
+            for (HashMap.Entry<String, Double> entry : MATH_CONSTANTS.entrySet()) {
                 String key = entry.getKey();
                 double value = entry.getValue();
 
