@@ -23,10 +23,18 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import static com.mathp.Main.compute;
 
 public class Graph extends JFrame implements Zoomable, Serializable {
 
     private static final long serialVersionUID = 666L;
+
+    private static final int PRECISION_DIGITS = 3;
+    private static final String MODE = "ALL";
 
     private final Graph instance = this;
 
@@ -72,6 +80,8 @@ public class Graph extends JFrame implements Zoomable, Serializable {
     private static final int __ZOOM_SLIDER_FONT_SIZE = 13;
     private static final int __SLIDER_FONT_SIZE = 13;
 
+    private static boolean switcher = true;
+
     private static final Integer[] ZOOM_VALUES = new Integer[]
                         {1,
                     3, 5, 7, 10, 12, 14, 16, 18, 20,
@@ -114,8 +124,6 @@ public class Graph extends JFrame implements Zoomable, Serializable {
     private static int COEFFICIENT_SLIDER_LOWER_QUARTER_INDEX = COEFFICIENT_SLIDER_DEFAULT_VALUE - COEFFICIENT_SLIDER_VALUES.length / 4;
 
     private static double COEFFICIENT_SLIDER_VALUE_MULTIPLIER = 1.0;
-
-    private static final int PRECISION_DIGITS = 2;
  
     private static final double DEFAULT_X = 10.0;
     private static final double DEFAULT_Y = 8.0;
@@ -225,7 +233,7 @@ public class Graph extends JFrame implements Zoomable, Serializable {
     }
 
     private void initUI() {
-        JFreeChart chart = createChart(currentXYSeriesCollection);
+        JFreeChart chart = createChart();
 
         ChartPanel chartPanel = new ChartPanel(chart);
         chartPanel.setDomainZoomable(true);
@@ -345,6 +353,7 @@ public class Graph extends JFrame implements Zoomable, Serializable {
                 inputDialog.pack();
                 inputDialog.setLocationRelativeTo(instance);
                 inputDialog.setVisible(true);
+                inputDialog.setResizable(false);
 
 //                if (!coefficientMap.isEmpty())
 //                    functionPanel.getCoefficientInputTextField().setText(MathParser.Precision._fformat(coefficientMap.values().stream().toList().get(0)));
@@ -628,14 +637,17 @@ public class Graph extends JFrame implements Zoomable, Serializable {
                 }
 
                 if (key == KeyEvent.VK_1) {
-                    HandlePanel.setVisible(false);
+                    if (switcher) {
+                        switcher = false;
+                        HandlePanel.setVisible(false);
+                    }
+                    else {
+                        switcher = true;
+                        HandlePanel.setVisible(true);
+                    }
                 }
 
                 if (key == KeyEvent.VK_2) {
-                    HandlePanel.setVisible(true);
-                }
-
-                if (key == KeyEvent.VK_3) {
                     chartPanel.setBackground(new Color((int)(Math.random() * 0x1000000)));
                     additionButton.setBackground(new Color((int)(Math.random() * 0x1000000)));
                     settingsButton.setBackground(new Color((int)(Math.random() * 0x1000000)));
@@ -644,6 +656,62 @@ public class Graph extends JFrame implements Zoomable, Serializable {
                     clearingButton.setBackground(new Color((int)(Math.random() * 0x1000000)));
                     zoomingSlider.setBackground(new Color((int)(Math.random() * 0x1000000)));
                     coefficientSlider.setBackground(new Color((int)(Math.random() * 0x1000000)));
+                }
+
+                if (key == KeyEvent.VK_3) {
+                    int r = (int)(Math.random() * 255);
+                    int g = (int)(Math.random() * 255);
+                    int b = (int)(Math.random() * 255);
+
+                    Color style1 = new Color(r, g, b);
+
+                    int max = Math.max(r, Math.max(g, b));
+                    int greyOffset = 12;
+//                    int min = Math.min(r, Math.min(g, b));
+//                    int avg = (r + g + b) / 3;
+//                    int offset = 30;
+
+                    // int tone = (int)(0.33 * r + 0.5 * g + 0.16 * b);
+
+                    //int tone = 255 - max > 80 && 255 - max < 160 ? 255 - max : avg - min;
+
+                    int tone = max > 255 / 2 ? 0 + greyOffset : 255 - greyOffset;
+
+                    System.out.println("tone = " + tone);
+                    System.out.println("last color, r = " + r + " g = " + g + " b = " + b);
+
+                    Color style2 = new Color(tone, tone, tone);
+
+                    Color style3 = new Color(Math.abs(255 - r),
+                            Math.abs(255 - g),
+                            Math.abs(255 - b));
+
+                    chartPanel.setBackground(style1);
+                    chartPanel.setForeground(style2);
+
+                    additionButton.setBackground(style1);
+                    additionButton.setForeground(style2);
+
+                    settingsButton.setBackground(style1);
+                    settingsButton.setForeground(style2);
+
+                    adjustButton.setBackground(style1);
+                    adjustButton.setForeground(style2);
+
+                    resettingButton.setBackground(style1);
+                    resettingButton.setForeground(style2);
+
+                    clearingButton.setBackground(style1);
+                    clearingButton.setForeground(style2);
+
+                    coefficientBox.setBackground(style1);
+                    coefficientBox.setForeground(style2);
+
+                    zoomingSlider.setBackground(style1);
+                    zoomingSlider.setForeground(style2);
+
+                    coefficientSlider.setBackground(style1);
+                    coefficientSlider.setForeground(style2);
                 }
             }
 
@@ -667,28 +735,51 @@ public class Graph extends JFrame implements Zoomable, Serializable {
 
     private static XYSeries createXYSeries(String function) {
 
+        int THREADS_COUNT;
+
+        if (MODE.equals("ALL"))
+            THREADS_COUNT = Runtime.getRuntime().availableProcessors();
+        else if (MODE.equals("HALF"))
+            THREADS_COUNT = Runtime.getRuntime().availableProcessors() / 2;
+        else if (MODE.equals("SINGLE"))
+            THREADS_COUNT = 1;
+        else
+            THREADS_COUNT = Runtime.getRuntime().availableProcessors() / 2;
+
         XYSeries series = new XYSeries(function);
         series.setDescription(function);
 
-        double[][] data = {};
-        double[] x_vals = {};
-        double[] y_vals = {};
+        ExecutorService executor = Executors.newFixedThreadPool(THREADS_COUNT);
+        ArrayList<Runnable> tasks = new ArrayList<>();
+        CountDownLatch latch = new CountDownLatch(THREADS_COUNT);
 
-        try {
-            data = Main.getOptimizedData(function, coefficientMap, (int)PRECISION_DIGITS);
-        } catch (MathParser.SyntaxParseException e) {
-            e.printStackTrace();
+        ArrayList<Double> y = new ArrayList<>();
+
+        double delta = COMPUTATION_RANGE.getLength() / THREADS_COUNT;
+        double left = COMPUTATION_RANGE.getLowerBound();
+        double right = COMPUTATION_RANGE.getUpperBound();
+
+        double step = 1 / Math.pow(10, PRECISION_DIGITS);
+
+        for (double p = left; p <= right; p = p + delta) {
+            final double fp = p;
+            tasks.add(new Runnable() {
+                @Override
+                public void run() {
+                    for (double x = fp; x < fp + delta; x = x + step) {
+                        try {
+                            series.add(x, compute(function, x, coefficientMap));
+                        } catch (MathParser.SyntaxParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
+            latch.countDown();
         }
 
-        try {
-            x_vals = data[0];
-            y_vals = data[1];
-        } catch (IndexOutOfBoundsException e) {
-            e.printStackTrace();
-        }
-
-        for (int i = 0; i < x_vals.length; i++) {
-            series.add(x_vals[i], y_vals[i]);
+        for (Runnable task: tasks) {
+            executor.submit(task);
         }
 
         return series;
@@ -702,13 +793,13 @@ public class Graph extends JFrame implements Zoomable, Serializable {
         return collection;
     }
 
-    private static JFreeChart createChart(XYSeriesCollection collection) {
+    private static JFreeChart createChart() {
 
         JFreeChart chart = ChartFactory.createXYLineChart(
                 "",
                 "x",
                 "y",
-                collection,
+                currentXYSeriesCollection,
                 PlotOrientation.VERTICAL,
                 true,
                 true,

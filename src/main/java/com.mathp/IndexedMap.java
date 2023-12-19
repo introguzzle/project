@@ -1,7 +1,8 @@
 package com.mathp;
 
-import javax.crypto.NullCipher;
 import java.util.*;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 class IndexedMapNotInitializedException extends Exception {
     public IndexedMapNotInitializedException() {
@@ -9,7 +10,31 @@ class IndexedMapNotInitializedException extends Exception {
     }
 }
 
+@FunctionalInterface
+interface TFunction<K, V, E, U> {
+
+    U apply(K key, V v, E e);
+
+    default <R> TFunction<K, V, E, R> andThen(Function<? super U, ? extends R> after) {
+        return (K key, V v, E e) -> after.apply(apply(key, v, e));
+    }
+}
+
+@FunctionalInterface
+interface TConsumer<K, V, E> {
+
+    void accept(K k, V f, E s);
+
+    default TConsumer<K, V, E> andThen(TConsumer<? super K, ? super V, ? super E> after) {
+        return (_k, _f, _s) -> {
+            accept(_k, _f, _s);
+            after.accept(_k, _f, _s);
+        };
+    }
+}
+
 interface IEntry<K, V, E> {
+
     K getKey();
     V getFirstValue();
     E getSecondValue();
@@ -70,6 +95,25 @@ public class IndexedMap<K, V, E> {
     private List<Entry<K, V, E>> entryList = new ArrayList<>();
 
     private boolean initialized = false;
+
+    private void reinitialize(List<Entry<K, V, E>> e) {
+        IndexedMap<K, V, E> map = new IndexedMap<>();
+
+        for (Entry<K, V, E> entry: e) {
+            map.put(entry.getKey(), entry.getFirstValue(), entry.getSecondValue());
+        }
+
+        this.indices = map.indices;
+        this.keys = map.keys;
+        this.firstValues = map.firstValues;
+        this.secondValues = map.secondValues;
+
+        this.link = zip(map.keys, map.indices);
+
+        this.entrySet = new HashSet<>(e);
+        this.entryList = e;
+
+    }
 
     private K getKey(int index) {
         if (initialized) {
@@ -134,6 +178,64 @@ public class IndexedMap<K, V, E> {
             throw new IndexOutOfBoundsException();
     }
 
+    public IndexedMap(Entry<K, V, E>... entries) {
+        this.initialized = true;
+
+        for (int i = 0; i < entries.length; i++) {
+            this.indices.add(i);
+            this.keys.add(entries[i].getKey());
+            this.firstValues.add(entries[i].getFirstValue());
+            this.secondValues.add(entries[i].getSecondValue());
+        }
+
+        this.entrySet.addAll(List.of(entries));
+        this.entryList.addAll(List.of(entries));
+    }
+
+    public void replaceAll(TFunction<? super K, ? super V, ? super E, ? extends E> function) {
+        if (function == null)
+            throw new NullPointerException();
+
+        for (Entry<K, V, E> entry: this.entryList) {
+            entry.setS(function.apply(entry.getKey(), entry.getFirstValue(), entry.getSecondValue()));
+        }
+
+        List<Entry<K, V, E>> changed = this.entryList;
+
+        reinitialize(changed);
+    }
+
+    public void replaceAll(BiFunction<? super K, ? super V, ? extends V> function) {
+        if (function == null)
+            throw new NullPointerException();
+
+        for (Entry<K, V, E> entry: this.entryList) {
+            entry.setF(function.apply(entry.getKey(), entry.getFirstValue()));
+        }
+
+        List<Entry<K, V, E>> changed = this.entryList;
+
+        reinitialize(changed);
+    }
+
+    public void forEach(TConsumer<K, V, E> action) {
+        if (action == null)
+            throw new NullPointerException();
+
+        for (Entry<K, V, E> entry: this.entryList) {
+            action.accept(entry.getKey(), entry.getFirstValue(), entry.getSecondValue());
+        }
+
+        List<Entry<K, V, E>> changed = this.entryList;
+
+        reinitialize(changed);
+    }
+
+    public void putAll(IndexedMap<K, V, E> indexedMap) {
+        for (Entry<K, V, E> entry: indexedMap.entrySet())
+            this.put(entry.getKey(), entry.getFirstValue(), entry.getSecondValue());
+    }
+
     public void put(K key, V firstValue, E secondValue) {
         this.initialized = true;
 
@@ -157,8 +259,7 @@ public class IndexedMap<K, V, E> {
                 }
             }
 
-        }
-        else {
+        } else {
             this.indices.add(this.indices.size());
             this.keys.add(key);
             this.firstValues.add(firstValue);
@@ -253,18 +354,28 @@ public class IndexedMap<K, V, E> {
     public HashMap<V, E> getValues(K key) {
         link = zip(keys, indices);
 
-        HashMap<V, E> ve = new HashMap<>();
+        HashMap<V, E> vMap = new HashMap<>();
         int index = link.get(key);
-        ve.put(this.firstValues.get(index), this.secondValues.get(index));
-        return ve;
+        vMap.put(this.firstValues.get(index), this.secondValues.get(index));
+        return vMap;
+    }
+
+    public List<V> getFirstValues(K key) {
+        link = zip(keys, indices);
+        return this.firstValues;
+    }
+
+    public List<E> getSecondValues(K key) {
+        link = zip(keys, indices);
+        return this.secondValues;
     }
 
     public HashMap<K, E> getLinkSecond(int index) {
         link = zip(keys, indices);
 
-        HashMap<K, E> ke = new HashMap<>();
-        ke.put(this.keys.get(index), this.secondValues.get(index));
-        return ke;
+        HashMap<K, E> eMap = new HashMap<>();
+        eMap.put(this.keys.get(index), this.secondValues.get(index));
+        return eMap;
     }
 
     public boolean containsKey(K key) {
@@ -273,11 +384,6 @@ public class IndexedMap<K, V, E> {
 
     public <T> boolean containsValue(T value) {
         return this.firstValues.contains((V)value) || this.secondValues.contains((E)value);
-    }
-
-    public void putAll(IndexedMap<K, V, E> indexedMap) {
-        for (Entry<K, V, E> entry: indexedMap.entrySet())
-            this.put(entry.getKey(), entry.getFirstValue(), entry.getSecondValue());
     }
 
     public int size() {
@@ -290,6 +396,13 @@ public class IndexedMap<K, V, E> {
     public Set<K> keySet() {
         if (initialized)
             return new HashSet<>(this.keys);
+        else
+            throw new NullPointerException();
+    }
+
+    public List<K> keyList() {
+        if (initialized)
+            return this.keys;
         else
             throw new NullPointerException();
     }

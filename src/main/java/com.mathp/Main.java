@@ -3,14 +3,20 @@ package com.mathp;
 import javax.swing.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.*;
 
 import static com.mathp.MathParser.FunctionHandle.*;
 
 public class Main {
+
+    public static ArrayList<Double> threadedGetYData(String function, HashMap<String, Double> coefficientMap) {
+        return new ArrayList<>();
+    }
+
+    public static ArrayList<Double> threadedGetXData(int precisionDigits, String threadUsage) {
+        return new ArrayList<>();
+    }
 
     public static Double _round(Double d, int precise) {
 
@@ -21,29 +27,29 @@ public class Main {
 
     public static double compute(String expression) throws MathParser.SyntaxParseException {
 
-        List<MathParser.Lexeme> _lexeme_list = MathParser.lexParse(replaceConstants(expression));
-        MathParser.LexemeBuffer _lexeme_buff = new MathParser.LexemeBuffer(_lexeme_list);
-        return MathParser.Syntax.EXPRESSION(_lexeme_buff);
+        List<MathParser.Lexeme> _lexemeList = MathParser.lexParse(replaceConstants(expression));
+        MathParser.LexemeBuffer _lexemeBuffer = new MathParser.LexemeBuffer(_lexemeList);
+        return MathParser.Syntax.EXPRESSION(_lexemeBuffer);
     }
 
-    public static double compute(String expression, double value, List<Double> list_of_coeff_values) throws MathParser.SyntaxParseException {
+    public static double compute(String expression, double value, List<Double> listOfCoeffValues) throws MathParser.SyntaxParseException {
 
         String variable = getVariable(expression);
         expression = replaceVariable(expression, value);
         expression = replaceConstants(expression);
 
-        List<String> list_of_coeffs = new ArrayList<>(getCoeffs(expression, variable).keySet());
+        List<String> listOfCoeffs = new ArrayList<>(getCoeffs(expression, variable).keySet());
 
 
-        if (list_of_coeffs.size() > 0) {
-            for (int i = 0; i < list_of_coeffs.size(); i++) {
-                expression = replaceCoeff(expression, list_of_coeffs.get(i), list_of_coeff_values.get(i));
+        if (listOfCoeffs.size() > 0) {
+            for (int i = 0; i < listOfCoeffs.size(); i++) {
+                expression = replaceCoeff(expression, listOfCoeffs.get(i), listOfCoeffValues.get(i));
             }
         }
 
-        List<MathParser.Lexeme> _lexeme_list = MathParser.lexParse(expression);
-        MathParser.LexemeBuffer _lexeme_buff = new MathParser.LexemeBuffer(_lexeme_list);
-        return MathParser.Syntax.EXPRESSION(_lexeme_buff);
+        List<MathParser.Lexeme> _lexemeList = MathParser.lexParse(expression);
+        MathParser.LexemeBuffer _lexemeBuffer = new MathParser.LexemeBuffer(_lexemeList);
+        return MathParser.Syntax.EXPRESSION(_lexemeBuffer);
     }
 
     private static boolean containsAnyOf(HashMap<String, Double> map, List<String> list) {
@@ -70,9 +76,9 @@ public class Main {
             }
         }
 
-        List<MathParser.Lexeme> _lexeme_list = MathParser.lexParse(expression);
-        MathParser.LexemeBuffer _lexeme_buff = new MathParser.LexemeBuffer(_lexeme_list);
-        return MathParser.Syntax.EXPRESSION(_lexeme_buff);
+        List<MathParser.Lexeme> _lexemeList = MathParser.lexParse(expression);
+        MathParser.LexemeBuffer _lexemeBuffer = new MathParser.LexemeBuffer(_lexemeList);
+        return MathParser.Syntax.EXPRESSION(_lexemeBuffer);
     }
 
     public static double[][] getScaledData(String function, double left, double right, List<Double> _coeffs, double precision)
@@ -132,9 +138,6 @@ public class Main {
         return new double[][] {x, y};
     }
 
-    public static void show(List<Double> _coeffs) {
-    }
-
     public static double[][] getOptimizedData(String function, HashMap<String, Double> coefficientMap, int precisionDigits)
             throws MathParser.SyntaxParseException {
 
@@ -162,9 +165,7 @@ public class Main {
     }
 
     public static void main(String[] args) throws MathParser.SyntaxParseException, java.io.IOException, InterruptedException {
-    //        for (String s: GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()) {
-    //            System.out.println(s + "\n");
-    //        }
+
 
         //////////////////////////////////////////////////////////////////////////
         //                                                                      //
@@ -176,32 +177,11 @@ public class Main {
 
         // f(x) = sq(x - c) + pow(x, mp_pi) - A * B
 
-        List<String> g1 = new ArrayList<>();
-        g1.add("a");
-        g1.add("b");
+        IndexedMap<Integer, String, Double> m = new IndexedMap<>(10, "test", 2.0);
 
-        List<Integer> g2 = new ArrayList<>();
-        g2.add(20);
-        g2.add(30);
+        m.putAll(new IndexedMap<>(20, "putall", 3.0));
 
-        List<String> g3 = new ArrayList<>();
-        g3.add("first");
-        g3.add("second");
-
-
-        IndexedMap<String, Integer, String> indexedMap = new IndexedMap<>(g1, g2, g3);
-        indexedMap.put("c", 3, "third");
-        indexedMap.put("d", 3, "fourth");
-
-        System.out.println(indexedMap);
-
-        indexedMap.putAll(new IndexedMap<>("e", 1, "fifth"));
-
-        System.out.println(indexedMap);
-
-        indexedMap.remove("a");
-        System.out.println(indexedMap);
-
+        m.forEach((k, v1, v2) -> System.out.println(k + v1 + v2));
     }
 }
 

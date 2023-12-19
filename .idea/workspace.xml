@@ -4,7 +4,31 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="912ac5a4-e8a8-42a8-a147-180b456244bb" name="Changes" comment="" />
+    <list default="true" id="912ac5a4-e8a8-42a8-a147-180b456244bb" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com.mathp/Graph.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com.mathp/Graph.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com.mathp/IndexedMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com.mathp/IndexedMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com.mathp/InputFunctionPanel0.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com.mathp/InputFunctionPanel0.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com.mathp/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com.mathp/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Graph$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$10.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Graph$10.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$11.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Graph$11.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Graph$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Graph$3.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Graph$4.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Graph$5.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$6.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Graph$6.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$7.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Graph$7.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$8.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Graph$8.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$9.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Graph$9.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Graph.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/IndexedMap.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/IndexedMap.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/InputFunctionPanel0$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/InputFunctionPanel0$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/InputFunctionPanel0$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/InputFunctionPanel0$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/InputFunctionPanel0$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/InputFunctionPanel0$3.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/InputFunctionPanel0.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/InputFunctionPanel0.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Main.class" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -21,6 +45,12 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-21/lib/src.zip!/java.base/java/util/HashMap.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-21/lib/src.zip!/java.base/java/util/HashSet.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-21/lib/src.zip!/java.base/java/util/Map.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-21/lib/src.zip!/java.base/java/util/Objects.java" root0="SKIP_INSPECTION" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 5
@@ -34,7 +64,8 @@
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.IDE.editor.colors&quot;
   }
 }</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -47,6 +78,10 @@
       <updated>1702142360575</updated>
     </task>
     <servers />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Project$Graph.ic" NAME="Graph Coverage Results" MODIFIED="1702299375844" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">

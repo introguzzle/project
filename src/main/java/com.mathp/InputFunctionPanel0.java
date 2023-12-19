@@ -41,7 +41,6 @@ public class InputFunctionPanel0 extends JPanel {
     private HashMap<String, String> mapCoeffsToValues = new HashMap<>();
 
     public InputFunctionPanel0() {
-
         initComponents();
     }
 
@@ -106,6 +105,7 @@ public class InputFunctionPanel0 extends JPanel {
                 Window win = SwingUtilities.getWindowAncestor(instance);
 
                 selectionButton.setEnabled(true);
+                functionInputTextField.setEnabled(false);
 
                 if (!getCoeffs(functionInputTextField.getText()).isEmpty())
                     coefficientInputTextField.setEnabled(true);
@@ -219,6 +219,7 @@ public class InputFunctionPanel0 extends JPanel {
             selectionButton.setEnabled(false);
             choiceBox.setEnabled(false);
             choiceBox.setModel(DEFAULT_COMBO_BOX_MODEL);
+            functionInputTextField.setEnabled(true);
             functionInputTextField.setText("");
             coefficientInputTextField.setText("");
             coefficientInputTextField.setEnabled(false);
