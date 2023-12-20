@@ -1,12 +1,7 @@
 package com.mathp;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 public class InfoFrame0 extends JFrame {
 
@@ -21,7 +16,7 @@ public class InfoFrame0 extends JFrame {
             "группа з-422п-10-1" + "\n" +
             "ТУСУР, 2023";
 
-    private static final Font _FONT = Graph._Font(22);
+    private static final Font _FONT = Graph.getGraphFont(22);
     
     public InfoFrame0() {
         initComponents();

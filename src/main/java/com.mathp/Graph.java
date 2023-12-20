@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -33,7 +34,7 @@ public class Graph extends JFrame implements Zoomable, Serializable {
 
     private static final long serialVersionUID = 666L;
 
-    private static final int PRECISION_DIGITS = 3;
+    private static final int PRECISION_DIGITS = 2;
     private static final String MODE = "ALL";
 
     private final Graph instance = this;
@@ -50,7 +51,7 @@ public class Graph extends JFrame implements Zoomable, Serializable {
     private static final HashMap<String, String> coefficientStringMap = new HashMap<>();
     private static final HashMap<String, Double> coefficientMap = new HashMap<>();
 
-    private static int invoke = 0;
+    private static int additionButtonInvokeCount = 0;
 
     private static SteppingSlider zoomingSlider = new SteppingSlider();
     private static double current_zoom;
@@ -62,7 +63,8 @@ public class Graph extends JFrame implements Zoomable, Serializable {
     private static String response;
 
     private static final XYSeriesCollection currentXYSeriesCollection = new XYSeriesCollection();
-    private static final ArrayList<String> currentXYSeriesCollectionFunctions = new ArrayList<>();
+    private static final ArrayList<XYSeries> currentXYSeriesList = new ArrayList<>();
+    private static final HashMap<String, ArrayList<String>> currentXYSeriesCollectionDescriptions = new HashMap<>();
 
     private static final ArrayList<Double> rangeMaxValues = new ArrayList<>();
     private static double rangeMaxValuesMinimum;
@@ -119,11 +121,11 @@ public class Graph extends JFrame implements Zoomable, Serializable {
                     11, 12, 13, 14, 15, 16, 17, 18,
                         20};
 
-    private static int COEFFICIENT_SLIDER_DEFAULT_VALUE = COEFFICIENT_SLIDER_VALUES.length / 2;
-    private static int COEFFICIENT_SLIDER_UPPER_QUARTER_INDEX = COEFFICIENT_SLIDER_DEFAULT_VALUE + COEFFICIENT_SLIDER_VALUES.length / 4;
-    private static int COEFFICIENT_SLIDER_LOWER_QUARTER_INDEX = COEFFICIENT_SLIDER_DEFAULT_VALUE - COEFFICIENT_SLIDER_VALUES.length / 4;
+    private static final int COEFFICIENT_SLIDER_DEFAULT_VALUE = COEFFICIENT_SLIDER_VALUES.length / 2;
+    private static final int COEFFICIENT_SLIDER_UPPER_QUARTER_INDEX = COEFFICIENT_SLIDER_DEFAULT_VALUE + COEFFICIENT_SLIDER_VALUES.length / 4;
+    private static final int COEFFICIENT_SLIDER_LOWER_QUARTER_INDEX = COEFFICIENT_SLIDER_DEFAULT_VALUE - COEFFICIENT_SLIDER_VALUES.length / 4;
 
-    private static double COEFFICIENT_SLIDER_VALUE_MULTIPLIER = 1.0;
+    private static final double COEFFICIENT_SLIDER_VALUE_MULTIPLIER = 1.0;
  
     private static final double DEFAULT_X = 10.0;
     private static final double DEFAULT_Y = 8.0;
@@ -173,6 +175,10 @@ public class Graph extends JFrame implements Zoomable, Serializable {
         resetSlider(zoomingSlider);
     }
 
+    public static Font getGraphFont(int _fontSize) {
+        return new Font(__FONT, Font.PLAIN, _fontSize);
+    }
+
     private static boolean isInBounds(double _value) {
         return Math.abs(_value) <= ASSUMABLE_INFINITY;
     }
@@ -209,23 +215,26 @@ public class Graph extends JFrame implements Zoomable, Serializable {
             rangeMinValuesMinimum = -ASSUMABLE_INFINITY;
     }
 
-    private static void updateXYSeries(XYSeries series) {
+    private static void updateXYSeriesCollection(XYSeries series) {
         currentXYSeriesCollection.addSeries(series);
-        currentXYSeriesCollectionFunctions.add(series.getDescription());
+        currentXYSeriesList.add(series);
+
+        String stringSeries = series.getDescription();
+        ArrayList<String> stringSeriesCoefficients = MathParser.FunctionHandler.getCoefficients(stringSeries);
+
+        currentXYSeriesCollectionDescriptions.put(stringSeries, stringSeriesCoefficients);
+
         updateMinMax(series);
     }
 
     private static void updatePreviousXYSeries() {
         currentXYSeriesCollection.removeAllSeries();
-        for (String function: currentXYSeriesCollectionFunctions) {
-            XYSeries series = createXYSeries(function);
+
+        for (Map.Entry<String, ArrayList<String>> entry: currentXYSeriesCollectionDescriptions.entrySet()) {
+            XYSeries series = createXYSeries(entry.getKey());
             updateMinMax(series);
             currentXYSeriesCollection.addSeries(series);
         }
-    }
-
-    public static Font _Font(int _fontSize) {
-        return new Font(__FONT, Font.PLAIN, _fontSize);
     }
 
     public Graph() {
@@ -250,45 +259,45 @@ public class Graph extends JFrame implements Zoomable, Serializable {
         Hashtable<Integer, JLabel> zoomTable = new Hashtable<>();
 
         JLabel maxValue = new JLabel(ZOOM_VALUES[ZOOM_VALUES.length - 1].toString() + "%");
-        maxValue.setFont(_Font(__ZOOM_SLIDER_FONT_SIZE));
+        maxValue.setFont(getGraphFont(__ZOOM_SLIDER_FONT_SIZE));
         zoomTable.put(ZOOM_VALUES.length - 1, maxValue);
 
         JLabel upperQuarterValue = new JLabel(ZOOM_VALUES[ZOOM_UPPER_QUARTER_INDEX].toString() + "%");
-        upperQuarterValue.setFont(_Font(__ZOOM_SLIDER_FONT_SIZE));
+        upperQuarterValue.setFont(getGraphFont(__ZOOM_SLIDER_FONT_SIZE));
         zoomTable.put(ZOOM_UPPER_QUARTER_INDEX, upperQuarterValue);
 
         JLabel defaultValue = new JLabel(ZOOM_VALUES[ZOOM_VALUES.length / 2].toString() + "%");
-        defaultValue.setFont(_Font(__ZOOM_SLIDER_FONT_SIZE));
+        defaultValue.setFont(getGraphFont(__ZOOM_SLIDER_FONT_SIZE));
         zoomTable.put(ZOOM_VALUES.length / 2, defaultValue);
 
         JLabel lowerQuarterValue = new JLabel(ZOOM_VALUES[ZOOM_LOWER_QUARTER_INDEX].toString() + "%");
-        lowerQuarterValue.setFont(_Font(__ZOOM_SLIDER_FONT_SIZE));
+        lowerQuarterValue.setFont(getGraphFont(__ZOOM_SLIDER_FONT_SIZE));
         zoomTable.put(ZOOM_LOWER_QUARTER_INDEX, lowerQuarterValue);
 
         JLabel minValue = new JLabel(ZOOM_VALUES[0].toString() + "%");
-        minValue.setFont(_Font(__ZOOM_SLIDER_FONT_SIZE));
+        minValue.setFont(getGraphFont(__ZOOM_SLIDER_FONT_SIZE));
         zoomTable.put(0, minValue);
 
         Hashtable<Integer, JLabel> coefficientTable = new Hashtable<>();
 
         JLabel _maxValue = new JLabel(COEFFICIENT_SLIDER_VALUES[COEFFICIENT_SLIDER_VALUES.length - 1].toString());
-        _maxValue.setFont(_Font(__SLIDER_FONT_SIZE));
+        _maxValue.setFont(getGraphFont(__SLIDER_FONT_SIZE));
         coefficientTable.put(COEFFICIENT_SLIDER_VALUES.length - 1, _maxValue);
 
         JLabel _upperQuarterValue = new JLabel(COEFFICIENT_SLIDER_VALUES[COEFFICIENT_SLIDER_UPPER_QUARTER_INDEX].toString());
-        _upperQuarterValue.setFont(_Font(__SLIDER_FONT_SIZE));
+        _upperQuarterValue.setFont(getGraphFont(__SLIDER_FONT_SIZE));
         coefficientTable.put(COEFFICIENT_SLIDER_UPPER_QUARTER_INDEX, _upperQuarterValue);
 
         JLabel _defaultValue = new JLabel(COEFFICIENT_SLIDER_VALUES[COEFFICIENT_SLIDER_DEFAULT_VALUE].toString());
-        _defaultValue.setFont(_Font(__SLIDER_FONT_SIZE));
+        _defaultValue.setFont(getGraphFont(__SLIDER_FONT_SIZE));
         coefficientTable.put(COEFFICIENT_SLIDER_DEFAULT_VALUE, _defaultValue);
 
         JLabel _lowerQuarterValue = new JLabel(COEFFICIENT_SLIDER_VALUES[COEFFICIENT_SLIDER_LOWER_QUARTER_INDEX].toString());
-        _lowerQuarterValue.setFont(_Font(__SLIDER_FONT_SIZE));
+        _lowerQuarterValue.setFont(getGraphFont(__SLIDER_FONT_SIZE));
         coefficientTable.put(COEFFICIENT_SLIDER_LOWER_QUARTER_INDEX, _lowerQuarterValue);
 
         JLabel _minValue = new JLabel(COEFFICIENT_SLIDER_VALUES[0].toString());
-        _minValue.setFont(_Font(__SLIDER_FONT_SIZE));
+        _minValue.setFont(getGraphFont(__SLIDER_FONT_SIZE));
         coefficientTable.put(0, _minValue);
 
         coefficientSlider = new SteppingSlider(COEFFICIENT_SLIDER_VALUES, coefficientTable, COEFFICIENT_SLIDER_DEFAULT_VALUE);
@@ -300,7 +309,7 @@ public class Graph extends JFrame implements Zoomable, Serializable {
         coefficientSlider.setBackground(Color.WHITE);
         coefficientSlider.setPreferredSize(new Dimension(20, __SLIDER_HEIGHT));
         coefficientSlider.setForeground(Color.BLACK);
-        coefficientSlider.setFont(_Font(12));
+        coefficientSlider.setFont(getGraphFont(12));
 
         coefficientSlider.addChangeListener(new ChangeListener() {
             @Override
@@ -319,7 +328,7 @@ public class Graph extends JFrame implements Zoomable, Serializable {
         zoomingSlider.setBackground(Color.WHITE);
         zoomingSlider.setPreferredSize(new Dimension(20, __SLIDER_HEIGHT));
         zoomingSlider.setForeground(Color.BLACK);
-        zoomingSlider.setFont(_Font(12));
+        zoomingSlider.setFont(getGraphFont(12));
 
         zoomingSlider.addChangeListener(new ChangeListener() {
             @Override
@@ -347,16 +356,13 @@ public class Graph extends JFrame implements Zoomable, Serializable {
                     inputDialog = new JDialog(instance, "Function Input", true);
                 }
 
-                invoke++;
+                additionButtonInvokeCount++;
 
                 inputDialog.getContentPane().add(functionPanel);
                 inputDialog.pack();
                 inputDialog.setLocationRelativeTo(instance);
                 inputDialog.setVisible(true);
                 inputDialog.setResizable(false);
-
-//                if (!coefficientMap.isEmpty())
-//                    functionPanel.getCoefficientInputTextField().setText(MathParser.Precision._fformat(coefficientMap.values().stream().toList().get(0)));
 
                 if (functionPanel.isFinal()) {
                     response = functionPanel.getInputFieldText();
@@ -366,16 +372,16 @@ public class Graph extends JFrame implements Zoomable, Serializable {
                     coefficientStringMap.putAll(functionPanel.getStringMap());
                     coefficientArray = coefficientMap.keySet().toArray(new String[0]);
 
-                    if (invoke > 0 && !coefficientMap.isEmpty()) {
+                    if (additionButtonInvokeCount > 0 && !coefficientMap.isEmpty()) {
                         coefficientBox.setEnabled(true);
-                        coefficientBox.setModel(new DefaultComboBoxModel<String>(coefficientArray));
+                        coefficientBox.setModel(new DefaultComboBoxModel<>(coefficientArray));
 
                         coefficientSlider.setEnabled(true);
                         int value = coefficientMap.get((String)coefficientBox.getSelectedItem()).intValue();
                         coefficientSlider.setDomainValue(value);
                     }
 
-                    updateXYSeries(createXYSeries(response));
+                    updateXYSeriesCollection(createXYSeries(response));
                     updatePreviousXYSeries();
                 }
             }
@@ -383,7 +389,7 @@ public class Graph extends JFrame implements Zoomable, Serializable {
 
         additionButton.setFocusable(false);
         additionButton.setText("Add");
-        additionButton.setFont(_Font(__FONT_BUTTON_SIZE));
+        additionButton.setFont(getGraphFont(__FONT_BUTTON_SIZE));
         additionButton.setHorizontalTextPosition(JButton.CENTER);
         additionButton.setVerticalTextPosition(JButton.CENTER);
         additionButton.setBackground(Color.WHITE);
@@ -393,7 +399,7 @@ public class Graph extends JFrame implements Zoomable, Serializable {
 
         clearingButton.setFocusable(false);
         clearingButton.setText("Clear");
-        clearingButton.setFont(_Font(__FONT_BUTTON_SIZE));
+        clearingButton.setFont(getGraphFont(__FONT_BUTTON_SIZE));
         clearingButton.setHorizontalTextPosition(JButton.CENTER);
         clearingButton.setVerticalTextPosition(JButton.CENTER);
         clearingButton.setBackground(Color.WHITE);
@@ -415,7 +421,7 @@ public class Graph extends JFrame implements Zoomable, Serializable {
 
         resettingButton.setFocusable(false);
         resettingButton.setText("Reset");
-        resettingButton.setFont(_Font(__FONT_BUTTON_SIZE));
+        resettingButton.setFont(getGraphFont(__FONT_BUTTON_SIZE));
         resettingButton.setHorizontalTextPosition(JButton.CENTER);
         resettingButton.setVerticalTextPosition(JButton.CENTER);
         resettingButton.setBackground(Color.WHITE);
@@ -431,7 +437,7 @@ public class Graph extends JFrame implements Zoomable, Serializable {
 
         adjustButton.setFocusable(false);
         adjustButton.setText("Adjust");
-        adjustButton.setFont(_Font(__FONT_BUTTON_SIZE));
+        adjustButton.setFont(getGraphFont(__FONT_BUTTON_SIZE));
         adjustButton.setHorizontalTextPosition(JButton.CENTER);
         adjustButton.setVerticalTextPosition(JButton.CENTER);
         adjustButton.setBackground(Color.WHITE);
@@ -456,7 +462,7 @@ public class Graph extends JFrame implements Zoomable, Serializable {
 
         settingsButton.setFocusable(false);
         settingsButton.setText("Settings");
-        settingsButton.setFont(_Font(__FONT_BUTTON_SIZE));
+        settingsButton.setFont(getGraphFont(__FONT_BUTTON_SIZE));
         settingsButton.setHorizontalTextPosition(JButton.CENTER);
         settingsButton.setVerticalTextPosition(JButton.CENTER);
         settingsButton.setBackground(Color.WHITE);
@@ -470,7 +476,7 @@ public class Graph extends JFrame implements Zoomable, Serializable {
 
         coefficientBox.setFocusable(false);
         coefficientBox.setEnabled(false);
-        coefficientBox.setFont(_Font(__FONT_BUTTON_SIZE));
+        coefficientBox.setFont(getGraphFont(__FONT_BUTTON_SIZE));
         coefficientBox.setBackground(Color.WHITE);
 
         coefficientBox.addActionListener(new ActionListener() {
@@ -482,13 +488,13 @@ public class Graph extends JFrame implements Zoomable, Serializable {
         });
 
         JMenuBar menuBar = new JMenuBar();
-        menuBar.setFont(_Font(22));
+        menuBar.setFont(getGraphFont(22));
 
             JMenu baseMenu = new JMenu("Menu");
-            baseMenu.setFont(_Font(22));
+            baseMenu.setFont(getGraphFont(22));
 
             JMenuItem infoMenu = new JMenuItem("Info");
-            infoMenu.setFont(_Font(22));
+            infoMenu.setFont(getGraphFont(22));
             infoMenu.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent evt) {
@@ -498,7 +504,7 @@ public class Graph extends JFrame implements Zoomable, Serializable {
             });
 
         JMenuItem exitMenu = new JMenuItem("Exit");
-        exitMenu.setFont(_Font(22));
+        exitMenu.setFont(getGraphFont(22));
         exitMenu.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -850,8 +856,8 @@ public class Graph extends JFrame implements Zoomable, Serializable {
         return COMPUTATION_RANGE;
     }
 
-    public static int getInvoke() {
-        return invoke;
+    public static int getAdditionButtonInvokeCount() {
+        return additionButtonInvokeCount;
     }
 
     public static HashMap<String, Double> getCoefficientMap() {
@@ -861,7 +867,6 @@ public class Graph extends JFrame implements Zoomable, Serializable {
     public static void main(String[] args) {
 
         EventQueue.invokeLater(() -> {
-
             Graph graph = new Graph();
             graph.setVisible(true);
         });

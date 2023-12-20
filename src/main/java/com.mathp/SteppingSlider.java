@@ -3,14 +3,14 @@ package com.mathp;
 import javax.swing.*;
 import java.util.Hashtable;
 
-public class SteppingSlider extends JSlider {
+public final class SteppingSlider extends JSlider {
 
     private Integer[] values = {};
 
     public SteppingSlider() {
     }
 
-    public SteppingSlider(Integer[] _values, Hashtable<Integer, JLabel> labels, int defaultIndex) {
+    public SteppingSlider(final Integer[] _values, final Hashtable<Integer, JLabel> labels, final int defaultIndex) {
         super(0, _values.length - 1, defaultIndex);
         setLabelTable(labels);
         setPaintTicks(true);
@@ -20,7 +20,7 @@ public class SteppingSlider extends JSlider {
         this.values = _values;
     }
 
-    public void init(Integer[] _values, int defaultIndex) {
+    public void init(final Integer[] _values, final int defaultIndex) {
         this.setMinimum(0);
         this.setMaximum(_values.length - 1);
         this.setValue(defaultIndex);
@@ -31,7 +31,7 @@ public class SteppingSlider extends JSlider {
         return this.values[this.getValue()];
     }
 
-    public void setDomainValue(int domainValue) {
+    public void setDomainValue(final int domainValue) {
         for (int i = 0; i < this.values.length; i++) {
             if (domainValue == this.values[i])
                 this.setValue(i);

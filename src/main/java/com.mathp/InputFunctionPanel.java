@@ -6,7 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-import static com.mathp.MathParser.FunctionHandle.getCoeffs;
+import static com.mathp.MathParser.FunctionHandler.getCoeffs;
 
 enum INPUT_STATE {
     FUNCTION_SET,
@@ -25,7 +25,7 @@ public class InputFunctionPanel extends JPanel {
 
     private InputFunctionPanel instance = this;
 
-    private final Font _FONT = Graph._Font(20);
+    private final Font _FONT = Graph.getGraphFont(20);
 
     private INPUT_STATE _final = INPUT_STATE.FUNCTION_SET;
 

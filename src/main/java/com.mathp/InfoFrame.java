@@ -7,7 +7,7 @@ public class InfoFrame extends JFrame {
 
     private final String _TEXT = "";
 
-    private final Font _FONT = Graph._Font(22);
+    private final Font _FONT = Graph.getGraphFont(22);
 
     public InfoFrame() {
 
@@ -22,7 +22,7 @@ public class InfoFrame extends JFrame {
 
         a.setLayout(new BorderLayout(50, 50));
         a.setText(_TEXT);
-        a.setFont(Graph._Font(22));
+        a.setFont(Graph.getGraphFont(22));
         a.setVerticalAlignment(SwingConstants.TOP);
 
         add(a);

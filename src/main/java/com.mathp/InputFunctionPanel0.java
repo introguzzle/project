@@ -11,12 +11,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import static com.mathp.MathParser.FunctionHandle.*;
+import static com.mathp.MathParser.FunctionHandler.*;
 
 public class InputFunctionPanel0 extends JPanel {
 
     private static final Dimension DEFAULT_COMPONENT_SIZE = new Dimension(70, 70);
-    private static final Font _FONT = Graph._Font(20);
+    private static final Font _FONT = Graph.getGraphFont(20);
 
     private static final DefaultComboBoxModel<String> DEFAULT_COMBO_BOX_MODEL = new DefaultComboBoxModel<>();
     private static final double DEFAULT_COEFFICIENT_VALUE = 1.0;
@@ -99,7 +99,7 @@ public class InputFunctionPanel0 extends JPanel {
         additionButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                state = InputState.COEFFS_SET_STATE;
+                state = InputState.COEFFICIENTS_SET_STATE;
                 additionButton.setEnabled(false);
 
                 Window win = SwingUtilities.getWindowAncestor(instance);
@@ -107,7 +107,7 @@ public class InputFunctionPanel0 extends JPanel {
                 selectionButton.setEnabled(true);
                 functionInputTextField.setEnabled(false);
 
-                if (!getCoeffs(functionInputTextField.getText()).isEmpty())
+                if (!getCoefficients(functionInputTextField.getText()).isEmpty())
                     coefficientInputTextField.setEnabled(true);
 
                 _function = functionInputTextField.getText();
@@ -117,7 +117,7 @@ public class InputFunctionPanel0 extends JPanel {
                 coeffsArray = new String[coeffsSet.size()];
                 coeffsSet.toArray(coeffsArray);
 
-                if (Graph.getInvoke() > 1 && !Graph.getCoefficientMap().isEmpty()) {
+                if (Graph.getAdditionButtonInvokeCount() > 1 && !Graph.getCoefficientMap().isEmpty()) {
                     if (Graph.getCoefficientMap().get(coeffsArray[0]).toString().length() < 3) {
                         coefficientInputTextField.setText(MathParser.Precision._format(Graph.getCoefficientMap().get(coeffsArray[0]), 2));
                     }
