@@ -80,7 +80,8 @@ class Entry<K, V, E> implements IEntry<K, V, E> {
     }
 }
 
-public class IndexedMap<K, V, E> {
+public final class IndexedMap<K, V, E> {
+    @SuppressWarnings("unused")
 
     private ArrayList<Integer> indices = new ArrayList<>();
     private ArrayList<K> keys = new ArrayList<>();
@@ -88,15 +89,13 @@ public class IndexedMap<K, V, E> {
     private ArrayList<E> secondValues = new ArrayList<>();
 
     private HashMap<K, Integer> link;
-    private HashMap<K, V> linkFirst;
-    private HashMap<K, E> linkSecond;
 
     private Set<Entry<K, V, E>> entrySet = new HashSet<>();
     private List<Entry<K, V, E>> entryList = new ArrayList<>();
 
     private boolean initialized = false;
 
-    private void reinitialize(List<Entry<K, V, E>> e) {
+    private void reinitialize(final List<Entry<K, V, E>> e) {
         IndexedMap<K, V, E> map = new IndexedMap<>();
 
         for (Entry<K, V, E> entry: e) {
@@ -115,7 +114,7 @@ public class IndexedMap<K, V, E> {
 
     }
 
-    private K getKey(int index) {
+    private K getKey(final int index) {
         if (initialized) {
             for (Map.Entry<K, Integer> entry: link.entrySet())
                 if (entry.getValue() == index)
@@ -124,17 +123,20 @@ public class IndexedMap<K, V, E> {
         return null;
     }
 
-    private boolean ensure(List<? extends Object> k, List<? extends Object> v) {
-        return keys.size() == 0 || firstValues.size() == 0 || secondValues.size() == 0 ||
-                keys.size() != firstValues.size() || keys.size() != secondValues.size() ||
-                (k.size() != v.size());
+    private boolean incorrect(final List<K> keys, final List<Integer> indices) {
+        return keys.size() != indices.size();
     }
 
-    private HashMap zip(List<? extends Object> k, List<? extends Object> v) {
-        if (ensure(k, v))
+    private boolean incorrect() {
+        return keys.isEmpty() || firstValues.isEmpty() || secondValues.isEmpty() ||
+                keys.size() != firstValues.size() || keys.size() != secondValues.size();
+    }
+
+    private HashMap<K, Integer> zip(final List<K> k, final List<Integer> v) {
+        if (incorrect(k, v))
             throw new IndexOutOfBoundsException();
 
-        HashMap map = new HashMap<>();
+        HashMap<K, Integer> map = new HashMap<>();
 
         for (int i = 0; i < keys.size(); i++) {
             map.put(k.get(i), v.get(i));
@@ -147,7 +149,7 @@ public class IndexedMap<K, V, E> {
 
     }
 
-    public IndexedMap(K initialKey, V initialF, E initialS) {
+    public IndexedMap(final K initialKey, final V initialF, final E initialS) {
         this.initialized = true;
 
         this.indices.add(0);
@@ -159,7 +161,7 @@ public class IndexedMap<K, V, E> {
         this.entryList.add(new Entry<>(initialKey, initialF, initialS));
     }
 
-    public IndexedMap(List<K> keyList, List<V> firstValueList, List<E> secondValueList) {
+    public IndexedMap(final List<K> keyList, final List<V> firstValueList, final List<E> secondValueList) {
         this.initialized = true;
 
         this.keys = (ArrayList<K>)keyList;
@@ -174,11 +176,12 @@ public class IndexedMap<K, V, E> {
             this.entryList.add(new Entry<>(this.keys.get(i), this.firstValues.get(i), this.secondValues.get(i)));
         }
 
-        if (ensure(keyList, firstValueList) || ensure(keyList, secondValueList))
+        if (incorrect())
             throw new IndexOutOfBoundsException();
     }
 
-    public IndexedMap(Entry<K, V, E>... entries) {
+    @SafeVarargs
+    public IndexedMap(final Entry<K, V, E>... entries) {
         this.initialized = true;
 
         for (int i = 0; i < entries.length; i++) {
@@ -192,7 +195,7 @@ public class IndexedMap<K, V, E> {
         this.entryList.addAll(List.of(entries));
     }
 
-    public void replaceAll(TFunction<? super K, ? super V, ? super E, ? extends E> function) {
+    public void replaceAll(final TFunction<? super K, ? super V, ? super E, ? extends E> function) {
         if (function == null)
             throw new NullPointerException();
 
@@ -205,7 +208,7 @@ public class IndexedMap<K, V, E> {
         reinitialize(changed);
     }
 
-    public void replaceAll(BiFunction<? super K, ? super V, ? extends V> function) {
+    public void replaceAll(final BiFunction<? super K, ? super V, ? extends V> function) {
         if (function == null)
             throw new NullPointerException();
 
@@ -218,7 +221,7 @@ public class IndexedMap<K, V, E> {
         reinitialize(changed);
     }
 
-    public void forEach(TConsumer<K, V, E> action) {
+    public void forEach(final TConsumer<K, V, E> action) {
         if (action == null)
             throw new NullPointerException();
 
@@ -231,12 +234,12 @@ public class IndexedMap<K, V, E> {
         reinitialize(changed);
     }
 
-    public void putAll(IndexedMap<K, V, E> indexedMap) {
+    public void putAll(final IndexedMap<K, V, E> indexedMap) {
         for (Entry<K, V, E> entry: indexedMap.entrySet())
             this.put(entry.getKey(), entry.getFirstValue(), entry.getSecondValue());
     }
 
-    public void put(K key, V firstValue, E secondValue) {
+    public void put(final K key, final V firstValue, final E secondValue) {
         this.initialized = true;
 
         link = zip(keys, indices);
@@ -269,7 +272,7 @@ public class IndexedMap<K, V, E> {
         }
     }
 
-    public void remove(int index) {
+    public void remove(final int index) {
         link = zip(keys, indices);
 
         K key = getKey(index);
@@ -285,12 +288,12 @@ public class IndexedMap<K, V, E> {
         }
     }
 
-    public void remove(K key) {
+    public void remove(final K key) {
         link = zip(keys, indices);
 
-        int index = this.link.get(key);
+        int index = this.link.get(key) != null ? this.link.get(key) : -1;
 
-        if (this.keys.contains(key)) {
+        if (index != -1 && this.keys.contains(key)) {
             this.indices.removeLast();
             this.keys.remove(index);
             this.firstValues.remove(index);
@@ -309,21 +312,32 @@ public class IndexedMap<K, V, E> {
         this.secondValues.clear();
     }
 
-    public void set(K key, V f, E s) {
+    public void set(final K key, final V f, final E s) {
         link = zip(keys, indices);
 
         this.firstValues.set(link.get(key), f);
         this.secondValues.set(link.get(key), s);
     }
 
-    public void set(int index, V f, E s) {
+    public void set(final int index, final V f, final E s) {
         link = zip(keys, indices);
 
         this.firstValues.set(index, f);
         this.secondValues.set(index, s);
     }
 
-    public HashMap<K, V> getLinkFirst(int index) {
+    public int getIndex(final K key) {
+        link = zip(keys, indices);
+
+        if (initialized) {
+            for (Map.Entry<K, Integer> entry: link.entrySet())
+                if (key == entry.getKey())
+                    return entry.getValue();
+        }
+        return -1;
+    }
+
+    public HashMap<K, V> getLinkFirst(final int index) {
         link = zip(keys, indices);
 
         HashMap<K, V> kv = new HashMap<>();
@@ -331,27 +345,27 @@ public class IndexedMap<K, V, E> {
         return kv;
     }
 
-    public V getFirstValue(K key) {
+    public V getFirstValue(final K key) {
         link = zip(keys, indices);
         return this.firstValues.get(link.get(key));
     }
 
-    public E getSecondValue(K key) {
+    public E getSecondValue(final K key) {
         link = zip(keys, indices);
         return this.secondValues.get(link.get(key));
     }
 
-    public V getFirstValue(int index) {
+    public V getFirstValue(final int index) {
         link = zip(keys, indices);
         return this.firstValues.get(index);
     }
 
-    public E getSecondValue(int index) {
+    public E getSecondValue(final int index) {
         link = zip(keys, indices);
         return this.secondValues.get(index);
     }
 
-    public HashMap<V, E> getValues(K key) {
+    public HashMap<V, E> getValues(final K key) {
         link = zip(keys, indices);
 
         HashMap<V, E> vMap = new HashMap<>();
@@ -360,17 +374,17 @@ public class IndexedMap<K, V, E> {
         return vMap;
     }
 
-    public List<V> getFirstValues(K key) {
+    public List<V> getFirstValues(final K key) {
         link = zip(keys, indices);
         return this.firstValues;
     }
 
-    public List<E> getSecondValues(K key) {
+    public List<E> getSecondValues(final K key) {
         link = zip(keys, indices);
         return this.secondValues;
     }
 
-    public HashMap<K, E> getLinkSecond(int index) {
+    public HashMap<K, E> getLinkSecond(final int index) {
         link = zip(keys, indices);
 
         HashMap<K, E> eMap = new HashMap<>();
@@ -378,12 +392,16 @@ public class IndexedMap<K, V, E> {
         return eMap;
     }
 
-    public boolean containsKey(K key) {
+    public boolean containsKey(final K key) {
         return this.keys.contains(key);
     }
 
-    public <T> boolean containsValue(T value) {
-        return this.firstValues.contains((V)value) || this.secondValues.contains((E)value);
+    public <T> boolean containsValue(final T value) {
+        try {
+            return this.firstValues.contains((V)value);
+        } catch (Exception e) {
+            return this.secondValues.contains((E) value);
+        }
     }
 
     public int size() {
@@ -436,15 +454,13 @@ public class IndexedMap<K, V, E> {
                 Objects.equals(this.firstValues, that.firstValues) &&
                 Objects.equals(this.secondValues, that.secondValues) &&
                 Objects.equals(this.link, that.link) &&
-                Objects.equals(this.linkFirst, that.linkFirst) &&
-                Objects.equals(this.linkSecond, that.linkSecond) &&
                 Objects.equals(this.entrySet, that.entrySet) &&
                 Objects.equals(this.entryList, that.entryList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(indices, keys, firstValues, secondValues, link, linkFirst, linkSecond, entrySet, entryList, initialized);
+        return Objects.hash(indices, keys, firstValues, secondValues, link, entrySet, entryList, initialized);
     }
 
     @Override

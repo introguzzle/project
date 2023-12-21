@@ -3,8 +3,6 @@ package com.mathp;
 import java.text.DecimalFormat;
 import java.util.*;
 
-import static com.mathp.MathParser.FunctionHandler.replaceConstants;
-
 public final class MathParser {
     public static final class SyntaxParseException extends Exception {
         public SyntaxParseException() {
@@ -42,7 +40,7 @@ public final class MathParser {
 
         List<Lexeme> lexemeList = null;
         try {
-            lexemeList = MathParser.lexParse(replaceConstants(expression));
+            lexemeList = MathParser.lexParse(FunctionHandler.replaceConstants(expression));
         } catch (SyntaxParseException e) {
             e.printStackTrace();
         }

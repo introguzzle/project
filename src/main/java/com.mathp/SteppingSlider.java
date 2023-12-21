@@ -10,21 +10,21 @@ public final class SteppingSlider extends JSlider {
     public SteppingSlider() {
     }
 
-    public SteppingSlider(final Integer[] _values, final Hashtable<Integer, JLabel> labels, final int defaultIndex) {
-        super(0, _values.length - 1, defaultIndex);
+    public SteppingSlider(final Integer[] values, final Hashtable<Integer, JLabel> labels, final int defaultIndex) {
+        super(0, values.length - 1, defaultIndex);
         setLabelTable(labels);
         setPaintTicks(true);
         setPaintLabels(true);
         setSnapToTicks(true);
         setMajorTickSpacing(1);
-        this.values = _values;
+        this.values = values;
     }
 
-    public void init(final Integer[] _values, final int defaultIndex) {
+    public void init(final Integer[] values, final int defaultIndex) {
         this.setMinimum(0);
-        this.setMaximum(_values.length - 1);
+        this.setMaximum(values.length - 1);
         this.setValue(defaultIndex);
-        this.values = _values;
+        this.values = values;
     }
 
     public Integer getDomainValue() {
