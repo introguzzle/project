@@ -5,70 +5,79 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="912ac5a4-e8a8-42a8-a147-180b456244bb" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com.mathp/Mode.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com.mathp/TRunnable.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/aws.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/ExitPanel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/ITEntry.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/IndexedMapException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/MathFunctions.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/SteppingSlider.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/TConsumer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/TEntry.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/TFunction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com.mathp/DialogExample.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com.mathp/Frame.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com.mathp/Graph.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com.mathp/Graph.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com.mathp/IndexedMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com.mathp/IndexedMap.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com.mathp/InfoFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com.mathp/InfoFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com.mathp/InfoFrame0.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com.mathp/InputFunctionPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com.mathp/InputFunctionPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com.mathp/InputFunctionPanel0.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com.mathp/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com.mathp/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com.mathp/MathParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com.mathp/MathParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com.mathp/SteppingSlider.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com.mathp/SteppingSlider.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/AdditionalPanel.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/DialogExample$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/DialogExample.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Frame$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Frame$_Graph.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Frame.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Graph$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$10.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Graph$10.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$11.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Graph$11.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$12.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Graph$12.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Graph$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Graph$3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Graph$4.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Graph$5.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$6.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Graph$6.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$7.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Graph$7.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$8.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Graph$8.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$9.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Graph$9.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Graph.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/INPUT_STATE.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/IndexedMap.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/IndexedMap.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/InfoFrame$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/InfoFrame$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/InfoFrame.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/InfoFrame.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/InfoFrame0$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/InfoFrame0.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/InputFunctionPanel$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/InputFunctionPanel$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/InputFunctionPanel$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/InputFunctionPanel$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/InputFunctionPanel$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/InputFunctionPanel$3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/InputFunctionPanel.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/InputFunctionPanel.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/InputFunctionPanel0$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/InputFunctionPanel0$2.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/InputFunctionPanel0$3.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/InputFunctionPanel0$4.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/InputFunctionPanel0$5.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/InputFunctionPanel0.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/InputPanel$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/InputPanel$2.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/InputPanel.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/MainPanel$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/MainPanel$2.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/MainPanel.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/MathParser$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/MathParser$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/MathParser$FunctionHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/MathParser$FunctionHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/MathParser$Lexeme.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/MathParser$Lexeme.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/MathParser$LexemeBuffer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/MathParser$LexemeBuffer.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/MathParser$Precision.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/MathParser$Precision.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/MathParser$Syntax.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/MathParser$Syntax.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/MathParser$SyntaxParseException.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/MathParser$SyntaxParseException.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/MathParser.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mathp/MathParser.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com.mathp/Graph.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/Graph.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com.mathp/HandlePanel.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com.mathp/IndexedMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/IndexedMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com.mathp/InfoFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/InfoFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com.mathp/InputFunctionPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/InputFunctionPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com.mathp/InputState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/InputState.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com.mathp/LexemeType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/LexemeType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com.mathp/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com.mathp/MathFunction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/MathFunction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com.mathp/MathParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/MathParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com.mathp/Mode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/Mode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com.mathp/SteppingSlider.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com.mathp/TRunnable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/TRunnable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com.proj/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Main.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Entry.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$10.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$11.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$12.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$13.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$4.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$5.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$6.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$7.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$8.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph$9.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Graph.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/IEntry.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/IndexedMap.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/IndexedMapNotInitializedException.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/InfoFrame$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/InfoFrame.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/InputFunctionPanel$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/InputFunctionPanel$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/InputFunctionPanel$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/InputFunctionPanel$4.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/InputFunctionPanel$5.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/InputFunctionPanel.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/InputState.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/LexemeType.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Main.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/MathFunction.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/MathParser$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/MathParser$FunctionHandler.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/MathParser$Lexeme.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/MathParser$LexemeBuffer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/MathParser$Precision.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/MathParser$Syntax.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/MathParser$SyntaxParseException.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/MathParser.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/Mode.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/SteppingSlider.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/TConsumer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/TFunction.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/mathp/TRunnable.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/proj/Main$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/proj/Main$_Component.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/proj/Main.class" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -88,12 +97,17 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-21/lib/src.zip!/java.base/java/lang/Double.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-21/lib/src.zip!/java.base/java/lang/Exception.java" root0="SKIP_INSPECTION" />
     <setting file="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-21/lib/src.zip!/java.base/java/util/HashMap.java" root0="SKIP_INSPECTION" />
     <setting file="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-21/lib/src.zip!/java.base/java/util/HashSet.java" root0="SKIP_INSPECTION" />
     <setting file="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-21/lib/src.zip!/java.base/java/util/List.java" root0="SKIP_INSPECTION" />
     <setting file="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-21/lib/src.zip!/java.base/java/util/Map.java" root0="SKIP_INSPECTION" />
     <setting file="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-21/lib/src.zip!/java.base/java/util/Objects.java" root0="SKIP_INSPECTION" />
     <setting file="jar://$MAVEN_REPOSITORY$/org/jfree/jfreechart/1.5.4/jfreechart-1.5.4-sources.jar!/org/jfree/data/xy/XYSeriesCollection.java" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -108,8 +122,9 @@
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.fonts.default&quot;
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;
   }
 }</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
