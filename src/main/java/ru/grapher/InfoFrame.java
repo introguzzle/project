@@ -16,7 +16,7 @@ public final class InfoFrame extends JFrame {
             "группа з-422п-10-1" + "\n" +
             "ТУСУР, 2023";
 
-    private static final Font _FONT = Graph.getGraphFont(22);
+    private static final Font _FONT = Graph.getDefaultFont(22);
     
     public InfoFrame() {
         initComponents();

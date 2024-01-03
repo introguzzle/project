@@ -16,25 +16,31 @@ public final class ExitPanel extends JPanel {
     private final static String FULL_TEXT = "Are you sure you want to exit?";
     private final static String SHORT_TEXT = "Are you sure?";
 
+    private final static String YES_TEXT = "Confirm";
+    private final static String NO_TEXT = "Cancel";
+
     private final Color COLOR_DIFFER_WINDOW = new Color(200, 200, 200);
     private final Color COLOR_OF_BUTTON = Color.WHITE;
 
-    private final Font _getFont(int size) {
-        return Graph.getGraphFont(size);
+    private final Font _getFont(final int size) {
+        return Graph.getDefaultFont(size);
     }
 
+    private ExitPanel() throws ClassNotFoundException {
+        throw new ClassNotFoundException();
+    }
 
-    public ExitPanel(final boolean isEvent) {
-        if (!isEvent)
+    public ExitPanel(final boolean isWindowEvent) {
+        if (!isWindowEvent)
             initComponents();
         else {
             initComponents();
 
             cancelButton.addActionListener(new ActionListener() {
                 @Override
-                public void actionPerformed(ActionEvent e) {
-                    JDialog parentDialog = (JDialog)SwingUtilities.getWindowAncestor((Component)e.getSource());
-                    JFrame instance = (JFrame)SwingUtilities.getWindowAncestor(parentDialog);
+                public void actionPerformed(ActionEvent evt) {
+                    JDialog parentDialog = (JDialog) SwingUtilities.getWindowAncestor((Component) evt.getSource());
+                    JFrame instance = (JFrame) SwingUtilities.getWindowAncestor(parentDialog);
 
                     instance.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
                 }
@@ -66,7 +72,7 @@ public final class ExitPanel extends JPanel {
         confirmButton.setBackground(COLOR_OF_BUTTON);
         confirmButton.setFont(_getFont(22));
         confirmButton.setForeground(Color.BLACK);
-        confirmButton.setText("Yes");
+        confirmButton.setText(YES_TEXT);
         confirmButton.setFocusable(false);
         confirmButton.addActionListener(new ActionListener() {
             @Override
@@ -78,7 +84,7 @@ public final class ExitPanel extends JPanel {
         cancelButton.setBackground(COLOR_OF_BUTTON);
         cancelButton.setFont(_getFont(22));
         cancelButton.setForeground(Color.BLACK);
-        cancelButton.setText("No");
+        cancelButton.setText(NO_TEXT);
         cancelButton.setFocusable(false);
         cancelButton.addActionListener(new ActionListener() {
             @Override

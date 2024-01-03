@@ -21,7 +21,7 @@ public final class InputFunctionPanel extends JPanel {
                     getDefaultScreenDevice().getDisplayMode().getHeight() / (Graph.getDimensionMultiplier() * 4)));
 
     private static final Dimension DEFAULT_COMPONENT_SIZE = new Dimension(70, 70);
-    private static final Font _FONT = Graph.getGraphFont(20);
+    private static final Font _FONT = Graph.getDefaultFont(20);
 
     private static final DefaultComboBoxModel<String> DEFAULT_COMBO_BOX_MODEL = new DefaultComboBoxModel<>();
     private static final double DEFAULT_COEFFICIENT_VALUE = 1.0;
@@ -70,7 +70,10 @@ public final class InputFunctionPanel extends JPanel {
             private void updateFieldState() {
                 currentValue = coefficientInputTextField.getText();
                 if (!(choiceBox.getSelectedItem() == "null"))
-                    mapCoefficientsToValues.put((String)choiceBox.getSelectedItem(), MathParser.FunctionHandler.replaceConstants(currentValue));
+                    mapCoefficientsToValues.put(
+                            (String)choiceBox.getSelectedItem(),
+                            MathParser.FunctionHandler.replaceConstants(currentValue)
+                    );
             }
         };
 
@@ -82,7 +85,11 @@ public final class InputFunctionPanel extends JPanel {
         choiceBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                coefficientInputTextField.setText(mapCoefficientsToValues.get((String)choiceBox.getSelectedItem()));
+                coefficientInputTextField.setText(
+                        mapCoefficientsToValues.get(
+                                (String)choiceBox.getSelectedItem()
+                        )
+                );
             }
         });
 
@@ -148,8 +155,11 @@ public final class InputFunctionPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 state = InputState.FINAL_STATE;
-                Window win = SwingUtilities.getWindowAncestor(InputFunctionPanel.this);
-                win.setVisible(false);
+
+                JDialog dialog = (JDialog) SwingUtilities.getWindowAncestor(
+                        (JPanel) ((JButton) evt.getSource()).getParent()
+                );
+                dialog.setVisible(false);
             }
         });
 
@@ -167,10 +177,14 @@ public final class InputFunctionPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 setState(InputState.FUNCTION_SET_STATE);
+
                 coefficientSet.clear();
                 mapCoefficientsToValues.clear();
-                Window win = SwingUtilities.getWindowAncestor(InputFunctionPanel.this);
-                win.setVisible(false);
+
+                JDialog dialog = (JDialog) SwingUtilities.getWindowAncestor(
+                        (JPanel) ((JButton) evt.getSource()).getParent()
+                );
+                dialog.setVisible(false);
             }
         });
 
@@ -178,7 +192,6 @@ public final class InputFunctionPanel extends JPanel {
 
         this.setLayout(layout);
         this.setPreferredSize(DIMENSION);
-        System.out.println("dime = " + DIMENSION);
 
         layout.setHorizontalGroup(
                 layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -215,15 +228,15 @@ public final class InputFunctionPanel extends JPanel {
     }
 
     public boolean isFinal() {
-
         return (state == InputState.FINAL_STATE);
     }
 
-    public void setState(final InputState _state) {
+    public void setState(final InputState state) {
 
-        this.state = _state;
+        this.state = state;
 
-        if (state == InputState.FUNCTION_SET_STATE) {
+        if (this.state == InputState.FUNCTION_SET_STATE) {
+
             additionButton.setEnabled(true);
             selectionButton.setEnabled(false);
             choiceBox.setEnabled(false);
@@ -232,6 +245,7 @@ public final class InputFunctionPanel extends JPanel {
             functionInputTextField.setText("");
             coefficientInputTextField.setText("");
             coefficientInputTextField.setEnabled(false);
+
         }
 
         mapCoefficientsToValues.entrySet().removeIf(condition -> mapCoefficientsToValues.containsKey("null"));
@@ -244,16 +258,16 @@ public final class InputFunctionPanel extends JPanel {
 
     public HashMap<String, Double> getMap() {
 
-        HashMap<String, Double> _map = new HashMap<>();
+        HashMap<String, Double> map = new HashMap<>();
 
         mapCoefficientsToValues.entrySet().removeIf(condition -> mapCoefficientsToValues.containsKey("null"));
 
         for (Map.Entry<String, String> entry: mapCoefficientsToValues.entrySet()) {
             if (!(entry.getValue().isEmpty()))
-                _map.put(entry.getKey(), Double.parseDouble(entry.getValue()));
+                map.put(entry.getKey(), Double.parseDouble(entry.getValue()));
         }
 
-        return _map;
+        return map;
     }
 
     public HashMap<String, String> getStringMap() {

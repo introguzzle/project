@@ -4,13 +4,22 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 interface ITEntry<K, V, E> {
+
     K getKey();
     V getFirstValue();
     E getSecondValue();
 
-    void setValues(V v, E e);
-    void setFirstValue(V v);
-    void setSecondValue(E e);
+    default void setValues(V v, E e) {
+        throw new IllegalArgumentException();
+    }
+
+    default void setFirstValue(V v) {
+        throw new IllegalArgumentException();
+    }
+
+    default void setSecondValue(E e) {
+        throw new IllegalArgumentException();
+    }
 
     boolean equals(Object o);
     int hashCode();

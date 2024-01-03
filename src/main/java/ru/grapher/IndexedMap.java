@@ -330,7 +330,7 @@ public final class IndexedMap<K, V, E> {
         return this.keys.contains(key);
     }
 
-    public <T> boolean containsValue(T value) {
+    public <T> boolean containsValue(final T value) {
         for(TEntry<K, V, E> TEntry : TEntrySet) {
             if (Objects.equals(TEntry.getFirstValue(), value)
                     || Objects.equals(TEntry.getSecondValue(), value)) {
@@ -377,7 +377,7 @@ public final class IndexedMap<K, V, E> {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o)
             return true;
         if (o == null || getClass() != o.getClass())
