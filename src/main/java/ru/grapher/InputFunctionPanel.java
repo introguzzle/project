@@ -7,39 +7,39 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
 public final class InputFunctionPanel extends JPanel {
 
-    private static final Dimension DIMENSION = new Dimension(
-            (int)(GraphicsEnvironment.getLocalGraphicsEnvironment().
-                    getDefaultScreenDevice().getDisplayMode().getWidth() / (Graph.getDimensionMultiplier() * 3)),
-
-            (int)(GraphicsEnvironment.getLocalGraphicsEnvironment().
-                    getDefaultScreenDevice().getDisplayMode().getHeight() / (Graph.getDimensionMultiplier() * 4)));
+    private static final Dimension __RESOLUTION = new Dimension(
+            (int) (GrapherGUI.__RESOLUTION.getWidth() * GrapherGUI.__DIMENSION_MULTIPLIER * 4),
+            (int) (GrapherGUI.__RESOLUTION.getHeight() * GrapherGUI.__DIMENSION_MULTIPLIER * 5)
+    );
 
     private static final Dimension DEFAULT_COMPONENT_SIZE = new Dimension(70, 70);
-    private static final Font _FONT = Graph.getDefaultFont(20);
+    private static final Font _FONT = GrapherGUI.getDefaultFont(20);
 
     private static final DefaultComboBoxModel<String> DEFAULT_COMBO_BOX_MODEL = new DefaultComboBoxModel<>();
-    private static final double DEFAULT_COEFFICIENT_VALUE = 1.0;
-    private static final int FORMAT_LENGTH = 5;
 
+    private static final DecimalFormat format = new DecimalFormat("#.##");
+
+    private ParsingResult result = ParsingResult.ERROR;
     private InputState state = InputState.FUNCTION_SET_STATE;
 
-    private JButton additionButton = new JButton();
-    private JButton selectionButton = new JButton();
-    private JButton exitButton = new JButton();
-    private JComboBox<String> choiceBox = new JComboBox<>();
-    private JTextField functionInputTextField = new JTextField();
-    private JTextField coefficientInputTextField = new JTextField();
+    private JButton additionButton                  = new JButton();
+    private JButton selectionButton                 = new JButton();
+    private JButton exitButton                      = new JButton();
+    private JComboBox<String> choiceBox             = new JComboBox<>();
+    private JTextField functionInputTextField       = new JTextField();
+    private JTextField coefficientInputTextField    = new JTextField();
 
-    private HashSet<String> coefficientSet = new HashSet<>();
-    private String[] coefficientArray = new String[]{};
+    private HashSet<String> coefficientSet          = new HashSet<>();
+    private String[] coefficientArray               = new String[]{};
+
     private String function;
-
     private String currentValue;
 
     private HashMap<String, String> mapCoefficientsToValues = new HashMap<>();
@@ -72,7 +72,7 @@ public final class InputFunctionPanel extends JPanel {
                 if (!(choiceBox.getSelectedItem() == "null"))
                     mapCoefficientsToValues.put(
                             (String)choiceBox.getSelectedItem(),
-                            MathParser.FunctionHandler.replaceConstants(currentValue)
+                            MathParser.replaceConstants(currentValue)
                     );
             }
         };
@@ -86,9 +86,7 @@ public final class InputFunctionPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 coefficientInputTextField.setText(
-                        mapCoefficientsToValues.get(
-                                (String)choiceBox.getSelectedItem()
-                        )
+                        mapCoefficientsToValues.get((String)choiceBox.getSelectedItem())
                 );
             }
         });
@@ -112,33 +110,35 @@ public final class InputFunctionPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 state = InputState.COEFFICIENTS_SET_STATE;
-                additionButton.setEnabled(false);
 
-                selectionButton.setEnabled(true);
-                functionInputTextField.setEnabled(false);
+                additionButton.         setEnabled(false);
 
-                if (!MathParser.FunctionHandler.getCoefficients(functionInputTextField.getText()).isEmpty())
-                    coefficientInputTextField.setEnabled(true);
+                selectionButton.        setEnabled(true);
+                functionInputTextField. setEnabled(false);
 
                 function = functionInputTextField.getText();
-                function = MathParser.FunctionHandler.replaceConstants(function);
 
-                coefficientSet.addAll(MathParser.FunctionHandler.getCoefficients(function));
-                coefficientArray = new String[coefficientSet.size()];
-                coefficientSet.toArray(coefficientArray);
+                result = MathParser.getParsingResult(function);
 
-                if (Graph.getAdditionButtonInvokeCount() > 1 && !Graph.getCoefficientMap().isEmpty()) {
-                    if (Graph.getCoefficientMap().get(coefficientArray[0]).toString().length() < FORMAT_LENGTH) {
-                        coefficientInputTextField.setText(MathParser.Precision._format(Graph.getCoefficientMap().
-                                get(coefficientArray[0]), 2));
-                    } else {
-                        coefficientInputTextField.setText(MathParser.Precision._format(Graph.getCoefficientMap().
-                                get(coefficientArray[0]), 2).substring(0, FORMAT_LENGTH - 1));
-                    }
+                if (result == ParsingResult.EXPLICIT_FUNCTION_WITH_PARAMS) {
+                    coefficientInputTextField.setEnabled(true);
+                }
+
+                function = MathParser.replaceConstants(function);
+
+                coefficientSet      .addAll(FunctionParsingUtilities.Explicit.getCoefficients(function));
+                coefficientArray    = new String[coefficientSet.size()];
+                coefficientSet      .toArray(coefficientArray);
+
+                if (Grapher.getAdditionButtonInvokeCount() > 1
+                        && !Grapher.getCoefficientMap().isEmpty()) {
+
+                    String old = format.format(Grapher.getCoefficientMap().get(coefficientArray[0]));
+                    coefficientInputTextField.setText(old);
                 }
 
 
-                if (!MathParser.FunctionHandler.getCoefficients(function).isEmpty())
+                if (!FunctionParsingUtilities.Explicit.getCoefficients(function).isEmpty())
                     choiceBox.setEnabled(true);
 
                 choiceBox.setModel(new DefaultComboBoxModel<>(coefficientArray));
@@ -159,6 +159,7 @@ public final class InputFunctionPanel extends JPanel {
                 JDialog dialog = (JDialog) SwingUtilities.getWindowAncestor(
                         (JPanel) ((JButton) evt.getSource()).getParent()
                 );
+
                 dialog.setVisible(false);
             }
         });
@@ -184,6 +185,7 @@ public final class InputFunctionPanel extends JPanel {
                 JDialog dialog = (JDialog) SwingUtilities.getWindowAncestor(
                         (JPanel) ((JButton) evt.getSource()).getParent()
                 );
+
                 dialog.setVisible(false);
             }
         });
@@ -191,7 +193,6 @@ public final class InputFunctionPanel extends JPanel {
         GroupLayout layout = new GroupLayout(this);
 
         this.setLayout(layout);
-        this.setPreferredSize(DIMENSION);
 
         layout.setHorizontalGroup(
                 layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -280,5 +281,13 @@ public final class InputFunctionPanel extends JPanel {
 
     public static DefaultComboBoxModel<String> getDefaultComboBoxModel() {
         return DEFAULT_COMBO_BOX_MODEL;
+    }
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame();
+        frame.add(new InputFunctionPanel());
+        frame.pack();
+
+        frame.setVisible(true);
     }
 }

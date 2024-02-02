@@ -1,30 +1,32 @@
 package ru.grapher;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public final class ExitPanel extends JPanel {
 
-    private final JPanel buttonsPanel = new JPanel();
+    private final JPanel  buttonsPanel  = new JPanel();
     private final JButton confirmButton = new JButton();
-    private final JButton cancelButton = new JButton();
-    private final JPanel textPanel = new JPanel();
-    private final JLabel textLabel = new JLabel();
+    private final JButton cancelButton  = new JButton();
+    private final JPanel  textPanel     = new JPanel();
+    private final JLabel  textLabel     = new JLabel();
 
-    private final static String FULL_TEXT = "Are you sure you want to exit?";
-    private final static String SHORT_TEXT = "Are you sure?";
+    private final static String FULL_TEXT   = "Are you sure you want to exit?";
+    private final static String SHORT_TEXT  = "Are you sure?";
 
-    private final static String YES_TEXT = "Confirm";
-    private final static String NO_TEXT = "Cancel";
+    private final static String YES_TEXT    = "Confirm";
+    private final static String NO_TEXT     = "Cancel";
 
     private final Color COLOR_DIFFER_WINDOW = new Color(200, 200, 200);
-    private final Color COLOR_OF_BUTTON = Color.WHITE;
+    private final Color COLOR_OF_BUTTON     = Color.WHITE;
 
-    private final Font _getFont(final int size) {
-        return Graph.getDefaultFont(size);
-    }
+    private final static Border BORDER      = GrapherGUI.__UNIVERSAL_BORDER;
+
+    private final static Font TEXT_FONT     = GrapherGUI.getDefaultFont(22);
+    private final static Font BUTTON_FONT   = GrapherGUI.getDefaultFont(19);
 
     private ExitPanel() throws ClassNotFoundException {
         throw new ClassNotFoundException();
@@ -70,10 +72,11 @@ public final class ExitPanel extends JPanel {
         this.setBackground(COLOR_DIFFER_WINDOW);
 
         confirmButton.setBackground(COLOR_OF_BUTTON);
-        confirmButton.setFont(_getFont(22));
+        confirmButton.setFont(BUTTON_FONT);
         confirmButton.setForeground(Color.BLACK);
         confirmButton.setText(YES_TEXT);
         confirmButton.setFocusable(false);
+        confirmButton.setBorder(BORDER);
         confirmButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -82,10 +85,11 @@ public final class ExitPanel extends JPanel {
         });
 
         cancelButton.setBackground(COLOR_OF_BUTTON);
-        cancelButton.setFont(_getFont(22));
+        cancelButton.setFont(BUTTON_FONT);
         cancelButton.setForeground(Color.BLACK);
         cancelButton.setText(NO_TEXT);
         cancelButton.setFocusable(false);
+        cancelButton.setBorder(BORDER);
         cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -121,7 +125,7 @@ public final class ExitPanel extends JPanel {
         textPanel.setToolTipText("");
 
         textLabel.setBackground(Color.GREEN);
-        textLabel.setFont(_getFont(22));
+        textLabel.setFont(TEXT_FONT);
         textLabel.setForeground(Color.BLACK);
         textLabel.setHorizontalAlignment(SwingConstants.CENTER);
         textLabel.setText(SHORT_TEXT);

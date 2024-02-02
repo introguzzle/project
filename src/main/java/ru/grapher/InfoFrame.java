@@ -16,7 +16,7 @@ public final class InfoFrame extends JFrame {
             "группа з-422п-10-1" + "\n" +
             "ТУСУР, 2023";
 
-    private static final Font _FONT = Graph.getDefaultFont(22);
+    private static final Font _FONT = GrapherGUI.getDefaultFont(22);
     
     public InfoFrame() {
         initComponents();
@@ -34,14 +34,12 @@ public final class InfoFrame extends JFrame {
         text.setEnabled(false);
         text.setBackground(Color.WHITE);
         text.setDisabledTextColor(Color.BLACK);
+        text.setColumns(20);
+        text.setRows(5);
         
         imageLabel = new JLabel();
         imageLabel.setIcon(new ImageIcon("3.png"));
         imageLabel.setPreferredSize(new Dimension(388, 92));
-
-        text.setColumns(20);
-        text.setRows(5);
-        scrollPane.setViewportView(text);
 
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -64,7 +62,7 @@ public final class InfoFrame extends JFrame {
                                 .addContainerGap())
         );
 
-        pack();
+        this.pack();
 
         this.setLocationRelativeTo(null);
         this.setAlwaysOnTop(true);

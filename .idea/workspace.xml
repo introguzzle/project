@@ -5,38 +5,94 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="912ac5a4-e8a8-42a8-a147-180b456244bb" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/RangePanel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/SteppingSliderUI.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/junit.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/AboutFrame.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/AbstractMathGenerator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/Calculator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/ChoiceBoxListCellRenderer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/ChoiceBoxUI.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/CoefficientSlider.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/FunctionPanel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/FunctionParsingUtilities.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/GrapherGUI.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/GrapherUtilities.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/HelpFrame.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/HelpFrameScrollBarUI.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/MathConstants.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/MathFunctionsDescriptions.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/MathFunctionsDescriptionsFrame.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/MathFunctionsDescriptionsFrameScrollBarUI.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/MathGeneratorBuilder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/MathGeneratorV1.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/MathGeneratorV2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/MathParserException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/MathParserSyntaxException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/MathParserTokenizeException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/Measure.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/ParametricFunctionPanel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/ParsingResult.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/ScopeSlider.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/lab/BooleanVector.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/lab/Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/lab/Plant.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/lab/Season.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/lab/Tree.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/ru/grapher/MathFunctionsTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/ru/grapher/ParsingResultTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lab1/BoolVector.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/lab/BoolVector.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lab1/Eval.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/lab/Flower.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lab1/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lab1/Plant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/lab/Plant0.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lab1/Workout.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/ExitPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/ExitPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/Graph.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/Graph.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/ITEntry.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/ITEntry.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/IndexedMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/IndexedMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/Graph.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/Grapher.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/InfoFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/InfoFrame.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/InputFunctionPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/InputFunctionPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/LexemeType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/TokenType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/MathFunctions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/MathFunctions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/MathParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/MathParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/RangePanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/RangePanel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/SteppingSlider.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/SteppingSlider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/TRunnable.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/lab1/BoolVector.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/lab1/Flower.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/lab1/InterfacePlantClass$Action.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/lab1/InterfacePlantClass$Gettable.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/lab1/InterfacePlantClass$Redefinable.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/lab1/InterfacePlantClass$Settable.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/lab1/InterfacePlantClass$Subclass.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/lab1/InterfacePlantClass.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/lab1/Main.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/lab1/Plant.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/lab1/Tree.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/lab1/Workout.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/ExitPanel$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/ExitPanel$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/ExitPanel$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/ExitPanel$2.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/ExitPanel$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/ExitPanel$3.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/ExitPanel$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/ExitPanel$4.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/ExitPanel.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/ExitPanel.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$10.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$10.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$11.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$11.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$12.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$12.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$13.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$13.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$14.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$14.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$15.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$15.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$4.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$5.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$6.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$6.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$7.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$7.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$8.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$8.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$9.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$9.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Graph.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/Graph.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/ITEntry.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/ITEntry.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$10.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$11.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$12.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$13.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$14.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$15.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$16.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$4.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$5.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$6.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$7.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$8.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Graph$9.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Graph.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/InfoFrame.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/InfoFrame.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/InputFunctionPanel$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/InputFunctionPanel$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/InputFunctionPanel$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/InputFunctionPanel$2.class" afterDir="false" />
@@ -44,7 +100,22 @@
       <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/InputFunctionPanel$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/InputFunctionPanel$4.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/InputFunctionPanel$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/InputFunctionPanel$5.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/InputFunctionPanel.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/InputFunctionPanel.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/LexemeType.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/Main.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/MathFunctions.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/MathFunctions.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/MathParser$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/MathParser$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/MathParser$FunctionHandler.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/MathParser$Lexeme.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/MathParser$LexemeBuffer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/MathParser$Precision.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/MathParser$Precision.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/MathParser$Syntax.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/MathParser$Syntax.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/MathParser$SyntaxParseException.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/MathParser.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/MathParser.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/RangePanel$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/RangePanel$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/RangePanel$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/RangePanel$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/RangePanel.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/RangePanel.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/SteppingSlider.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/SteppingSlider.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/TRunnable.class" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,6 +126,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Enum" />
+        <option value="JUnit4 Test Class" />
         <option value="Interface" />
         <option value="Class" />
       </list>
@@ -66,11 +138,20 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-21/lib/src.zip!/java.base/java/lang/Double.java" root0="SKIP_INSPECTION" />
     <setting file="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-21/lib/src.zip!/java.base/java/lang/Exception.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-21/lib/src.zip!/java.base/java/lang/System.java" root0="SKIP_INSPECTION" />
     <setting file="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-21/lib/src.zip!/java.base/java/util/HashMap.java" root0="SKIP_INSPECTION" />
     <setting file="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-21/lib/src.zip!/java.base/java/util/HashSet.java" root0="SKIP_INSPECTION" />
     <setting file="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-21/lib/src.zip!/java.base/java/util/List.java" root0="SKIP_INSPECTION" />
     <setting file="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-21/lib/src.zip!/java.base/java/util/Map.java" root0="SKIP_INSPECTION" />
     <setting file="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-21/lib/src.zip!/java.base/java/util/Objects.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-21/lib/src.zip!/java.base/java/util/Vector.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-21/lib/src.zip!/java.base/jdk/internal/math/FloatingDecimal.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-21/lib/src.zip!/java.desktop/java/awt/Component.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-21/lib/src.zip!/java.desktop/javax/swing/JComponent.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-21/lib/src.zip!/java.desktop/javax/swing/UIManager.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$MAVEN_REPOSITORY$/org/apache/commons/commons-math3/3.6.1/commons-math3-3.6.1.jar!/org/apache/commons/math3/distribution/NormalDistribution.class" root0="SKIP_INSPECTION" />
+    <setting file="jar://$MAVEN_REPOSITORY$/org/apache/commons/commons-math3/3.6.1/commons-math3-3.6.1.jar!/org/apache/commons/math3/special/Gamma.class" root0="SKIP_INSPECTION" />
+    <setting file="jar://$MAVEN_REPOSITORY$/org/jfree/jfreechart/1.5.4/jfreechart-1.5.4-sources.jar!/org/jfree/chart/renderer/xy/XYLineAndShapeRenderer.java" root0="SKIP_INSPECTION" />
     <setting file="jar://$MAVEN_REPOSITORY$/org/jfree/jfreechart/1.5.4/jfreechart-1.5.4-sources.jar!/org/jfree/data/xy/XYSeriesCollection.java" root0="SKIP_INSPECTION" />
   </component>
   <component name="ProblemsViewState">
@@ -85,15 +166,74 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.AboutFrame.executor": "Run",
+    "Application.Calculator.executor": "Run",
+    "Application.ExitPanel.executor": "Run",
+    "Application.FunctionPanel.executor": "Run",
+    "Application.Graph.executor": "Run",
+    "Application.Grapher.executor": "Run",
+    "Application.HelpFrame.executor": "Debug",
+    "Application.InputFunctionPanel.executor": "Run",
+    "Application.InputFunctionPanel0.executor": "Run",
+    "Application.Main.executor": "Run",
+    "Application.MathFunctionsDescriptionsFrame.executor": "Run",
+    "Application.MathFunctionsTest.executor": "Run",
+    "Application.ParametricFunctionPanel.executor": "Run",
+    "Application.RangePanel.executor": "Debug",
+    "Application.TestLabel.executor": "Run",
+    "Downloaded.Files.Path.Enabled": "false",
+    "JUnit.MathFunctionsTest.executor": "Run",
+    "JUnit.ParsingResultTest.executor": "Run",
+    "Repository.Attach.Annotations": "false",
+    "Repository.Attach.JavaDocs": "false",
+    "Repository.Attach.Sources": "false",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "TestNG.MathFunctionsTest.executor": "Run",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit4",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit4": "",
+    "git-widget-placeholder": "master",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/666/IdeaProjects/Project",
+    "project.structure.last.edited": "Libraries",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.44921467",
+    "settings.editor.selected.configurable": "terminal",
+    "settings.editor.splitter.proportion": "0.24664879"
   }
-}</component>
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="ru.grapher" />
+    </key>
+    <key name="MoveMembersDialog.RECENTS_KEY">
+      <recent name="ru.grapher.FunctionParsingUtilities.LetterUtilities" />
+      <recent name="ru.grapher.GrapherGUI" />
+      <recent name="ru.grapher.MathParser" />
+      <recent name="ru.grapher.FunctionParsingUtilities.StringUtilities" />
+      <recent name="ru.grapher.FunctionHandler" />
+    </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+    <key name="MoveInnerDialog.RECENTS_KEY">
+      <recent name="ru.grapher" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="ru.grapher" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="jdk-21.0.1-openjdk-21.0.1-e1d2075fd9a7-b4911678" />
+        <option value="jdk-21.0.1-openjdk-21.0.1-f644763e9732-f98dd351" />
+      </set>
+    </attachedChunks>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -112,6 +252,11 @@
           <properties class="java.lang.RuntimeException" package="java.lang" />
           <option name="timeStamp" value="1" />
         </breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/ru/grapher/HelpFrame.java</url>
+          <line>187</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>

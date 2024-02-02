@@ -1,32 +1,38 @@
 package ru.grapher;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public final class RangePanel extends JPanel {
 
-    private boolean ready = false;
+    private boolean     done            = false;
+    private boolean     allAreCorrect   = false;
 
-    private final JLabel maximumValueLabel = new JLabel();
+    private final String[]      values              = new String[3];
 
-    private final JLabel minimalValueLabel = new JLabel();
-    private final JLabel stepLabel = new JLabel();
+    private final JLabel        maximalValueLabel   = new JLabel();
+    private final JLabel        minimalValueLabel   = new JLabel();
+    private final JLabel        stepLabel           = new JLabel();
 
-    private final JTextField maximalValueField = new JTextField();
-    private final JTextField minimalValueField = new JTextField();
-    private final JTextField stepField = new JTextField();
+    private final JTextField    maximalValueField   = new JTextField();
+    private final JTextField    minimalValueField   = new JTextField();
+    private final JTextField    stepField           = new JTextField();
 
-    private final JButton confirmButton = new JButton();
-    private final JButton cancelButton = new JButton();
+    private final JButton       confirmButton       = new JButton();
+    private final JButton       cancelButton        = new JButton();
 
-    private final JSeparator separator = new JSeparator();
-    
-    private final Font FONT = Graph.getDefaultFont(22);
+    private final JSeparator    separator           = new JSeparator();
 
-    private RangePanel() throws ClassNotFoundException {
-        throw new ClassNotFoundException();
+    private final Border        BORDER              = GrapherGUI.__UNIVERSAL_BORDER;
+    private final Font          FONT                = GrapherGUI.getDefaultFont(22);
+
+    private RangePanel() throws InstantiationException {
+        throw new InstantiationException();
     }
 
     public RangePanel(double min, double max, double step) {
@@ -38,8 +44,12 @@ public final class RangePanel extends JPanel {
     }
 
     private void initComponents() {
-        maximumValueLabel.setText("Maximum");
-        maximumValueLabel.setFont(FONT);
+
+        UIManager.getDefaults().put("Button.disabledText", GrapherGUI.COLOR_DEATH);
+        UIManager.getDefaults().put("Button.enabledText", GrapherGUI.COLOR_WE_WILL_LIVE);
+
+        maximalValueLabel.setText("Maximum");
+        maximalValueLabel.setFont(FONT);
 
         minimalValueLabel.setText("Minimum");
         minimalValueLabel.setFont(FONT);
@@ -51,14 +61,143 @@ public final class RangePanel extends JPanel {
         minimalValueField.setFont(FONT);
         stepField.setFont(FONT);
 
+        maximalValueField.setBorder(BORDER);
+
+        try {
+            maximalValueField.setCaretPosition(maximalValueField.getText().length());
+        } catch (IllegalArgumentException nothing) {
+
+        }
+
+        maximalValueField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                u();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                u();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                u();
+            }
+
+            private void u() {
+                values[0] = maximalValueField.getText();
+
+                checkValues();
+
+                try {
+                    maximalValueField.setCaretPosition(maximalValueField.getText().length());
+                } catch (IllegalArgumentException nothing) {
+
+                }
+
+                if (allAreCorrect) {
+                    setConfirmButtonEnabled();
+                } else {
+                    setConfirmButtonDisabled();
+                }
+            }
+        });
+
+        minimalValueField.setBorder(BORDER);
+
+        try {
+            minimalValueField.setCaretPosition(minimalValueField.getText().length());
+        } catch (IllegalArgumentException nothing) {
+
+        }
+
+        minimalValueField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                u();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                u();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                u();
+            }
+
+            private void u() {
+                values[1] = minimalValueField.getText();
+
+                checkValues();
+
+                try {
+                    minimalValueField.setCaretPosition(minimalValueField.getText().length());
+                } catch (IllegalArgumentException nothing) {
+
+                }
+
+                if (allAreCorrect) {
+                    setConfirmButtonEnabled();
+                } else {
+                    setConfirmButtonDisabled();
+                }
+            }
+        });
+
+        stepField.setBorder(BORDER);
+
+        try {
+            stepField.setCaretPosition(stepField.getText().length());
+        } catch (IllegalArgumentException nothing) {
+
+        }
+
+        stepField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                u();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                u();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                u();
+            }
+
+            private void u() {
+                values[2] = stepField.getText();
+
+                checkValues();
+
+                try {
+                    stepField.setCaretPosition(stepField.getText().length());
+                } catch (IllegalArgumentException nothing) {
+
+                }
+
+                if (allAreCorrect) {
+                    setConfirmButtonEnabled();
+                } else {
+                    setConfirmButtonDisabled();
+                }
+            }
+        });
+
+        GrapherGUI.setDefaultButtonStyle(confirmButton, FONT);
+        setConfirmButtonDisabled();
+
         confirmButton.setText("Confirm");
-        confirmButton.setFont(FONT);
-        confirmButton.setBackground(Color.WHITE);
-        confirmButton.setFocusable(false);
         confirmButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                ready = true;
+                done = true;
 
                 JDialog parentDialog = new JDialog();
 
@@ -72,10 +211,9 @@ public final class RangePanel extends JPanel {
             }
         });
 
+        GrapherGUI.setDefaultButtonStyle(cancelButton, FONT);
+
         cancelButton.setText("Cancel");
-        cancelButton.setFont(FONT);
-        cancelButton.setBackground(Color.WHITE);
-        cancelButton.setFocusable(false);
         cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -89,7 +227,7 @@ public final class RangePanel extends JPanel {
 
                 parentDialog.setVisible(false);
 
-                ready = false;
+                done = false;
             }
         });
 
@@ -107,7 +245,7 @@ public final class RangePanel extends JPanel {
                                 .addGap(22, 22, 22)
                                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
                                         .addComponent(stepLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(maximumValueLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(maximalValueLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(minimalValueLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
@@ -128,7 +266,7 @@ public final class RangePanel extends JPanel {
                                 .addGap(22, 22, 22)
                                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                         .addComponent(maximalValueField, GroupLayout.PREFERRED_SIZE, 60, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(maximumValueLabel, GroupLayout.PREFERRED_SIZE, 61, GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(maximalValueLabel, GroupLayout.PREFERRED_SIZE, 61, GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
                                         .addComponent(minimalValueField, GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE)
@@ -147,12 +285,46 @@ public final class RangePanel extends JPanel {
         );
     }
 
-    public boolean isFinal() {
-        return this.ready;
+    private void setConfirmButtonDisabled() {
+        confirmButton.setEnabled(false);
+        confirmButton.setForeground(GrapherGUI.COLOR_DEATH);
     }
 
-    public void setFinal(boolean ready) {
-        this.ready = ready;
+    private void setConfirmButtonEnabled() {
+        confirmButton.setEnabled(true);
+        confirmButton.setForeground(GrapherGUI.COLOR_WE_WILL_LIVE);
+    }
+
+    private void checkValues() {
+
+        for (int i = 0; i < 3; i++) {
+            try {
+                double ignored = Double.parseDouble(values[i]);
+
+            } catch (NullPointerException | NumberFormatException e) {
+                allAreCorrect = false;
+                return;
+            }
+        }
+
+        double max  = Double.parseDouble(values[0]);
+        double min  = Double.parseDouble(values[1]);
+        double step = Double.parseDouble(values[2]);
+
+        if (min >= max || step <= 0 || step >= (max - min)) {
+            allAreCorrect = false;
+            return;
+        }
+
+        allAreCorrect = true;
+    }
+
+    public boolean isDone() {
+        return this.done;
+    }
+
+    public void setDone(boolean done) {
+        this.done = done;
     }
 
     public JTextField getMaximalValueField() {

@@ -1,24 +1,382 @@
 package ru.grapher;
 
+import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.logging.Level;
 
-public final class MathParser {
-    public static final class SyntaxParseException extends Exception {
-        public SyntaxParseException() {
-            super();
-        }
-        public SyntaxParseException(String message) {
-            super(message);
-        }
-        public SyntaxParseException(String message, Throwable cause) {
-            super(message, cause);
-        }
+public final class MathParser implements MathConstants {
+
+    private static final DecimalFormat NUMBER_FORMAT    =
+            new DecimalFormat("#.#############################################");
+
+
+    private static final ArrayList<String> SORTED_NAMES = new ArrayList<>();
+
+    static {
+        SORTED_NAMES.addAll(MATH_CONSTANTS.keySet());
+
+        SORTED_NAMES.sort((o1, o2) -> Integer.compare(o2.length(), o1.length()));
     }
 
-    private MathParser() throws ClassNotFoundException {
-        throw new ClassNotFoundException();
+    private MathParser() throws InstantiationException {
+        throw new InstantiationException();
+    }
+
+    public static String replaceConstants(final String function) {
+
+        StringBuilder changed = new StringBuilder(function);
+
+        boolean exist = false;
+
+        for (var name: SORTED_NAMES) {
+            exist |= changed.toString().matches(".*\\b" + name + "\\b.*");
+        }
+
+        if (!exist)
+            return function;
+
+        for (var name : SORTED_NAMES) {
+            String value = Precision.evadeEFormat(MATH_CONSTANTS.get(name));
+
+            int i = 0;
+            int index = 0;
+
+            if (changed.toString().matches(".*\\b" + name + "\\b.*")) {
+                while (changed.indexOf(name, i) != -1 && i < changed.length()) {
+
+                    char prev = index != 0
+                            ? changed.charAt(index - 1)
+                            : ' ';
+
+                    char next = index + name.length() < changed.length()
+                            ? changed.charAt(index + name.length())
+                            : ' ';
+
+                    if (!Character.isLetter(prev) && !Character.isLetter(next)) {
+                        index = changed.indexOf(name, i);
+                        changed.insert(index, PREFIX);
+                        i = index + name.length() + 1;
+                    } else {
+                        index = changed.indexOf(name, i);
+                        i++;
+                    }
+                }
+
+                changed = new StringBuilder(changed.toString().replace(PREFIX + name, value));
+            }
+        }
+
+        return changed.toString();
+    }
+
+    public static boolean isParsable(final String expression) {
+        return getParsingResult(expression) != ParsingResult.ERROR;
+    }
+
+    public static ParsingResult getParsingResult(final String expression) {
+        if (expression.isEmpty()) {
+            return ParsingResult.ERROR;
+        }
+
+        if (!StandardCharsets.US_ASCII.newEncoder().canEncode(expression)) {
+            return ParsingResult.ERROR;
+        }
+
+        Exception ex = null;
+        String changed = replaceConstants(expression);
+
+        try {
+            parseNoHandling(changed);
+        } catch (Exception e) {
+            ex = e;
+        }
+
+        if (ex == null)
+            return ParsingResult.EXPRESSION;
+
+        try {
+            FunctionParsingUtilities.isDeclaredImplicit(changed);
+        } catch (StringIndexOutOfBoundsException e) {
+            return ParsingResult.ERROR;
+        }
+
+        Exception last = null;
+        String pf = changed;
+
+        try {
+            var coefficients = FunctionParsingUtilities.Parametric.getCoefficients(changed);
+            for (var c: coefficients) {
+                pf = FunctionParsingUtilities.Parametric.replaceCoefficient(pf, c, 1.0);
+            }
+            parseNoHandling(pf);
+        } catch (Exception e) {
+            last = e;
+        }
+
+        if (last == null && !FunctionParsingUtilities.Explicit.isFunction(pf))
+            return ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMS;
+
+        if (FunctionParsingUtilities.Parametric.isFunction(changed)) {
+            final double t = 1.0;
+
+            String pchanged = changed;
+            Exception exception = null;
+
+            try {
+                parseNoHandling(pchanged);
+            } catch (Exception e) {
+                exception = e;
+            }
+
+            if (exception == null)
+                return ParsingResult.EXPRESSION;
+
+            exception = null;
+
+            try {
+                pchanged = FunctionParsingUtilities.Parametric.replaceVariable(pchanged, t);
+                parseNoHandling(pchanged);
+            } catch (Exception e) {
+
+                exception = e;
+                Exception err = null;
+
+                try {
+                    for (var s: FunctionParsingUtilities.Parametric.getCoefficients(pchanged))
+                        pchanged = FunctionParsingUtilities.Parametric.replaceCoefficient(pchanged, s, t);
+
+                    parseNoHandling(pchanged);
+                } catch (Exception error) {
+                    err = error;
+                }
+
+                if (err == null)
+                    return ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMS;
+            }
+
+            if (exception == null)
+                return ParsingResult.PARAMETRIC_FUNCTION;
+        }
+
+        if (!FunctionParsingUtilities.isDeclaredImplicit(changed)) {
+            final double x = 1.0;
+
+            try {
+                parseNoHandling(expression);
+            } catch (IndexOutOfBoundsException e) {
+                return ParsingResult.ERROR;
+            } catch (MathParserException notExpression) {
+
+                try {
+                    changed = FunctionParsingUtilities.Explicit.replaceVariable(changed, x);
+
+                    if (changed.isEmpty()) {
+                        return ParsingResult.ERROR;
+                    }
+
+                    double ignored = parseNoHandling(changed);
+                } catch (MathParserException notFunction) {
+
+                    try {
+
+                        for (var coefficient : FunctionParsingUtilities.Explicit.getCoefficients(changed)) {
+                            changed = FunctionParsingUtilities.Explicit.replaceCoefficient(changed, coefficient, x);
+                        }
+
+                        double ignored = parseNoHandling(changed);
+
+                    } catch (IllegalArgumentException e) {
+                        return ParsingResult.ERROR;
+
+                    } catch (IndexOutOfBoundsException out) {
+                        return ParsingResult.ERROR;
+
+                    } catch (MathParserException notAnything) {
+                        return ParsingResult.ERROR;
+                    }
+
+                    return ParsingResult.EXPLICIT_FUNCTION_WITH_PARAMS;
+                } catch (IllegalArgumentException ill) {
+                    return ParsingResult.ERROR;
+
+                } catch (IndexOutOfBoundsException out) {
+                    return ParsingResult.ERROR;
+                }
+
+                return ParsingResult.EXPLICIT_FUNCTION;
+            }
+
+        } else {
+
+        }
+
+        Exception exception = null;
+
+        try {
+            MathParser.parseNoHandling(changed);
+        } catch (MathParserException | IllegalArgumentException | IndexOutOfBoundsException e) {
+            exception = e;
+        }
+
+        if (exception == null)
+            return ParsingResult.EXPRESSION;
+        else
+            return ParsingResult.ERROR;
+    }
+
+    public static double parseNoHandling(final String expression) throws MathParserException {
+        return Syntax.expression(new TokenBuffer(tokenize(replaceConstants(expression))));
+    }
+
+    public static double parse(final String expression) {
+
+        List<Token> tokenList = new ArrayList<>();
+        try {
+            tokenList = tokenize(replaceConstants(expression));
+        } catch (MathParserException e) {
+
+        }
+
+        TokenBuffer tokenBuffer = new TokenBuffer(tokenList);
+
+        try {
+            return Syntax.expression(tokenBuffer);
+        } catch (MathParserException e) {
+
+        }
+
+        return 0;
+    }
+
+    public static double parseWithLogging(final String expression) {
+
+        List<Token> tokenList = null;
+        try {
+            tokenList = tokenize(replaceConstants(expression));
+        } catch (MathParserException e) {
+            Grapher.getLogger().log(Level.SEVERE, "Wrong expression", e);
+        }
+
+        TokenBuffer tokenBuffer = new TokenBuffer(tokenList);
+
+        try {
+            return Syntax.expression(tokenBuffer);
+        } catch (MathParserException e) {
+            Grapher.getLogger().log(Level.SEVERE, "Wrong expression", e);
+        }
+
+        return 0;
+    }
+
+    public static List<Token> tokenize(String expression) throws MathParserException {
+        ArrayList<Token> tokenList = new ArrayList<>();
+
+        Stack<Character> stack = new Stack<>();
+
+        int pos = 0;
+
+        while (pos < expression.length()) {
+
+            char character = expression.charAt(pos);
+            switch (character) {
+                case '(':
+                    tokenList.add(new Token(TokenType.LEFT_BRACKET, character));
+                    pos++;
+                    stack.push(character);
+                    continue;
+                case ')':
+                    tokenList.add(new Token(TokenType.RIGHT_BRACKET, character));
+                    pos++;
+                    if (stack.isEmpty())
+                        throw new MathParserException("Illegal brackets");
+                    else
+                        stack.pop();
+                    continue;
+                case '+':
+                    tokenList.add(new Token(TokenType.OPERATOR_ADD, character));
+                    pos++;
+                    continue;
+                case '-':
+                    tokenList.add(new Token(TokenType.OPERATOR_SUB, character));
+                    pos++;
+                    continue;
+                case '*':
+                    if (expression.charAt(pos + 1) == '*') {
+                        tokenList.add(new Token(
+                                TokenType.OPERATOR_EXP,
+                                String.valueOf(character) + String.valueOf(expression.charAt(pos + 1)))
+                        );
+                        pos += 2;
+                        continue;
+                    } else {
+                        tokenList.add(new Token(TokenType.OPERATOR_MUL, character));
+                        pos++;
+                        continue;
+                    }
+                case '/':
+                    tokenList.add(new Token(TokenType.OPERATOR_DIV, character));
+                    pos++;
+                    continue;
+                case '^':
+                    tokenList.add(new Token(TokenType.OPERATOR_EXP, character));
+                    pos++;
+                    continue;
+                case ',':
+                    tokenList.add(new Token(TokenType.COMMA, character));
+                    pos++;
+                    continue;
+                default:
+                    if ((character <= '9' && character >= '0') || (character == '.')) {
+
+                        StringBuilder number = new StringBuilder();
+                        do {
+                            number.append(character);
+                            pos++;
+                            if (pos >= expression.length())
+                                break;
+                            character = expression.charAt(pos);
+                        } while ((character <= '9' && character >= '0') || (character == '.'));
+                        tokenList.add(new Token(TokenType.NUMBER, number.toString()));
+
+                    } else {
+                        if (character != ' ') {
+                            if ((character >= 'a' && character <= 'z') || (character >= 'A' && character <= 'Z')) {
+
+                                StringBuilder function = new StringBuilder();
+
+                                do {
+                                    function.append(character);
+                                    pos++;
+                                    if (pos >= expression.length())
+                                        break;
+                                    character = expression.charAt(pos);
+                                } while ((character >= 'a' && character <= 'z') || (character >= 'A' && character <= 'Z'));
+
+                                if (MathFunctions.FUNCTION_MAP.containsKey(function.toString())) {
+                                    tokenList.add(new Token(TokenType.FUNCTION_NAME, function.toString()));
+
+                                } else {
+                                    throw new MathParserException("Unexpected function: " + function);
+                                }
+
+                            } else {
+                                throw new MathParserException("Unexpected character: '" + character + "' at pos " + pos + " in expression");
+                            }
+                        } else {
+                            pos++;
+                        }
+                    }
+            }
+        }
+
+        if (!stack.isEmpty()) {
+            throw new MathParserException("Bracket count don't match");
+        }
+
+        tokenList.add(new Token(TokenType.EOF, ""));
+
+        return tokenList;
     }
 
     /*------------------------------------------------------------------
@@ -31,6 +389,8 @@ public final class MathParser {
 //
 //    MULTIPLY_DIVIDE : FACTOR ( ( '*' | '/' ) FACTOR )* ;
 //
+//    EXPONENT :  FACTOR ( '^' FACTOR )* ;
+//
 //    FACTOR : FUNCTION | UNARY | NUMBER | '(' EXPRESSION ')' ;
 //
 //    UNARY: '-' FACTOR
@@ -39,77 +399,47 @@ public final class MathParser {
 //
 //
 
-    private static final HashMap<String, MathFunction> FUNCTION_MAP = MathFunctions.getFunctionMap();
+    public static class Token {
+        public TokenType tokenType;
+        public String data;
 
-    public static double parse(final String expression) {
-
-        List<Lexeme> lexemeList = null;
-        try {
-            lexemeList = MathParser.lexParse(FunctionHandler.replaceConstants(expression));
-        } catch (SyntaxParseException e) {
-            Graph.getLogger().log(Level.SEVERE, "wrong expression", e);
+        public Token(TokenType tokenType, String data) {
+            this.tokenType = tokenType;
+            this.data = data;
         }
 
-        LexemeBuffer lexemeBuffer = new LexemeBuffer(lexemeList);
-
-        try {
-            return Syntax.expression(lexemeBuffer);
-        } catch (SyntaxParseException e) {
-            Graph.getLogger().log(Level.SEVERE, "wrong expression", e);
+        public Token(TokenType tokenType, Character data) {
+            this.tokenType = tokenType;
+            this.data = data.toString();
         }
 
-        return 0;
-    }
-
-    public static double compute(final String function, final double value, final HashMap<String, Double> map) {
-        return 0;
-    }
-
-    public static double[][] threadedGetData() {
-        return new double[][]{};
-    }
-
-    public static class Lexeme {
-        public LexemeType lexemeType;
-        public String string;
-
-        public Lexeme(LexemeType lexemeType, String string) {
-            this.lexemeType = lexemeType;
-            this.string = string;
+        public TokenType getTokenType() {
+            return this.tokenType;
         }
 
-        public Lexeme(LexemeType lexemeType, Character character) {
-            this.lexemeType = lexemeType;
-            this.string = character.toString();
-        }
-
-        public LexemeType getLexemeType() {
-            return this.lexemeType;
+        public String getData() {
+            return this.data;
         }
 
         @Override
         public String toString() {
-            return "Lexeme{" +
-                    "type=" + lexemeType +
-                    ", string='" + string + '\'' +
-                    '}';
+            return "Token{" + "type=" + tokenType + ", data= '" + data + "'}";
         }
     }
 
-    public static class LexemeBuffer {
+    public static class TokenBuffer {
         private int pos;
+        public List<Token> tokens;
 
-        public List<Lexeme> lexemes;
-
-        public LexemeBuffer(List<Lexeme> lexemes) {
-            this.lexemes = lexemes;
+        public TokenBuffer(List<Token> tokens) {
+            this.tokens = tokens;
         }
 
-        public Lexeme next() {
-            return lexemes.get(pos++);
+        public Token getNextToken() {
+            return tokens.get(pos++);
         }
 
-        public void back() {
+        public void returnBack() {
             pos--;
         }
 
@@ -117,91 +447,6 @@ public final class MathParser {
             return pos;
         }
 
-    }
-
-    public static List<Lexeme> lexParse(String expression) throws SyntaxParseException {
-        ArrayList<Lexeme> lexemeList = new ArrayList<>();
-        int pos = 0;
-
-        while (pos < expression.length()) {
-
-            char symbol = expression.charAt(pos);
-            switch (symbol) {
-                case '(':
-                    lexemeList.add(new Lexeme(LexemeType.LEFT, symbol));
-                    pos++;
-                    continue;
-                case ')':
-                    lexemeList.add(new Lexeme(LexemeType.RIGHT, symbol));
-                    pos++;
-                    continue;
-                case '+':
-                    lexemeList.add(new Lexeme(LexemeType.OPERATOR_ADD, symbol));
-                    pos++;
-                    continue;
-                case '-':
-                    lexemeList.add(new Lexeme(LexemeType.OPERATOR_SUB, symbol));
-                    pos++;
-                    continue;
-                case '*':
-                    lexemeList.add(new Lexeme(LexemeType.OPERATOR_MUL, symbol));
-                    pos++;
-                    continue;
-                case '/':
-                    lexemeList.add(new Lexeme(LexemeType.OPERATOR_DIV, symbol));
-                    pos++;
-                    continue;
-                case ',':
-                    lexemeList.add(new Lexeme(LexemeType.COMMA, symbol));
-                    pos++;
-                    continue;
-                default:
-                    if ((symbol <= '9' && symbol >= '0') | (symbol == '.')) {
-
-                        StringBuilder number = new StringBuilder();
-                        do {
-                            number.append(symbol);
-                            pos++;
-                            if (pos >= expression.length())
-                                break;
-                            symbol = expression.charAt(pos);
-                        } while ((symbol <= '9' && symbol >= '0') | (symbol == '.'));
-                        lexemeList.add(new Lexeme(LexemeType.NUMBER, number.toString()));
-
-                    } else {
-                        if (symbol != ' ') {
-                            if ((symbol >= 'a' && symbol <= 'z') || (symbol >= 'A' && symbol <= 'Z')) {
-
-                                StringBuilder function = new StringBuilder();
-
-                                do {
-                                    function.append(symbol);
-                                    pos++;
-                                    if (pos >= expression.length())
-                                        break;
-                                    symbol = expression.charAt(pos);
-                                } while ((symbol >= 'a' && symbol <= 'z') || (symbol >= 'A' && symbol <= 'Z'));
-
-                                if (FUNCTION_MAP.containsKey(function.toString())) {
-                                    lexemeList.add(new Lexeme(LexemeType.FUNCTION_NAME, function.toString()));
-
-                                } else {
-                                    throw new SyntaxParseException();
-                                }
-
-                            } else {
-                                throw new SyntaxParseException("Unexpected character: '" + symbol + "' at pos " + pos + " in expression");
-                            }
-                        } else {
-                            pos++;
-                        }
-                    }
-            }
-        }
-
-        lexemeList.add(new Lexeme(LexemeType.EOF, ""));
-
-        return lexemeList;
     }
 
     public static final class Precision {
@@ -212,17 +457,17 @@ public final class MathParser {
 
         private static final int[] POW10 = {1, 10, 100, 1000, 10000, 100000, 1000000};
 
-        public static final String _format(final double argValue, final int precision) {
+        public static String format(final double value, final int precision) {
             StringBuilder result = new StringBuilder();
-            double value = argValue;
+            double v = value;
 
-            if (value < 0) {
+            if (v < 0) {
                 result.append('-');
-                value = -value;
+                v = -v;
             }
 
             int exp = POW10[precision];
-            long lvalue = (long)(value * exp + 0.5);
+            long lvalue = (long)(v * exp + 0.5);
 
             result.append(lvalue / exp).append('.');
 
@@ -237,9 +482,8 @@ public final class MathParser {
             return result.toString();
         }
 
-        public static final String evadeEFormat(double value)
-        {
-            return new DecimalFormat("0.0000000000").format(value).replace(",",".");
+        public static String evadeEFormat(double value) {
+            return NUMBER_FORMAT.format(value).replace(",",".");
         }
     }
 
@@ -249,531 +493,145 @@ public final class MathParser {
             throw new ClassNotFoundException();
         }
 
-        public static double expression(final LexemeBuffer lexemeBuffer) throws SyntaxParseException {
-            Lexeme lexeme = lexemeBuffer.next();
-            if (lexeme.lexemeType == LexemeType.EOF) {
+        public static double expression(final TokenBuffer tokenBuffer) throws MathParserException {
+            Token token = tokenBuffer.getNextToken();
+            if (token.tokenType == TokenType.EOF) {
                 return 0;
             } else {
-                lexemeBuffer.back();
-                return addSubtract(lexemeBuffer);
+                tokenBuffer.returnBack();
+                return addSubtract(tokenBuffer);
             }
         }
 
-        public static double addSubtract(final LexemeBuffer lexemeBuffer) throws SyntaxParseException {
-            double value = multiplyDivide(lexemeBuffer);
+        public static double addSubtract(final TokenBuffer tokenBuffer) throws MathParserException {
+            double value = multiplyDivide(tokenBuffer);
             while (true) {
-                Lexeme lexeme = lexemeBuffer.next();
-                switch (lexeme.lexemeType) {
+                Token token = tokenBuffer.getNextToken();
+                switch (token.tokenType) {
                     case OPERATOR_ADD:
-                        value += multiplyDivide(lexemeBuffer);
+                        value += multiplyDivide(tokenBuffer);
                         break;
                     case OPERATOR_SUB:
-                        value -= multiplyDivide(lexemeBuffer);
+                        value -= multiplyDivide(tokenBuffer);
                         break;
                     case EOF:
-                    case RIGHT:
+                    case RIGHT_BRACKET:
                     case COMMA:
-                        lexemeBuffer.back();
+                        tokenBuffer.returnBack();
                         return value;
                     default:
-                        throw new SyntaxParseException("Unexpected token: '" + lexeme.getLexemeType() + "' at pos " + lexemeBuffer.getPos() + " in expression");
+                        throw new MathParserException("Unexpected token: '" + token.getTokenType() + "' at pos " + tokenBuffer.getPos() + " in expression");
                 }
             }
         }
 
-        public static double multiplyDivide(final LexemeBuffer lexemeBuffer) throws SyntaxParseException {
-            double value = factor(lexemeBuffer);
+        public static double multiplyDivide(final TokenBuffer tokenBuffer) throws MathParserException {
+            double value = exp(tokenBuffer);
             while (true) {
-                Lexeme lexeme = lexemeBuffer.next();
-                switch (lexeme.lexemeType) {
+                Token token = tokenBuffer.getNextToken();
+                switch (token.tokenType) {
                     case OPERATOR_MUL:
-                        value *= factor(lexemeBuffer);
+                        value *= exp(tokenBuffer);
                         break;
                     case OPERATOR_DIV:
-                        value /= factor(lexemeBuffer);
+                        value /= exp(tokenBuffer);
                         break;
                     case EOF:
-                    case RIGHT:
+                    case RIGHT_BRACKET:
                     case COMMA:
                     case OPERATOR_ADD:
                     case OPERATOR_SUB:
-                        lexemeBuffer.back();
+                        tokenBuffer.returnBack();
                         return value;
                     default:
-                        throw new SyntaxParseException("Unexpected token: '" + lexeme.getLexemeType() + "' at pos " + lexemeBuffer.getPos() + " in expression");
+                        throw new MathParserException("Unexpected token: '" + token.getTokenType() + "' at pos " + tokenBuffer.getPos() + " in expression");
                 }
             }
         }
 
-        public static double factor(final LexemeBuffer lexemeBuffer) throws SyntaxParseException {
-            Lexeme lexeme = lexemeBuffer.next();
-            switch (lexeme.lexemeType) {
+        public static double exp(final TokenBuffer tokenBuffer) throws MathParserException {
+            double value = factor(tokenBuffer);
+            while (true) {
+                Token token = tokenBuffer.getNextToken();
+                switch (token.tokenType) {
+                    case OPERATOR_EXP:
+                        value = Math.pow(value, exp(tokenBuffer));
+                        break;
+
+                    case OPERATOR_MUL:
+                        tokenBuffer.returnBack();
+                        return value;
+
+                    case OPERATOR_DIV:
+                        tokenBuffer.returnBack();
+                        return value;
+
+                    case EOF:
+                    case RIGHT_BRACKET:
+                    case COMMA:
+                    case OPERATOR_ADD:
+                    case OPERATOR_SUB:
+                        tokenBuffer.returnBack();
+                        return value;
+
+                    default:
+                        throw new MathParserException("Unexpected token: '" + token.getTokenType() + "' at pos " + tokenBuffer.getPos() + " in expression");
+                }
+            }
+        }
+
+        public static double factor(final TokenBuffer tokenBuffer) throws MathParserException {
+            Token token = tokenBuffer.getNextToken();
+
+            switch (token.tokenType) {
                 case FUNCTION_NAME:
-                    lexemeBuffer.back();
-                    return function(lexemeBuffer);
+                    tokenBuffer.returnBack();
+                    return function(tokenBuffer);
 
                 case OPERATOR_SUB:
-                    double positiveValue = factor(lexemeBuffer);
-                    return -positiveValue;
+                    return -factor(tokenBuffer);
 
                 case NUMBER:
-                    try {
-                        return Double.parseDouble(lexeme.string);
-                    } catch (NumberFormatException e) {
-                        Graph.getLogger().log(Level.SEVERE, "number format exception", e);
-                    }
+                    return Double.parseDouble(token.data);
 
-                case LEFT:
-                    double value = expression(lexemeBuffer);
-                    lexeme = lexemeBuffer.next();
-                    if (lexeme.lexemeType != LexemeType.RIGHT) {
-                        throw new SyntaxParseException("Unexpected token: '" + lexeme.getLexemeType() + "' at pos " + lexemeBuffer.getPos() + " in expression");
+                case LEFT_BRACKET:
+                    double value = expression(tokenBuffer);
+                    token = tokenBuffer.getNextToken();
+                    if (token.tokenType != TokenType.RIGHT_BRACKET) {
+                        throw new MathParserException("Unexpected token: '" + token.getTokenType() + "' at pos " + tokenBuffer.getPos() + " in expression");
                     }
                     return value;
 
                 default:
-                    throw new SyntaxParseException("Unexpected token: '" + lexeme.getLexemeType() + "' at pos " + lexemeBuffer.getPos() + " in expression");
+                    throw new MathParserException("Unexpected token: '" + token.getTokenType() + "' at pos " + tokenBuffer.getPos() + " in expression");
             }
         }
 
-        public static double function(final LexemeBuffer lexemeBuffer) throws SyntaxParseException {
-            String function = lexemeBuffer.next().string;
-            Lexeme lexeme = lexemeBuffer.next();
+        public static double function(final TokenBuffer tokenBuffer) throws MathParserException {
+            String function = tokenBuffer.getNextToken().data;
+            Token token = tokenBuffer.getNextToken();
 
-            if (lexeme.lexemeType != LexemeType.LEFT) {
-                throw new SyntaxParseException();
+            if (token.tokenType != TokenType.LEFT_BRACKET) {
+                throw new MathParserException();
             }
 
             ArrayList<Double> args = new ArrayList<>();
-            lexeme = lexemeBuffer.next();
+            token = tokenBuffer.getNextToken();
 
-            if (lexeme.lexemeType != LexemeType.RIGHT) {
-                lexemeBuffer.back();
+            if (token.tokenType != TokenType.RIGHT_BRACKET) {
+                tokenBuffer.returnBack();
                 do {
 
-                    args.add(expression(lexemeBuffer));
-                    lexeme = lexemeBuffer.next();
+                    args.add(expression(tokenBuffer));
+                    token = tokenBuffer.getNextToken();
 
-                    if ((lexeme.lexemeType != LexemeType.COMMA) && (lexeme.lexemeType != LexemeType.RIGHT)) {
-                        throw new SyntaxParseException();
+                    if ((token.tokenType != TokenType.COMMA) && (token.tokenType != TokenType.RIGHT_BRACKET)) {
+                        throw new MathParserException();
                     }
 
-                } while (lexeme.lexemeType == LexemeType.COMMA);
+                } while (token.tokenType == TokenType.COMMA);
             }
-            return FUNCTION_MAP.get(function).apply(args);
-        }
-    }
-
-    public static final class FunctionHandler {
-
-        private FunctionHandler() throws ClassNotFoundException {
-            throw new ClassNotFoundException();
-        }
-
-        private static final String FUNCTION_DECLARATION = "f(variable) = ...";
-        private static final String SIGNS_REGEX = "[^a-zA-Z0-9]";
-
-        private static final String MATH_CONSTANTS_PREFIX = "mp_";
-        private static final List<String> MATH_CONSTANTS_NAMES = Arrays.asList(MATH_CONSTANTS_PREFIX + "pi",
-                MATH_CONSTANTS_PREFIX + "e",
-                MATH_CONSTANTS_PREFIX + "phi",
-                MATH_CONSTANTS_PREFIX + "m"
-        );
-        private static final List<Double> MATH_CONSTANTS_VALUES = Arrays.asList(3.14592, 2.71828, 1.61803, 0.57721);
-        private static final String VARIABLE_SPLITTER = "VV";
-        private static final String COEFFICIENT_SPLITTER = "CC";
-
-        // phi is the golden ratio
-        // m is the euler-mascheroni constant
-
-//        private static final HashMap<String, Double> MATH_CONSTANTS = new HashMap<>() {{
-//            MATH_CONSTANTS.put(_PI, _PI_VALUE);
-//
-//        }};
-
-        private static final HashMap<String, Double> MATH_CONSTANTS = zip();
-
-        private static HashMap<String, Double> zip() {
-            try {
-                HashMap<String, Double> map = new HashMap<>();
-                for (int i = 0; i < MATH_CONSTANTS_NAMES.size(); i++) {
-                    map.put(MATH_CONSTANTS_NAMES.get(i), MATH_CONSTANTS_VALUES.get(i));
-                }
-                return map;
-            } catch (IndexOutOfBoundsException e) {
-                Graph.getLogger().log(Level.SEVERE, "", e);
-            }
-            return new HashMap<>();
-        }
-
-        private static boolean isFunction(final String expression) {
-            return expression.matches(FUNCTION_DECLARATION) || !getVariable(expression).equals("-1");
-        }
-
-        public static final ArrayList<Integer> indicesOfSingle(final String string, final String target) {
-            int len = string.length();
-
-            ArrayList<Integer> indices = new ArrayList<>();
-
-            for (int i = 0; i < len; i++) {
-                String current = singleAt(string, i);
-                String left =
-                        i != 0 ? singleAt(string, i - 1) : " ";
-                String right =
-                        i != len - 1 ? singleAt(string, i + 1) : " ";
-
-                if (current.equals(target) && isNotLetter(left) && isNotLetter(right)) {
-                    indices.add(i);
-                }
-            }
-
-            return indices;
-        }
-
-        private static String replace(final StringBuilder string, final String target, final String replacement) {
-            return string.toString().replace(target, replacement);
-        }
-
-        private static String delete(final StringBuilder string, final String target) {
-            return string.toString().replace(target, "");
-        }
-
-        private static String deleteSpaces(final String function) {
-            return function.replace(" ", "");
-        }
-
-        private static String deleteSpaces(final StringBuilder function) {
-            return function.toString().replace(" ", "");
-        }
-
-        private static String deleteDeclaration(final String function) {
-            return new StringBuilder(deleteSpaces(function))
-                    .substring(new StringBuilder(deleteSpaces(function)).indexOf("=") + 1);
-        }
-
-        private static String deleteDeclaration(final StringBuilder function) {
-            return new StringBuilder(deleteSpaces(function))
-                    .substring(new StringBuilder(deleteSpaces(function)).indexOf("=") + 1);
-        }
-
-        private static boolean isLetter(final String single) {
-            return !isNotLetter(single);
-        }
-
-        private static boolean isNotLetter(final String single) {
-            if (single.length() == 1)
-                return !Character.isLetter(single.charAt(0));
-            else
-                throw new IndexOutOfBoundsException("isNotLetter function exception");
-        }
-
-        private static String singleAt(final String string, final int index) {
-            return String.valueOf(string.charAt(index));
-        }
-
-        private static String singleAt(final StringBuilder string, final int index) {
-            return String.valueOf(string.toString().charAt(index));
-        }
-
-        private static int countEntryOfSingle(final String string, final String single) {
-            int entry = 0;
-
-            String changed = deleteDeclaration(string);
-            int len = changed.length();
-
-            for (int i = 0; i < len; i++) {
-                String current = singleAt(changed, i);
-                String left =
-                        i != 0 ? singleAt(changed, i - 1) : " ";
-                String right =
-                        i != len - 1 ? singleAt(changed, i + 1) : " ";
-
-                if ((current.equals(single) && (isNotLetter(left)) && (isNotLetter(right))))
-                    entry++;
-            }
-
-            return entry;
-        }
-
-        private static int countEntryOfSingle(final StringBuilder stringBuilder, final String single) {
-            String string = stringBuilder.toString();
-            int entry = 0;
-            int len = string.length();
-
-            for (int i = 0; i < len; i++) {
-                String current = singleAt(string, i);
-                String left =
-                        i != 0 ? singleAt(string, i - 1) : " ";
-                String right =
-                        i != len - 1 ? singleAt(string, i + 1) : " ";
-
-                if ((current.equals(single) && (isNotLetter(left)) && (isNotLetter(right))))
-                    entry++;
-            }
-
-            return entry;
-        }
-
-        public static final String deleteFunctions(final String function) {
-            String changed = function;
-
-            for (String mathFunctionName: FUNCTION_MAP.keySet()) {
-                changed = changed.replace(mathFunctionName, "");
-                if (changed.contains("arc"))
-                    changed = changed.replace("arc", "");
-            }
-
-            return changed;
-        }
-
-        public static final String getVariable(final String function) {
-            int equalsSignIndex = function.indexOf("=");
-            if (equalsSignIndex == -1)
-                return "-1";
-
-            String declaration = function.substring(0, equalsSignIndex);
-
-            int leftBracketSignIndex = declaration.indexOf("(");
-            int rightBracketSignIndex = declaration.indexOf(")");
-
-            if (leftBracketSignIndex == -1 || rightBracketSignIndex == -1)
-                return "-1";
-
-            return deleteSpaces(declaration.substring(leftBracketSignIndex + 1, rightBracketSignIndex));
-        }
-
-        private static String addSplitters(final String function, final String single, final String splitter) {
-            StringBuilder changed = new StringBuilder(deleteDeclaration(function));
-
-            for (int i = 0; i < changed.length(); i++) {
-                String current = singleAt(changed, i);
-                String left =
-                        i != 0 ? singleAt(changed, i - 1) : " ";
-                String right =
-                        i != changed.length() - 1 ? singleAt(changed, i + 1) : " ";
-
-                if ((current.equals(single)) && (isNotLetter(left)) && (isNotLetter(right))) {
-                    changed.insert(i, splitter);
-                }
-            }
-
-            return changed.toString();
-        }
-
-        public static final String replaceVariable(final String function, final double value) {
-            if (!(isFunction(function))) {
-                return function;
-            }
-
-            String variable = getVariable(function);
-            String changed = addSplitters(function, variable, VARIABLE_SPLITTER);
-
-            return changed.replace(VARIABLE_SPLITTER + variable, MathParser.Precision.evadeEFormat(value));
-        }
-
-        public static final String replaceConstants(final String function) {
-            String changed = function;
-            for (HashMap.Entry<String, Double> entry : MATH_CONSTANTS.entrySet()) {
-                String key = entry.getKey();
-                double value = entry.getValue();
-
-                changed = changed.replaceAll(key, MathParser.Precision.evadeEFormat(value));
-            }
-
-            return changed;
-        }
-
-        public static final ArrayList<String> getCoefficients(final String function) {
-            String variable = getVariable(function);
-            String changed = replaceConstants(deleteDeclaration(function));
-            HashSet<String> coefficients = new HashSet<>();
-
-            changed = deleteFunctions(changed);
-
-            StringBuilder insertable = new StringBuilder(changed);
-
-            for (int i = 0; i < insertable.length(); i++) {
-                String current = singleAt(insertable, i);
-
-                if (isLetter(current) && !current.equals(variable))
-                    coefficients.add(current);
-            }
-
-            return new ArrayList<>(coefficients);
-        }
-
-        public static final String replaceCoefficient(final String function, final String coefficient, final double value) {
-            StringBuilder changed = new StringBuilder(replaceConstants(deleteDeclaration(function)));
-
-            int len = changed.length();
-
-            for (int i = 0; i < len; i++) {
-                String current = singleAt(changed, i);
-                String left =
-                        i != 0 ? singleAt(changed, i - 1) : " ";
-                String right =
-                        i != len - 1 ? singleAt(changed, i + 1) : " ";
-
-                if (current.equals(coefficient) && isNotLetter(left) && isNotLetter(right)) {
-                    changed.insert(i, COEFFICIENT_SPLITTER);
-                }
-            }
-
-            return changed.toString().replace(COEFFICIENT_SPLITTER + coefficient, MathParser.Precision.evadeEFormat(value));
-        }
-
-        @Deprecated
-        public static HashMap<String, List<Integer>> getCoeffs(String expression, String variable) {
-            String _s = deleteDeclaration(expression);
-
-            String _pre_string = deleteDeclaration(expression);
-            _pre_string = replaceConstants(_pre_string);
-            StringBuilder _expression = new StringBuilder(expression);
-            HashMap<String, List<Integer>> _coeffs = new HashMap<>();
-
-            for (String name: FUNCTION_MAP.keySet()) {
-                _expression = new StringBuilder(_expression.toString().replace(name, ""));
-            }
-
-            _expression = new StringBuilder(_expression.toString().replace("arc", ""));
-
-            _expression = new StringBuilder(_expression.toString().replace("E", ""));
-
-            String[] _symbols = new String[] {"\\+", "\\-",
-                    "\\*", "\\/",
-                    "\\(", "\\)",
-                    "\\,", "\\."};
-
-            List<String> symbols = new ArrayList<>(java.util.Arrays.asList(_symbols));
-
-            for (String s: symbols) {
-                _expression = new StringBuilder(_expression.toString().replace(s, ""));
-            }
-
-            _expression = new StringBuilder(_expression.toString().replaceAll("[\\-\\+\\^:,]",""));
-
-            for (int i = 0; i < _expression.length(); i++) {
-                if (!(Character.isDigit(_expression.charAt(i))) & ((Character.isLetter(_expression.charAt(i))))) {
-                    List<Integer> entries = new ArrayList<>();
-                    for (int _i = 0; _i < _s.length(); _i++) {
-                        char check_function_left = ' ';
-                        char check_function_right = ' ';
-                        if (_i != 0) {
-                            check_function_left = _s.charAt(_i - 1);
-                        }
-                        if (_i != _s.length() - 1) {
-                            check_function_right = _s.charAt(_i + 1);
-                        }
-                        if ((_s.charAt(_i) == _expression.charAt(i))
-                                && (!(Character.isLetter(check_function_left)))
-                                && (!(Character.isLetter(check_function_right)))
-                            ) {
-                            entries.add(_i);
-                        }
-                   }
-                    _coeffs.put(Character.toString(_expression.charAt(i)), entries);
-                }
-            }
-
-            return _coeffs;
-        }
-
-        @Deprecated
-        public static HashMap<String, List<Integer>> getCoeffs(String expression) {
-            String variable = getVariable(expression);
-            boolean containsVariable = true;
-
-            if (getVariable(expression).equals("-1")) {
-                containsVariable = false;
-            }
-
-
-            String _s = deleteDeclaration(expression);
-            StringBuilder _expression = new StringBuilder(deleteDeclaration(expression));
-            HashMap<String, List<Integer>> _coeffs = new HashMap<>();
-
-            for (String name: FUNCTION_MAP.keySet()) {
-                _expression = new StringBuilder(_expression.toString().replace(name, ""));
-            }
-
-            _expression = new StringBuilder(_expression.toString().replace("arc", ""));
-
-            _expression = new StringBuilder(_expression.toString().replace("E", ""));
-
-            String[] _symbols = new String[] {"\\+", "\\-",
-                    "\\*", "\\/",
-                    "\\(", "\\)",
-                    "\\,", "\\."};
-
-            List<String> symbols = new ArrayList<>(java.util.Arrays.asList(_symbols));
-
-            for (String s: symbols) {
-                _expression = new StringBuilder(_expression.toString().replace(s, ""));
-            }
-
-            _expression = new StringBuilder(_expression.toString().replaceAll("[\\-\\+\\^:,]",""));
-
-            for (int i = 0; i < _expression.length(); i++) {
-                if (!(Character.isDigit(_expression.charAt(i))) & ((Character.isLetter(_expression.charAt(i))))) {
-                    List<Integer> entries = new ArrayList<>();
-                    for (int _i = 0; _i < _s.length(); _i++) {
-                        char check_function_left = ' ';
-                        char check_function_right = ' ';
-                        if (_i != 0) {
-                            check_function_left = _s.charAt(_i - 1);
-                        }
-                        if (_i != _s.length() - 1) {
-                            check_function_right = _s.charAt(_i + 1);
-                        }
-                        if ((_s.charAt(_i) == _expression.charAt(i))
-                                && (!(Character.isLetter(check_function_left)))
-                                && (!(Character.isLetter(check_function_right)))
-                        ) {
-                            entries.add(_i);
-                        }
-                    }
-                    _coeffs.put(Character.toString(_expression.charAt(i)), entries);
-                }
-            }
-
-            if (_coeffs.containsKey(variable) && containsVariable) {
-                _coeffs.remove(variable);
-            }
-
-            return _coeffs;
-        }
-
-        @Deprecated
-        public static String replaceCoeff(String expression, String coeff, double value) {
-            String equation = deleteDeclaration(expression);
-            equation = replaceConstants(equation);
-            StringBuilder _split = new StringBuilder(equation);
-            int entry = 0;
-
-            for (int i = 0; i < equation.length(); i++) {
-                String current = Character.toString(_split.charAt(i));
-                char left = (i != 0) ? _split.charAt(i - 1) : ' ';
-                char right = (i != equation.length() - 1) ? _split.charAt(i + 1) : ' ';
-
-                if ((current.equals(coeff)) && (!(Character.isLetter(left))) && (!(Character.isLetter(right)))) {
-                    entry++;
-                }
-            }
-
-            for (int i = 0; i < entry * 2; i++) {
-                _split.append(" ");
-            }
-
-            for (int i = 0; i < equation.length() + entry * 2; i++) {
-                String current = Character.toString(_split.charAt(i));
-                char left = (i != 0) ? _split.charAt(i - 1) : ' ';
-                char right = (i != equation.length() - 1) ? _split.charAt(i + 1) : ' ';
-
-                if ((current.equals(coeff)) & (!Character.isLetter(left)) & (!Character.isLetter(right))) {
-                    _split.insert(i, COEFFICIENT_SPLITTER);
-                }
-            }
-            return _split.toString().replace(COEFFICIENT_SPLITTER + coeff, java.lang.Double.toString(value));
+            return MathFunctions.FUNCTION_MAP.get(function).apply(args);
         }
     }
 }
