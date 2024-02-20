@@ -13,7 +13,7 @@ public final class BooleanVector implements Iterable<Boolean> {
     }
 
     public BooleanVector(Collection<? super Boolean> data) {
-        ArrayList<Boolean> list = new ArrayList<>();
+        List<Boolean> list = new ArrayList<>();
         for (var e: data) {
             list.add((Boolean) e);
         }
@@ -22,19 +22,11 @@ public final class BooleanVector implements Iterable<Boolean> {
     }
 
     public BooleanVector(List<Boolean> data) {
-        this.data = (ArrayList<Boolean>) data;
-    }
-
-    public BooleanVector(Boolean[] data) {
-        this.data = (ArrayList<Boolean>) Arrays.asList(data);
+        this.data = data;
     }
 
     public BooleanVector(boolean[] data) {
         for (boolean item : data) this.data.add(item);
-    }
-
-    public BooleanVector(Boolean value) {
-        this.data = new BooleanVector(new boolean[] {value}).data;
     }
 
     public BooleanVector(boolean value) {
@@ -95,18 +87,13 @@ public final class BooleanVector implements Iterable<Boolean> {
                          Character falseChar,
                          Character trueChar) {
         for (int i = 0; i < string.length(); i++) {
-            Character c = string.charAt(i);
+            char c = string.charAt(i);
 
             if (c == trueChar)
                 this.data.add(true);
             else if (c == falseChar)
                 this.data.add(false);
         }
-    }
-
-    public boolean push(Boolean item) {
-        this.data.add(item);
-        return true;
     }
 
     public boolean push(boolean item) {
@@ -153,8 +140,8 @@ public final class BooleanVector implements Iterable<Boolean> {
 
         Binary.reduce(this);
 
-        for (int i = 0; i < this.data.size(); i++) {
-            r.append(this.data.get(i) ? 1 : 0);
+        for (Boolean e : this.data) {
+            r.append(e ? 1 : 0);
         }
 
         return "BooleanVector['" + r + "']";

@@ -5,8 +5,6 @@ import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public final class RangePanel extends JPanel {
 
@@ -23,8 +21,8 @@ public final class RangePanel extends JPanel {
     private final JTextField    minimalValueField   = new JTextField();
     private final JTextField    stepField           = new JTextField();
 
-    private final JButton       confirmButton       = new JButton();
-    private final JButton       cancelButton        = new JButton();
+    private final JButton       confirmButton       = new DynamicButton("Confirm");
+    private final JButton       cancelButton        = new DynamicButton("Cancel");
 
     private final JSeparator    separator           = new JSeparator();
 
@@ -190,45 +188,34 @@ public final class RangePanel extends JPanel {
             }
         });
 
-        GrapherGUI.setDefaultButtonStyle(confirmButton, FONT);
         setConfirmButtonDisabled();
 
-        confirmButton.setText("Confirm");
-        confirmButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                done = true;
+        confirmButton.addActionListener(evt -> {
+            done = true;
 
-                JDialog parentDialog = new JDialog();
+            JDialog parentDialog = new JDialog();
 
-                try {
-                    parentDialog = (JDialog) SwingUtilities.getWindowAncestor((Component) evt.getSource());
-                } catch (ClassCastException e) {
-                    System.out.println("No dialog");
-                }
-
-                parentDialog.setVisible(false);
+            try {
+                parentDialog = (JDialog) SwingUtilities.getWindowAncestor((Component) evt.getSource());
+            } catch (ClassCastException e) {
+                System.out.println("No dialog");
             }
+
+            parentDialog.setVisible(false);
         });
 
-        GrapherGUI.setDefaultButtonStyle(cancelButton, FONT);
+        cancelButton.addActionListener(evt -> {
+            JDialog parentDialog = new JDialog();
 
-        cancelButton.setText("Cancel");
-        cancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                JDialog parentDialog = new JDialog();
-
-                try {
-                    parentDialog = (JDialog) SwingUtilities.getWindowAncestor((Component) evt.getSource());
-                } catch (ClassCastException e) {
-                    System.out.println("No dialog");
-                }
-
-                parentDialog.setVisible(false);
-
-                done = false;
+            try {
+                parentDialog = (JDialog) SwingUtilities.getWindowAncestor((Component) evt.getSource());
+            } catch (ClassCastException e) {
+                System.out.println("No dialog");
             }
+
+            parentDialog.setVisible(false);
+
+            done = false;
         });
 
         separator.setBackground(Color.BLACK);

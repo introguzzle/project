@@ -10,21 +10,23 @@ import org.jfree.data.Range;
 import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import ru.calculator.Calculator;
+import ru.mathparser.MathFunctionParser;
+import ru.grapher.menu.AboutFrame;
+import ru.mathparser.MathParser;
+import ru.mathparser.MathParserException;
+import ru.grapher.menu.HelpFrame;
+import ru.utils.ColorUtilities;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.Point2D;
-import java.io.Serial;
-import java.io.Serializable;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.*;
 import java.util.logging.*;
 
-public class Grapher extends JFrame implements Zoomable, Serializable {
+public class Grapher extends JFrame {
 
     public static final class RunConfiguration {
 
@@ -53,19 +55,28 @@ public class Grapher extends JFrame implements Zoomable, Serializable {
         public static final double  COMPUTATION_BOUND       = (double)ScopeSlider.DefaultConfiguration.
                 SCOPE_DOMAIN_VALUES.getLast() * DEFAULT_X / 100.0;
         public static final Range   COMPUTATION_RANGE       = new Range(-COMPUTATION_BOUND, COMPUTATION_BOUND);
-    }
 
-    @Serial
-    private static final long serialVersionUID      = 666L;
+        public static final List<Double> X_VALUES = new ArrayList<>();
+
+        static {
+            final double step = 1 / Math.pow(10, PRECISION_DIGITS);
+
+            for (double d = -COMPUTATION_BOUND;
+                 d <= COMPUTATION_BOUND;
+                 d += step) {
+                X_VALUES.add(d);
+            }
+        }
+    }
 
     private static final Logger logger              = Logger.getLogger("ru.grapher");
 
-    private static final JButton additionButton     = new JButton();
-    private static final JButton clearingButton     = new JButton();
-    private static final JButton resettingButton    = new JButton();
-    private static final JButton calculatorButton = new JButton();
-    private static final JButton rangeButton        = new JButton();
-    private static final JButton adjustButton       = new JButton();
+    private static final JButton additionButton     = new DynamicButton("Add", 20);
+    private static final JButton clearingButton     = new DynamicButton("Clear", 20);
+    private static final JButton resettingButton    = new DynamicButton("Reset", 20);
+    private static final JButton calculatorButton   = new DynamicButton("Calculator", 20);
+    private static final JButton rangeButton        = new DynamicButton("Range", 20);
+    private static final JButton adjustButton       = new DynamicButton("Adjust", 20);
 
 
     private static final    JComboBox<String>    coefficientBox      = new JComboBox<>();
@@ -84,9 +95,9 @@ public class Grapher extends JFrame implements Zoomable, Serializable {
     private static double   yShift                  = 1.0;
 
     private static          String[]                    coefficientArray    = new String[]{};
-    private static final    HashMap<String, Double>     coefficientMap      = new HashMap<>();
+    private static final    Map<String, Double>         coefficientMap      = new HashMap<>();
 
-    private static int additionButtonInvokeCount    = 0;
+    private static int      additionButtonInvokeCount = 0;
 
     private static String   previousInput;
 
@@ -98,25 +109,22 @@ public class Grapher extends JFrame implements Zoomable, Serializable {
             CoefficientSlider.DefaultConfiguration.DEFAULT_STEP
     );
 
-    private static final    InputFunctionPanel  functionPanel1 = new InputFunctionPanel();
     private static final    FunctionPanel       functionPanel = new FunctionPanel();
 
     private static          String firstResponse;
     private static          String secondResponse;
 
-    private static final ArrayList<Double> X_VALUES = new ArrayList<>();
-
     private static final XYSeriesCollection
             currentXYSeriesCollection   = new XYSeriesCollection();
 
-    private static final ConcurrentHashMap<XYSeries, ArrayList<String>>
+    private static final ConcurrentHashMap<XYSeries, List<String>>
             currentXYSeriesMap          = new ConcurrentHashMap<>();
 
-    private static final ArrayList<Double>  rangeMaxValues          = new ArrayList<>();
-    private static double                   rangeMaxValuesMinimum   ;
+    private static final  List<Double>  rangeMaxValues         = new ArrayList<>();
+    private static double rangeMaxValuesMinimum;
 
-    private static final ArrayList<Double>  rangeMinValues          = new ArrayList<>();
-    private static double                   rangeMinValuesMinimum   ;
+    private static final  List<Double>  rangeMinValues         = new ArrayList<>();
+    private static double rangeMinValuesMinimum;
 
 
     private static double modifiedLowerY    = -RunConfiguration.DEFAULT_Y;
@@ -129,7 +137,7 @@ public class Grapher extends JFrame implements Zoomable, Serializable {
 
         currentXYSeriesCollection.removeAllSeries();
 
-        for (Map.Entry<XYSeries, ArrayList<String>> entry: currentXYSeriesMap.entrySet()) {
+        for (var entry: currentXYSeriesMap.entrySet()) {
             if (entry.getValue().contains(currentCoefficient)) {
                 currentXYSeriesCollection.addSeries(createXYSeriesRealTime(entry.getKey().getDescription()));
             } else {
@@ -139,7 +147,7 @@ public class Grapher extends JFrame implements Zoomable, Serializable {
     }
 
     private static void addToXYSeriesCollection(final XYSeries series) {
-        ArrayList<String> coefficients = FunctionParsingUtilities.Explicit.getCoefficients(series.getDescription());
+        List<String> coefficients = MathFunctionParser.Explicit.getCoefficients(series.getDescription());
 
         if (Collections.indexOfSubList(new ArrayList<>(Arrays.asList(coefficientArray)), coefficients) != -1) {
             try {
@@ -155,14 +163,17 @@ public class Grapher extends JFrame implements Zoomable, Serializable {
     }
 
     private static void addParametricToXYSeriesCollection(final XYSeries series) {
+        List<String> coefficients = MathFunctionParser.Explicit.getCoefficients(series.getDescription());
+
         currentXYSeriesCollection.addSeries(series);
+        currentXYSeriesMap.put(series, coefficients);
     }
 
     private static void updateXYSeriesCollection() {
 
         currentXYSeriesCollection.removeAllSeries();
 
-        for (Map.Entry<XYSeries, ArrayList<String>> entry: currentXYSeriesMap.entrySet()) {
+        for (var entry: currentXYSeriesMap.entrySet()) {
             try {
                 currentXYSeriesCollection.addSeries(createXYSeriesRealTimeStream(entry.getKey().getDescription()));
             } catch (IllegalArgumentException ignored) {
@@ -170,16 +181,6 @@ public class Grapher extends JFrame implements Zoomable, Serializable {
             }
         }
 
-    }
-
-    static {
-        final double step = 1 / Math.pow(10, RunConfiguration.PRECISION_DIGITS);
-
-        for (double d = -RunConfiguration.COMPUTATION_BOUND;
-             d <= RunConfiguration.COMPUTATION_BOUND;
-             d += step) {
-            X_VALUES.add(d);
-        }
     }
 
     public Grapher() {
@@ -220,7 +221,7 @@ public class Grapher extends JFrame implements Zoomable, Serializable {
         coefficientSlider.setBorder(GrapherGUI.__UNIVERSAL_BORDER);
         coefficientSlider.setFont(GrapherGUI.getDefaultFont(12));
 
-        coefficientSlider.addMouseListener(createCoefficientSliderMouseListener());
+        coefficientSlider.addMouseListener(createCoefficientSliderMouseAdapter());
 
         scopeSlider = new ScopeSlider(
                 ScopeSlider.DefaultConfiguration.SCOPE_DOMAIN_VALUES,
@@ -238,33 +239,32 @@ public class Grapher extends JFrame implements Zoomable, Serializable {
         scopeSlider.setBorder(GrapherGUI.__UNIVERSAL_BORDER);
         scopeSlider.setFont(GrapherGUI.getDefaultFont(12));
 
-        scopeSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                currentScope = (double) scopeSlider.getDomainValue() / 100;
+        scopeSlider.addChangeListener(e -> {
 
-                NumberAxis xAxis = (NumberAxis) chart.getXYPlot().getDomainAxis();
-                NumberAxis yAxis = (NumberAxis) chart.getXYPlot().getRangeAxis();
+            currentScope = (double) scopeSlider.getDomainValue() / 100;
 
-                if (GrapherUtilities.isCorrectValue(modifiedLowerX * currentScope)
-                        && GrapherUtilities.isCorrectValue(modifiedUpperX * currentScope)) {
+            NumberAxis xAxis = (NumberAxis) chart.getXYPlot().getDomainAxis();
+            NumberAxis yAxis = (NumberAxis) chart.getXYPlot().getRangeAxis();
 
-                    xAxis.setRange(new Range(modifiedLowerX * currentScope, modifiedUpperX * currentScope));
+            if (GrapherUtilities.isCorrectValue(modifiedLowerX * currentScope)
+                    && GrapherUtilities.isCorrectValue(modifiedUpperX * currentScope)) {
 
-                    yAxis.setRange(new Range(modifiedLowerY * currentScope, modifiedUpperY * currentScope));
-                }
+                xAxis.setRange(new Range(modifiedLowerX * currentScope, modifiedUpperX * currentScope));
 
-                GrapherUtilities.normalizeTick(xAxis, "x");
-                GrapherUtilities.normalizeTick(yAxis, "y");
-
-                xShift = Objects.requireNonNull(GrapherUtilities.getNormalNumberTickUnit(
-                        (NumberAxis) chart.getXYPlot().
-                                getDomainAxis(), "x")).getSize();
-
-                yShift = Objects.requireNonNull(GrapherUtilities.getNormalNumberTickUnit(
-                        (NumberAxis) chart.getXYPlot().
-                                getRangeAxis(), "y")).getSize();
+                yAxis.setRange(new Range(modifiedLowerY * currentScope, modifiedUpperY * currentScope));
             }
+
+            GrapherUtilities.normalizeTick(xAxis, "x");
+            GrapherUtilities.normalizeTick(yAxis, "y");
+
+            xShift = Objects.requireNonNull(GrapherUtilities.getNormalNumberTickUnit(
+                    (NumberAxis) chart.getXYPlot().
+                            getDomainAxis(), "x")).getSize();
+
+            yShift = Objects.requireNonNull(GrapherUtilities.getNormalNumberTickUnit(
+                    (NumberAxis) chart.getXYPlot().
+                            getRangeAxis(), "y")).getSize();
+
         });
 
         additionButton.addActionListener((new AbstractAction() {
@@ -319,6 +319,7 @@ public class Grapher extends JFrame implements Zoomable, Serializable {
 
 
                         coefficientMap.putAll(functionPanel.getCoefficientDoubleMap());
+
                         coefficientArray = coefficientMap.keySet().toArray(new String[0]);
 
                         if (additionButtonInvokeCount > 0 && !coefficientMap.isEmpty()) {
@@ -331,7 +332,7 @@ public class Grapher extends JFrame implements Zoomable, Serializable {
                             coefficientSlider.setClosestDomainValue(value);
                         }
 
-                        if (FunctionParsingUtilities.Explicit.getCoefficients(firstResponse).isEmpty()) {
+                        if (MathFunctionParser.Explicit.getCoefficients(firstResponse).isEmpty()) {
                             if (RunConfiguration.TRY_OPTIMIZATION)
                                 addToXYSeriesCollection(createXYSeriesRealTimeStream(firstResponse));
                             else
@@ -342,6 +343,7 @@ public class Grapher extends JFrame implements Zoomable, Serializable {
                                 addToXYSeriesCollection(createXYSeriesRealTimeStream(firstResponse));
                                 updateXYSeriesCollection();
                             } else {
+                                System.out.println("ffff");
                                 addParametricToXYSeriesCollection(createXYSeriesRealTimeStream(firstResponse));
                                 updateXYSeriesCollection();
                             }
@@ -382,37 +384,24 @@ public class Grapher extends JFrame implements Zoomable, Serializable {
             }
         }));
 
-        additionButton.setText("Add");
-        GrapherGUI.setDefaultButtonStyle(additionButton);
+        clearingButton.addActionListener(evt -> {
 
-        clearingButton.setText("Clear");
-        GrapherGUI.setDefaultButtonStyle(clearingButton);
+            currentXYSeriesCollection.removeAllSeries();
+            currentXYSeriesMap.clear();
 
-        clearingButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                currentXYSeriesCollection.removeAllSeries();
-                currentXYSeriesMap.clear();
+            GrapherUtilities.resetAxes(chart);
+            GrapherUtilities.resetSlider(scopeSlider);
 
-                GrapherUtilities.resetAxes(chart);
-                GrapherUtilities.resetSlider(scopeSlider);
+            coefficientBox.setEnabled(false);
+            coefficientBox.setModel(InputFunctionPanel.getDefaultComboBoxModel());
 
-                coefficientBox.setEnabled(false);
-                coefficientBox.setModel(InputFunctionPanel.getDefaultComboBoxModel());
-
-                coefficientSlider.setEnabled(false);
-            }
+            coefficientSlider.setEnabled(false);
         });
 
-        resettingButton.setText("Reset");
-        GrapherGUI.setDefaultButtonStyle(resettingButton);
+        resettingButton.addActionListener(evt -> {
 
-        resettingButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                GrapherUtilities.resetAxes(chart);
-                GrapherUtilities.resetSlider(scopeSlider);
-            }
+            GrapherUtilities.resetAxes(chart);
+            GrapherUtilities.resetSlider(scopeSlider);
         });
 
         rangeButton.addActionListener(new AbstractAction() {
@@ -446,7 +435,7 @@ public class Grapher extends JFrame implements Zoomable, Serializable {
                     double step = Double.parseDouble(rangePanel.getStepField().getText());
 
 
-                    ArrayList<Double> values = CoefficientSlider.Utility.
+                    List<Double> values = CoefficientSlider.Utility.
                             createValues(min, max, step, CoefficientSlider.DefaultConfiguration.DIVISIONS);
 
                     Hashtable<Integer, JLabel> labels = CoefficientSlider.Utility.
@@ -464,40 +453,42 @@ public class Grapher extends JFrame implements Zoomable, Serializable {
         });
 
         rangeButton.setText("Range");
-        GrapherGUI.setDefaultButtonStyle(rangeButton);
 
         adjustButton.setText("Adjust");
-        GrapherGUI.setDefaultButtonStyle(adjustButton);
 
-        adjustButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                if (!rangeMaxValues.isEmpty()) {
-                    NumberAxis xAxis = (NumberAxis)chart.getXYPlot().getDomainAxis();
-                    NumberAxis yAxis = (NumberAxis)chart.getXYPlot().getRangeAxis();
+        adjustButton.addActionListener(evt -> {
 
-                    yAxis.setRange(new Range(rangeMinValuesMinimum, rangeMaxValuesMinimum));
+            if (!rangeMaxValues.isEmpty()) {
+                NumberAxis xAxis = (NumberAxis)chart.getXYPlot().getDomainAxis();
+                NumberAxis yAxis = (NumberAxis)chart.getXYPlot().getRangeAxis();
 
-                    modifiedLowerY = rangeMinValuesMinimum;
-                    modifiedUpperY = rangeMaxValuesMinimum;
+                yAxis.setRange(new Range(rangeMinValuesMinimum, rangeMaxValuesMinimum));
 
-                    modifiedLowerX = xAxis.getLowerBound();
-                    modifiedUpperX = xAxis.getUpperBound();
+                modifiedLowerY = rangeMinValuesMinimum;
+                modifiedUpperY = rangeMaxValuesMinimum;
 
-                    GrapherUtilities.normalizeTick(xAxis, "x");
-                    GrapherUtilities.normalizeTick(yAxis, "y");
-                }
+                modifiedLowerX = xAxis.getLowerBound();
+                modifiedUpperX = xAxis.getUpperBound();
+
+                GrapherUtilities.normalizeTick(xAxis, "x");
+                GrapherUtilities.normalizeTick(yAxis, "y");
             }
         });
 
         calculatorButton.setText("Calculator");
-        GrapherGUI.setDefaultButtonStyle(calculatorButton);
 
-        calculatorButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
+        calculatorButton.addActionListener(evt -> {
 
-            }
+            JFrame frame = new Calculator();
+
+            frame.setLocationRelativeTo(null);
+            frame.setAlwaysOnTop(true);
+            frame.setTitle("Calculator");
+            frame.setIconImage(GrapherGUI.__IMAGE);
+
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+            frame.setVisible(true);
         });
 
         coefficientBox.setUI(new ChoiceBoxUI());
@@ -519,6 +510,7 @@ public class Grapher extends JFrame implements Zoomable, Serializable {
         menuBar.setFont(GrapherGUI.getDefaultFont(22));
 
         JMenu menu = new JMenu("Menu  ");
+
         menu.setFont(GrapherGUI.getDefaultFont(22));
         menu.getPopupMenu().setBorder(GrapherGUI.__UNIVERSAL_BORDER);
 
@@ -725,20 +717,7 @@ public class Grapher extends JFrame implements Zoomable, Serializable {
 
                     Color style1 = new Color(r, g, b);
 
-                    int max = Math.max(r, Math.max(g, b));
-                    int greyOffset = 12;
-
-//                    int min = Math.min(r, Math.min(g, b));
-//                    int avg = (r + g + b) / 3;
-//                    int offset = 30;
-
-//                    int tone = (int)(0.33 * r + 0.5 * g + 0.16 * b);
-//
-//                    int tone = 255 - max > 80 && 255 - max < 160 ? 255 - max : avg - min;
-
-                    int tone = max > 255 / 2 ? greyOffset : 255 - greyOffset;
-
-                    Color style2 = new Color(tone, tone, tone);
+                    Color style2 = ColorUtilities.getContrasting(style1);
 
                     chartPanel.setBackground(style1);
                     chartPanel.setForeground(style2);
@@ -942,11 +921,11 @@ public class Grapher extends JFrame implements Zoomable, Serializable {
                                            final double value)
             throws MathParserException {
 
-        String changed = FunctionParsingUtilities.Parametric.replaceVariable(expression, value);
+        String changed = MathFunctionParser.Parametric.replaceVariable(expression, value);
 
         changed = MathParser.replaceConstants(changed);
 
-        HashSet<String> coefficientsOfThis = FunctionParsingUtilities.Parametric.getCoefficients(changed);
+        HashSet<String> coefficientsOfThis = MathFunctionParser.Parametric.getCoefficients(changed);
 
         if (!Grapher.coefficientMap.isEmpty()) {
             for (Map.Entry<String, Double> entry : Grapher.coefficientMap.entrySet()) {
@@ -954,8 +933,8 @@ public class Grapher extends JFrame implements Zoomable, Serializable {
                 String coefficient  = entry.getKey();
                 double v            = entry.getValue();
 
-                if (containsAnyIn(new ArrayList<String>(coefficientsOfThis))) {
-                    changed = FunctionParsingUtilities.Parametric.replaceCoefficient(changed, coefficient, v);
+                if (containsAnyIn(new ArrayList<>(coefficientsOfThis))) {
+                    changed = MathFunctionParser.Parametric.replaceCoefficient(changed, coefficient, v);
                 }
             }
         }
@@ -969,10 +948,10 @@ public class Grapher extends JFrame implements Zoomable, Serializable {
 
         String changed = expression;
 
-        changed = FunctionParsingUtilities.Explicit.replaceVariable(changed, value);
+        changed = MathFunctionParser.Explicit.replaceVariable(changed, value);
         changed = MathParser.replaceConstants(changed);
 
-        List<String> coefficientsOfThis = FunctionParsingUtilities.Explicit.getCoefficients(changed);
+        List<String> coefficientsOfThis = MathFunctionParser.Explicit.getCoefficients(changed);
 
         if (!Grapher.coefficientMap.isEmpty()) {
             for (Map.Entry<String, Double> entry : Grapher.coefficientMap.entrySet()) {
@@ -981,7 +960,7 @@ public class Grapher extends JFrame implements Zoomable, Serializable {
                 double v            = entry.getValue();
 
                 if (containsAnyIn(coefficientsOfThis)) {
-                    changed = FunctionParsingUtilities.Explicit.replaceCoefficient(changed, coefficient, v);
+                    changed = MathFunctionParser.Explicit.replaceCoefficient(changed, coefficient, v);
                 }
             }
         }
@@ -989,134 +968,19 @@ public class Grapher extends JFrame implements Zoomable, Serializable {
         return MathParser.parse(changed);
     }
 
-    private static ArrayList<Double> createYDataRealTimeStream(final String function) {
-        final int THREADS_COUNT = getThreads();
-
-        ArrayList<Double> data = new ArrayList<>();
-
-        X_VALUES.stream().parallel().forEach(x -> {
-            try {
-                data.add(compute(function, x));
-            } catch (MathParserException e) {
-                logger.log(Level.SEVERE, "parsing error", e);
-            }
-        });
-
-        return data;
-    }
-
-    private static XYSeries test2() {
-
-        XYSeries series = new XYSeries("AAAAAAAA", false, true);
-
-        String left = "x * x + y * y";
-        String right = "1";
-
-        for (double y = -1.0; y <= 1.0; y += 0.01) {
-            for (double x = -1.0; x <= 1.0; x += 0.01) {
-                double L = MathParser.parse(left
-                        .replace("x", MathParser.Precision.evadeEFormat(x))
-                        .replace("y", MathParser.Precision.evadeEFormat(y))
-                );
-
-                double R = MathParser.parse(right
-                        .replace("x", MathParser.Precision.evadeEFormat(x))
-                        .replace("y", MathParser.Precision.evadeEFormat(y))
-                );
-
-                if (Math.abs(L - R) < 0.0001) {
-                    series.add(x, y);
-                }
-            }
-        }
-
-        return series;
-    }
-
-    private static XYSeries test() {
-        XYSeries series = new XYSeries("test", false, false);
-
-        for (double d = -100.0; d <= 100.0; d += 0.01) {
-            String x = "sin(t)".replace("t", MathParser.Precision.evadeEFormat(d));
-            String y = "t".replace("t", MathParser.Precision.evadeEFormat(d));
-
-            series.add(MathParser.parse(x), MathParser.parse(y));
-        }
-
-        return series;
-    }
-
-    private static XYSeries test9() {
-
-        XYSeries series = new XYSeries("AAAAAAAA", false, true);
-
-        String left = "sin(x)";
-        String right = "cos(x)";
-
-        ArrayList<Double> list1 = new ArrayList<>();
-        ArrayList<Double> list2 = new ArrayList<>();
-
-        for (double d = -10.0; d <= 10.0; d += 0.01) {
-            list1.add(d);
-            list2.add(d);
-        }
-
-        list1.parallelStream().forEachOrdered(x -> {
-           list2.parallelStream().forEachOrdered(y -> {
-               double L = MathParser.parse(left
-                       .replace("x", MathParser.Precision.evadeEFormat(x))
-                       .replace("y", MathParser.Precision.evadeEFormat(y))
-               );
-
-               double R = MathParser.parse(right
-                       .replace("x", MathParser.Precision.evadeEFormat(x))
-                       .replace("y", MathParser.Precision.evadeEFormat(y))
-               );
-
-               double L1 = x * x + (y + 0.01) * (y + 0.01);
-               double L2 = (x - 0.01) * (x - 0.01) + y * y;
-               double L3 = (x + 0.01) * (x + 0.01) + y * y;
-               double L4 = x * x + (y - 0.01) * (y - 0.01);
-
-               boolean sign = (Math.signum(L1) == Math.signum(L2))
-                       && (Math.signum(L2) == Math.signum(L3))
-                       && (Math.signum(L3) == Math.signum(L4));
-
-               if (Math.abs(L - R) < 0.01 && sign) {
-
-                   series.add(x, y);
-
-               } else {
-                   series.add(0, Double.NaN);
-               }
-           });
-        });
-
-        List list = series.getItems();
-
-        for (int i = 0; i < series.getItems().size(); i++) {
-
-            XYDataItem item = (XYDataItem) list.get(i);
-
-
-            if (Double.isFinite(item.getYValue()))
-                System.out.println(list.get(i) + "\n");
-        }
-
-        return series;
-    }
-
     private static XYSeries createParametricXYSeriesRealTimeStream(final String xt,
                                                                    final String yt) {
 
         String key = "x(t) = " + xt + ", y(t) = " + yt;
 
-        XYSeries series = new XYSeries(key, true, true);
+        XYSeries series = new XYSeries(key, false, true);
         series.setDescription(key);
 
-        X_VALUES.stream().parallel().forEachOrdered(t -> {
+        ArrayList<XYDataItem> values = new ArrayList<>();
+
+        RunConfiguration.X_VALUES.stream().parallel().forEachOrdered(t -> {
             try {
-                series.add((Double)parametricCompute(xt, t), (Double) parametricCompute(yt, t));
+                values.add(new XYDataItem((Double)parametricCompute(xt, t), (Double) parametricCompute(yt, t)));
 
             } catch (IndexOutOfBoundsException e) {
                 logger.log(Level.SEVERE, "index out of bounds", e);
@@ -1124,6 +988,8 @@ public class Grapher extends JFrame implements Zoomable, Serializable {
                 logger.log(Level.SEVERE, "parsing error", e);
             }
         });
+
+        values.forEach(series::add);
 
         return series;
     }
@@ -1133,28 +999,11 @@ public class Grapher extends JFrame implements Zoomable, Serializable {
         XYSeries series = new XYSeries(function, true, true);
         series.setDescription(function);
 
-        X_VALUES.stream().parallel().forEachOrdered(x -> {
+        RunConfiguration.X_VALUES.stream().parallel().forEachOrdered(x -> {
             try {
                 series.add(x, (Double) compute(function, x));
             } catch (IndexOutOfBoundsException e) {
                 logger.log(Level.SEVERE, "index out of bounds", e);
-            } catch (MathParserException e) {
-                logger.log(Level.SEVERE, "parsing error", e);
-            }
-        });
-
-        return series;
-    }
-
-    private static XYSeries createXYSeriesRealTimeStream2(final String function) {
-
-        final int THREADS_COUNT = getThreads();
-        XYSeries series = new XYSeries(function, true, true);
-        series.setDescription(function);
-
-        X_VALUES.stream().parallel().forEach(x -> {
-            try {
-                series.add(x, (Double)compute(function, x));
             } catch (MathParserException e) {
                 logger.log(Level.SEVERE, "parsing error", e);
             }
@@ -1205,75 +1054,6 @@ public class Grapher extends JFrame implements Zoomable, Serializable {
         return series;
     }
 
-    private static XYSeries createXYSeriesComplete(final String function) {
-        final int THREADS_COUNT = getThreads();
-        XYSeries series = new XYSeries(function);
-        series.setDescription(function);
-
-        ExecutorService pool = Executors.newFixedThreadPool(THREADS_COUNT);
-
-        ExecutorCompletionService<Double> completionService = new ExecutorCompletionService<>(pool);
-
-        final ArrayList<Runnable> tasks = new ArrayList<>();
-        final List<Future<Double>> futures = new ArrayList<>();
-
-        final double delta = RunConfiguration.COMPUTATION_RANGE.getLength() / THREADS_COUNT;
-        final double left = RunConfiguration.COMPUTATION_RANGE.getLowerBound();
-        final double right = RunConfiguration.COMPUTATION_RANGE.getUpperBound();
-
-        final double step = 1 / Math.pow(10, RunConfiguration.PRECISION_DIGITS);
-
-        for (double p = left; p <= right; p = p + delta) {
-            final double fp = p;
-            tasks.add(new Runnable() {
-                @Override
-                public void run() {
-                    for (double x = fp; x < fp + delta; x = x + step) {
-                        try {
-
-                            series.add(x, compute(function, x));
-
-                        } catch (MathParserException e) {
-                            logger.log(Level.WARNING, "parsing error", e);
-                        }
-                    }
-                }
-            });
-        }
-
-        for (Runnable task : tasks) {
-            Future<?> f = pool.submit(task);
-            futures.add((Future<Double>) f);
-        }
-
-        for (Future<?> f: futures) {
-            try {
-                System.out.println("future.isDone = " + f.isDone());
-                System.out.println("future: call = "+ f.get());
-                f.get();
-            } catch (InterruptedException e) {
-                logger.log(Level.WARNING, "interrupted exception", e);
-            } catch (ExecutionException e) {
-                logger.log(Level.WARNING, "execution exception", e);
-            }
-        }
-
-        return series;
-    }
-
-    private static int getThreads(final int threads) {
-        if (RunConfiguration.MODE == Mode.ALL)
-            return Runtime.getRuntime().availableProcessors();
-        else if (RunConfiguration.MODE == Mode.HALF)
-            return Runtime.getRuntime().availableProcessors() / 2;
-        else if (RunConfiguration.MODE == Mode.SINGLE)
-            return 1;
-        else if (RunConfiguration.MODE == Mode.CUSTOM && threads < Runtime.getRuntime().availableProcessors())
-            return threads;
-
-        return 1;
-    }
-
     public static int getThreads() {
         if (RunConfiguration.MODE == Mode.ALL)
             return Runtime.getRuntime().availableProcessors();
@@ -1322,6 +1102,15 @@ public class Grapher extends JFrame implements Zoomable, Serializable {
 
         XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) plot.getRenderer();
 
+        renderer.setSeriesPaint(0, new Color(
+                (int)(Math.random() * 100),
+                (int)(Math.random() * 100),
+                (int)(Math.random() * 100))
+        );
+
+        renderer.setSeriesStroke(0, new BasicStroke(GrapherGUI.__STROKE_WIDTH));
+        renderer.setSeriesShapesVisible(0, false);
+
         plot.setRenderer(renderer);
         plot.setBackgroundPaint(Color.WHITE);
 
@@ -1331,21 +1120,12 @@ public class Grapher extends JFrame implements Zoomable, Serializable {
         plot.setDomainGridlinesVisible(true);
         plot.setDomainGridlinePaint(Color.BLACK);
 
-
-        renderer.setSeriesPaint(0, new Color(
-                (int)(Math.random() * 100),
-                (int)(Math.random() * 100),
-                (int)(Math.random() * 100))
-        );
-        renderer.setSeriesStroke(0, new BasicStroke(GrapherGUI.__STROKE_WIDTH));
-        renderer.setSeriesShapesVisible(0, false);
-
         return chart;
     }
 
-    private static MouseListener createCoefficientSliderMouseListener() {
+    private static MouseAdapter createCoefficientSliderMouseAdapter() {
 
-        return new MouseListener() {
+        return new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent evt) {
                 if (coefficientSlider.isEnabled()) {
@@ -1359,11 +1139,6 @@ public class Grapher extends JFrame implements Zoomable, Serializable {
             }
 
             @Override
-            public void mousePressed(MouseEvent evt) {
-
-            }
-
-            @Override
             public void mouseReleased(MouseEvent evt) {
                 if (coefficientSlider.isEnabled()) {
                     currentCoefficient = (String) coefficientBox.getSelectedItem();
@@ -1373,16 +1148,6 @@ public class Grapher extends JFrame implements Zoomable, Serializable {
                     );
                     updateXYSeriesCollection();
                 }
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent evt) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent evt) {
-
             }
         };
     }
@@ -1436,7 +1201,7 @@ public class Grapher extends JFrame implements Zoomable, Serializable {
         return additionButtonInvokeCount;
     }
 
-    public static HashMap<String, Double> getCoefficientMap() {
+    public static Map<String, Double> getCoefficientMap() {
         return coefficientMap;
     }
 
@@ -1445,50 +1210,5 @@ public class Grapher extends JFrame implements Zoomable, Serializable {
             Grapher instance = new Grapher();
             instance.setVisible(true);
         });
-    }
-
-    @Override
-    public boolean isDomainZoomable() {
-        return true;
-    }
-
-    @Override
-    public boolean isRangeZoomable() {
-        return true;
-    }
-
-    @Override
-    public PlotOrientation getOrientation() {
-        return null;
-    }
-
-    @Override
-    public void zoomDomainAxes(double factor, PlotRenderingInfo state, Point2D source) {
-
-    }
-
-    @Override
-    public void zoomDomainAxes(double factor, PlotRenderingInfo state, Point2D source, boolean useAnchor) {
-
-    }
-
-    @Override
-    public void zoomDomainAxes(double lowerPercent, double upperPercent, PlotRenderingInfo state, Point2D source) {
-
-    }
-
-    @Override
-    public void zoomRangeAxes(double factor, PlotRenderingInfo state, Point2D source) {
-
-    }
-
-    @Override
-    public void zoomRangeAxes(double factor, PlotRenderingInfo state, Point2D source, boolean useAnchor) {
-
-    }
-
-    @Override
-    public void zoomRangeAxes(double lowerPercent, double upperPercent, PlotRenderingInfo state, Point2D source) {
-
     }
 }

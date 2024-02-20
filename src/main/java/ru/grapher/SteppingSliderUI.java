@@ -44,6 +44,9 @@ public class SteppingSliderUI extends BasicSliderUI {
     public void paintTrack(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
 
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING   , RenderingHints.VALUE_RENDER_QUALITY);
+
         Stroke old = g2d.getStroke();
 
         g2d.setStroke(stroke);
@@ -72,17 +75,30 @@ public class SteppingSliderUI extends BasicSliderUI {
     public void paintThumb(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
 
-        Shape circleShape = new Ellipse2D.Double(
-                thumbRect.x + 1,
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING   , RenderingHints.VALUE_RENDER_QUALITY);
+
+        Shape shape = new Rectangle(thumbRect.x + 2,
                 thumbRect.y + 3,
                 9,
                 9
         );
 
-        g2d.setStroke(new BasicStroke(1f));
-        g2d.setPaint(thumbColor);
-        g2d.fill(circleShape);
-        g2d.draw(circleShape);
+        if (!this.slider.getValueIsAdjusting()) {
+            g2d.setStroke(new BasicStroke(1f));
+            g2d.setPaint(thumbColor);
+
+            g2d.fill(shape);
+            g2d.draw(shape);
+
+        } else {
+            g2d.setStroke(new BasicStroke(1f));
+            g2d.setPaint(Color.BLACK);
+
+            g2d.fill(shape);
+            g2d.draw(shape);
+        }
     }
+
 }
 

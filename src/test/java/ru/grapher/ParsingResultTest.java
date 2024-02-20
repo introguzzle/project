@@ -1,6 +1,8 @@
 package ru.grapher;
 
 import org.junit.Test;
+import ru.mathparser.MathParser;
+import ru.mathparser.ParsingResult;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

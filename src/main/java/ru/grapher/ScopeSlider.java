@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
+import java.util.List;
 
 public class ScopeSlider extends SteppingSlider<Integer> {
 
@@ -13,7 +14,7 @@ public class ScopeSlider extends SteppingSlider<Integer> {
         super();
     }
 
-    public ScopeSlider(final ArrayList<Integer> domainValues,
+    public ScopeSlider(final List<Integer> domainValues,
                        final Hashtable<Integer, JLabel> labels,
                        final int defaultIndex) {
         super(domainValues, labels, defaultIndex, PAINT_TICKS);
@@ -25,7 +26,7 @@ public class ScopeSlider extends SteppingSlider<Integer> {
             throw new InstantiationException();
         }
 
-        public static final ArrayList<Integer> SCOPE_DOMAIN_VALUES = new ArrayList<>(
+        public static final List<Integer> SCOPE_DOMAIN_VALUES = new ArrayList<>(
                 Arrays.asList(
                         1,
                         3, 5, 7, 10, 12, 14, 16, 18, 20,
@@ -55,7 +56,7 @@ public class ScopeSlider extends SteppingSlider<Integer> {
 
             Hashtable<Integer, JLabel> scopeTable = new Hashtable<>();
 
-            JLabel maxValue = new JLabel(DefaultConfiguration.SCOPE_DOMAIN_VALUES.get(DefaultConfiguration.SCOPE_DOMAIN_VALUES.size() - 1).toString() + "%");
+            JLabel maxValue = new JLabel(DefaultConfiguration.SCOPE_DOMAIN_VALUES.getLast().toString() + "%");
             maxValue.setFont(GrapherGUI.getDefaultSliderFont());
             scopeTable.put(DefaultConfiguration.SCOPE_DOMAIN_VALUES.size() - 1, maxValue);
 
@@ -71,7 +72,7 @@ public class ScopeSlider extends SteppingSlider<Integer> {
             lowerQuarterValue.setFont(GrapherGUI.getDefaultSliderFont());
             scopeTable.put(SCOPE_LOWER_QUARTER_INDEX, lowerQuarterValue);
 
-            JLabel minValue = new JLabel(DefaultConfiguration.SCOPE_DOMAIN_VALUES.get(0).toString() + "%");
+            JLabel minValue = new JLabel(DefaultConfiguration.SCOPE_DOMAIN_VALUES.getFirst().toString() + "%");
             minValue.setFont(GrapherGUI.getDefaultSliderFont());
             scopeTable.put(0, minValue);
             return scopeTable;

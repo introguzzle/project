@@ -1,19 +1,24 @@
 package ru.grapher;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.*;
+import java.util.List;
 
-public class SteppingSlider<T> extends JSlider {
+public abstract class SteppingSlider<T> extends JSlider {
 
-    protected ArrayList<T> domainValues = new ArrayList<>();
+    protected List<T> domainValues = new ArrayList<>();
     protected int size;
 
     public SteppingSlider() {
         super();
     }
 
-    public SteppingSlider(final ArrayList<T> domainValues,
+    public SteppingSlider(final List<T> domainValues,
                           final Hashtable<Integer, JLabel> labels,
                           final int defaultIndex) {
         super(0, domainValues.size() - 1, defaultIndex);
@@ -27,9 +32,11 @@ public class SteppingSlider<T> extends JSlider {
 
         this.domainValues = domainValues;
         this.size = domainValues.size();
+
+        this.addMouseListener(new MouseHandler(this));
     }
 
-    public SteppingSlider(final ArrayList<T> domainValues,
+    public SteppingSlider(final List<T> domainValues,
                           final Hashtable<Integer, JLabel> labels,
                           final int defaultIndex,
                           final boolean paintTicks) {
@@ -37,7 +44,17 @@ public class SteppingSlider<T> extends JSlider {
         this.setPaintTicks(paintTicks);
     }
 
-    public void setConfiguration(final ArrayList<T> domainValues,
+    @Override
+    public void paint(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING   , RenderingHints.VALUE_RENDER_QUALITY);
+
+        super.paint(g);
+    }
+
+    public void setConfiguration(final List<T> domainValues,
                                  final int current,
                                  final Hashtable<Integer, JLabel> labels) {
         this.setMinimum(0);
@@ -50,23 +67,11 @@ public class SteppingSlider<T> extends JSlider {
         this.size = domainValues.size();
     }
 
-    // must be same type,
-    // but maybe I could write this using wildcard as
-    // public void setConfiguration(SteppingSlider<?> other) {
-    //
-    //
-
-    public void setConfiguration(final SteppingSlider<T> other,
-                                 final int defaultIndex,
-                                 final Hashtable<Integer, JLabel> newLabels) {
-        this.setConfiguration(other.domainValues, defaultIndex, newLabels);
-    }
-
     public void setThumbColor(Color thumbColor) {
         this.setUI(new SteppingSliderUI(this, thumbColor));
     }
 
-    public ArrayList<T> getDomainValues() {
+    public List<T> getDomainValues() {
         return this.domainValues;
     }
 
@@ -74,10 +79,47 @@ public class SteppingSlider<T> extends JSlider {
         return this.domainValues.get(this.getValue());
     }
 
-    public void setDomainValue(final T domainValue) {
-        for (int i = 0; i < size; i++) {
-            if (domainValue == this.domainValues.get(i))
-                this.setValue(i);
+    private static final class MouseHandler extends MouseAdapter {
+
+        private final JSlider owner;
+        private boolean hover;
+
+        public MouseHandler(JSlider owner) {
+            this.owner = owner;
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            if (this.owner.isEnabled()) {
+                this.hover = true;
+                this.owner.setBackground(new Color(160, 170, 255));
+            }
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            if (this.owner.isEnabled()) {
+                this.hover = true;
+                this.owner.setBackground(new Color(184, 207, 228));
+            }
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            if (this.owner.isEnabled()) {
+                this.hover = false;
+                this.owner.setBackground(Color.WHITE);
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            if (this.owner.isEnabled()) {
+                if (!hover)
+                    this.mouseExited(e);
+                else
+                    this.mouseEntered(e);
+            }
         }
     }
 }

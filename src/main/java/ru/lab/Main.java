@@ -1,19 +1,18 @@
 package ru.lab;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Main {
 
     public static void main(String... p) {
-        BooleanVector b = new BooleanVector("1010101");
-        BooleanVector c = new BooleanVector("111010010110101010");
+        Flower flower = new Flower();
+        Tree tree = new Tree();
 
-        System.out.println(b.toString(c));
+        Tree[] trees = new Tree[2];
+        List<Flower> flowers = new ArrayList<>();
 
-        BooleanVector v = b.xor(c).nand(c);
-
-        System.out.println(v);
-
-
-
-
+        System.out.println(flower.waterAmount(Season.WINTER, 10));
+        System.out.println(tree.waterAmount(Season.AUTUMN, 200));
     }
 }

@@ -63,21 +63,7 @@ public final class GrapherUtilities {
         xAxis.setTickUnit(new NumberTickUnit(Grapher.RunConfiguration.DEFAULT_RANGE_OF_X.getUpperBound() / Grapher.RunConfiguration.NUMBER_OF_TICKS));
     }
 
-    public static void updateMinMax(final XYSeries series) throws NoSuchFieldException, IllegalAccessException {
+    public static void updateMinMax(final XYSeries series) {
 
-//        rangeMaxValues.add(series.getMaxY());
-//        rangeMinValues.add(series.getMinY());
-//        rangeMinValuesMinimum = series.getMinY();
-//        rangeMaxValuesMinimum = series.getMaxY();
-//
-//        if (isCorrectValue(series.getMaxY()))
-//            rangeMaxValuesMinimum = rangeMaxValues.stream().min(Double::compare).orElse(1.0);
-//        else
-//            rangeMaxValuesMinimum = COMPUTATION_BOUND;
-//
-//        if (isCorrectValue(series.getMinY()))
-//            rangeMinValuesMinimum = rangeMinValues.stream().min(Double::compare).orElse(-1.0);
-//        else
-//            rangeMinValuesMinimum = -COMPUTATION_BOUND;
     }
 }

@@ -1,5 +1,9 @@
 package ru.grapher;
 
+import ru.mathparser.MathFunctionParser;
+import ru.mathparser.MathParser;
+import ru.mathparser.ParsingResult;
+
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -126,7 +130,7 @@ public final class InputFunctionPanel extends JPanel {
 
                 function = MathParser.replaceConstants(function);
 
-                coefficientSet      .addAll(FunctionParsingUtilities.Explicit.getCoefficients(function));
+                coefficientSet      .addAll(MathFunctionParser.Explicit.getCoefficients(function));
                 coefficientArray    = new String[coefficientSet.size()];
                 coefficientSet      .toArray(coefficientArray);
 
@@ -138,7 +142,7 @@ public final class InputFunctionPanel extends JPanel {
                 }
 
 
-                if (!FunctionParsingUtilities.Explicit.getCoefficients(function).isEmpty())
+                if (!MathFunctionParser.Explicit.getCoefficients(function).isEmpty())
                     choiceBox.setEnabled(true);
 
                 choiceBox.setModel(new DefaultComboBoxModel<>(coefficientArray));

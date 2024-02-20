@@ -13,14 +13,16 @@ public final class GrapherGUI {
 
     public static final String __NAME                  = "Grapher";
     public static final String __FONT                  = "Verdana";
-    public static final int __FONT_BUTTON_SIZE         = 20;
-    public static final int __BUTTON_HEIGHT            = 60;
-    public static final int __MAGIC_WIDTH              = 66;
-    public static final int __SLIDER_HEIGHT            = 366;
-    public static final float __STROKE_WIDTH           = 2.0f;
-    public static final String __IMAGE_NAME            = "logo.jpg";
-    public static final Image __IMAGE                  = new ImageIcon(__IMAGE_NAME).getImage();
-    public static final int __SLIDER_FONT_SIZE         = 13;
+    public static final int    __FONT_BUTTON_SIZE      = 20;
+    public static final int    __BUTTON_HEIGHT         = 60;
+    public static final int    __MAGIC_WIDTH           = 66;
+    public static final int    __SLIDER_HEIGHT         = 366;
+    public static final float  __STROKE_WIDTH          = 1.0f;
+
+    public static final String __IMAGE_NAME            = ".\\src\\main\\java\\ru\\grapher\\images\\logo.jpg";
+    public static final Image  __IMAGE                 = new ImageIcon(__IMAGE_NAME).getImage();
+
+    public static final int    __SLIDER_FONT_SIZE      = 13;
     public static final double __DIMENSION_MULTIPLIER  = 1.2;
 
     public static final Border __UNIVERSAL_BORDER      = new CompoundBorder(
@@ -53,58 +55,4 @@ public final class GrapherGUI {
         return new Font(__FONT, Font.PLAIN, __SLIDER_FONT_SIZE);
     }
 
-    public static void setDefaultButtonStyle(final JButton button) {
-        button.setBackground(Color.WHITE);
-        button.setFont(getDefaultFont(__FONT_BUTTON_SIZE));
-        button.setFocusable(false);
-        button.setHorizontalTextPosition(JButton.CENTER);
-        button.setVerticalTextPosition(JButton.CENTER);
-        button.setBorder(__UNIVERSAL_BORDER);
-    }
-
-    public static void setDefaultButtonStyle(final JButton button,
-                                             final Font font) {
-        button.setBackground(Color.WHITE);
-        button.setFont(font);
-        button.setFocusable(false);
-        button.setHorizontalTextPosition(JButton.CENTER);
-        button.setVerticalTextPosition(JButton.CENTER);
-        button.setBorder(__UNIVERSAL_BORDER);
-    }
-
-    public static void setDefaultButtonStyle(final Font font,
-                                             final JButton... buttons) {
-
-        for (JButton button: buttons) {
-            button.setBackground(Color.WHITE);
-            button.setFont(font);
-            button.setFocusable(false);
-            button.setHorizontalTextPosition(JButton.CENTER);
-            button.setVerticalTextPosition(JButton.CENTER);
-            button.setBorder(__UNIVERSAL_BORDER);
-        }
-    }
-
-    public static void setDefaultButtonStyle(final int fontSize,
-                                             final JButton... buttons) {
-
-        for (JButton button: buttons) {
-            button.setBackground(Color.WHITE);
-            button.setFont(getDefaultFont(fontSize));
-            button.setFocusable(false);
-            button.setHorizontalTextPosition(JButton.CENTER);
-            button.setVerticalTextPosition(JButton.CENTER);
-            button.setBorder(__UNIVERSAL_BORDER);
-        }
-    }
-
-    public static void setDefaultButtonStyle(final JButton button,
-                                             final int fontSize) {
-        button.setBackground(Color.WHITE);
-        button.setFont(getDefaultFont(fontSize));
-        button.setFocusable(false);
-        button.setHorizontalTextPosition(JButton.CENTER);
-        button.setVerticalTextPosition(JButton.CENTER);
-        button.setBorder(__UNIVERSAL_BORDER);
-    }
 }

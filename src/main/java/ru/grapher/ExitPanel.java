@@ -1,35 +1,27 @@
 package ru.grapher;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public final class ExitPanel extends JPanel {
 
     private final JPanel  buttonsPanel  = new JPanel();
-    private final JButton confirmButton = new JButton();
-    private final JButton cancelButton  = new JButton();
+
+    private final JButton confirmButton = new DynamicButton("Confirm", 19);
+    private final JButton cancelButton  = new DynamicButton("Cancel" , 19);
+
     private final JPanel  textPanel     = new JPanel();
     private final JLabel  textLabel     = new JLabel();
 
     private final static String FULL_TEXT   = "Are you sure you want to exit?";
     private final static String SHORT_TEXT  = "Are you sure?";
 
-    private final static String YES_TEXT    = "Confirm";
-    private final static String NO_TEXT     = "Cancel";
-
     private final Color COLOR_DIFFER_WINDOW = new Color(200, 200, 200);
-    private final Color COLOR_OF_BUTTON     = Color.WHITE;
-
-    private final static Border BORDER      = GrapherGUI.__UNIVERSAL_BORDER;
 
     private final static Font TEXT_FONT     = GrapherGUI.getDefaultFont(22);
-    private final static Font BUTTON_FONT   = GrapherGUI.getDefaultFont(19);
 
-    private ExitPanel() throws ClassNotFoundException {
-        throw new ClassNotFoundException();
+    private ExitPanel() throws InstantiationException {
+        throw new InstantiationException();
     }
 
     public ExitPanel(final boolean isWindowEvent) {
@@ -38,64 +30,25 @@ public final class ExitPanel extends JPanel {
         else {
             initComponents();
 
-            cancelButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent evt) {
-                    JDialog parentDialog = (JDialog) SwingUtilities.getWindowAncestor((Component) evt.getSource());
-                    JFrame instance = (JFrame) SwingUtilities.getWindowAncestor(parentDialog);
+            cancelButton.addActionListener(evt -> {
+                JDialog parentDialog = (JDialog) SwingUtilities.getWindowAncestor((Component) evt.getSource());
+                JFrame instance = (JFrame) SwingUtilities.getWindowAncestor(parentDialog);
 
-                    instance.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-                }
+                instance.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
             });
         }
 
-    }
-
-    // Only for color-testing
-    public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                JFrame frame = new JFrame();
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.getContentPane().add(new ExitPanel(true));
-                frame.pack();
-
-                frame.setLocationRelativeTo(null);
-                frame.setVisible(true);
-            }
-        });
     }
 
     private void initComponents() {
 
         this.setBackground(COLOR_DIFFER_WINDOW);
 
-        confirmButton.setBackground(COLOR_OF_BUTTON);
-        confirmButton.setFont(BUTTON_FONT);
-        confirmButton.setForeground(Color.BLACK);
-        confirmButton.setText(YES_TEXT);
-        confirmButton.setFocusable(false);
-        confirmButton.setBorder(BORDER);
-        confirmButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.exit(0);
-            }
-        });
+        confirmButton.addActionListener(e -> System.exit(0));
 
-        cancelButton.setBackground(COLOR_OF_BUTTON);
-        cancelButton.setFont(BUTTON_FONT);
-        cancelButton.setForeground(Color.BLACK);
-        cancelButton.setText(NO_TEXT);
-        cancelButton.setFocusable(false);
-        cancelButton.setBorder(BORDER);
-        cancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JDialog ancestor = (JDialog)((JButton)e.getSource()).getTopLevelAncestor();
-                ancestor.dispose();
-            }
+        cancelButton.addActionListener(e -> {
+            JDialog ancestor = (JDialog)((JButton)e.getSource()).getTopLevelAncestor();
+            ancestor.dispose();
         });
 
         buttonsPanel.setBackground(new Color(150, 150, 150));
@@ -163,13 +116,5 @@ public final class ExitPanel extends JPanel {
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(buttonsPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
         );
-    }
-
-    public static String getFullText() {
-        return FULL_TEXT;
-    }
-
-    public static String getShortText() {
-        return SHORT_TEXT;
     }
 }

@@ -1,5 +1,7 @@
 package ru.grapher;
 
+import ru.mathparser.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.HashMap;
@@ -33,10 +35,10 @@ public class ParametricFunctionPanel extends JPanel {
 
     private final JSeparator separator            = new JSeparator();
 
-    private final JButton    exitButton           = new JButton("Exit");
-    private final JButton    confirmButton        = new JButton("Confirm");
-    private final JButton    generateButton       = new JButton("Generate");
-    private final JButton    clearButton          = new JButton("Clear");
+    private final JButton    exitButton           = new DynamicButton("Exit");
+    private final JButton    confirmButton        = new DynamicButton("Confirm");
+    private final JButton    generateButton       = new DynamicButton("Generate");
+    private final JButton    clearButton          = new DynamicButton("Clear");
 
     private static final Border BORDER            = GrapherGUI.__UNIVERSAL_BORDER;
 
@@ -77,7 +79,7 @@ public class ParametricFunctionPanel extends JPanel {
         initActions();
         initLayout();
 
-        this.ownerPanel = ownerPanel;
+        this.ownerPanel  = ownerPanel;
         this.ownerDialog = ownerDialog;
     }
 
@@ -86,9 +88,6 @@ public class ParametricFunctionPanel extends JPanel {
 
         separator.setBackground(Color.BLACK);
         separator.setForeground(Color.WHITE);
-
-        GrapherGUI.setDefaultButtonStyle(BUTTON_FONT,
-                confirmButton, exitButton, clearButton, generateButton);
 
         setDefaultTextFieldStyle(xTextField, yTextField);
 
@@ -213,6 +212,7 @@ public class ParametricFunctionPanel extends JPanel {
     }
 
     private void initLayout() {
+
         GroupLayout layout = new GroupLayout(this);
 
         this.setLayout(layout);
@@ -295,7 +295,7 @@ public class ParametricFunctionPanel extends JPanel {
 
     }
 
-    private void shiftCycleShift() {
+    private void shiftChoiceBox() {
         try {
             choiceBox.setSelectedItem(
                     choiceBox.getModel().getElementAt((choiceBox.getSelectedIndex() + 1) % choiceBox.getModel().getSize()));
@@ -487,7 +487,7 @@ public class ParametricFunctionPanel extends JPanel {
                 coefficientStringMap.clear();
 
                 firstCoefficientNames.clear();
-                firstCoefficientNames.addAll(FunctionParsingUtilities.Parametric.getCoefficients(text));
+                firstCoefficientNames.addAll(MathFunctionParser.Parametric.getCoefficients(text));
 
                 String[] coefficientArray = new String[firstCoefficientNames.size()];
                 coefficientArray = firstCoefficientNames.toArray(coefficientArray);
@@ -502,7 +502,7 @@ public class ParametricFunctionPanel extends JPanel {
 
                 coefficientStringMap.clear();
 
-                firstCoefficientNames.addAll(FunctionParsingUtilities.Parametric.getCoefficients(text));
+                firstCoefficientNames.addAll(MathFunctionParser.Parametric.getCoefficients(text));
                 firstCoefficientNames.addAll(secondCoefficientNames);
 
                 String[] coefficientArray = new String[firstCoefficientNames.size()];
@@ -560,7 +560,7 @@ public class ParametricFunctionPanel extends JPanel {
                     firstResult == ParsingResult.ERROR) {
 
                 secondCoefficientNames.clear();
-                secondCoefficientNames.addAll(FunctionParsingUtilities.Parametric.getCoefficients(text));
+                secondCoefficientNames.addAll(MathFunctionParser.Parametric.getCoefficients(text));
 
                 String[] coefficientArray = new String[secondCoefficientNames.size()];
                 coefficientArray = secondCoefficientNames.toArray(coefficientArray);
@@ -573,7 +573,7 @@ public class ParametricFunctionPanel extends JPanel {
 
             if (firstResult == ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMS) {
 
-                secondCoefficientNames.addAll(FunctionParsingUtilities.Parametric.getCoefficients(text));
+                secondCoefficientNames.addAll(MathFunctionParser.Parametric.getCoefficients(text));
                 secondCoefficientNames.addAll(firstCoefficientNames);
 
                 String[] coefficientArray = new String[secondCoefficientNames.size()];
@@ -621,7 +621,7 @@ public class ParametricFunctionPanel extends JPanel {
                     exitButton.doClick();
 
                 if (KEY == KeyEvent.VK_SHIFT) {
-                    shiftCycleShift();
+                    shiftChoiceBox();
                 }
             }
         };

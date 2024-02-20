@@ -12,40 +12,17 @@ public class CoefficientSlider extends SteppingSlider<Double> {
         super();
     }
     
-    public CoefficientSlider(final ArrayList<Double> domainValues,
+    public CoefficientSlider(final List<Double> domainValues,
                              final Hashtable<Integer, JLabel> labels,
                              final int defaultIndex) {
         super(domainValues, labels, defaultIndex, PAINT_TICKS);
     }
 
-//    private int getClosestDoubleIn(final double domainValue) {
-//        final double epsilon = 1.0 / Math.pow(10.0, 2.0);
-//        final double extreme_epsilon = 1.0;
-//
-//        Map<Double, Integer> differences = new HashMap<>();
-//        Map<Double, Integer> rough_differences = new HashMap<>();
-//
-//        for (int i = 0; i < size; i++) {
-//            double d = this.domainValues.get(i);
-//            if (Math.abs(d - domainValue) < epsilon)
-//                differences.put(d, i);
-//            else if (Math.abs(d - domainValue) < extreme_epsilon)
-//                rough_differences.put(d, i);
-//        }
-//
-//        if (!differences.isEmpty())
-//            return differences.get(differences.keySet().stream().min(Double::compare).get());
-//        else if (!rough_differences.isEmpty())
-//            return rough_differences.get(rough_differences.keySet().stream().min(Double::compare).get());
-//        else
-//            return Integer.MIN_VALUE;
-//    }
-
     private int getClosestDoubleIndex(final double domainValue) {
-        ArrayList<Double> diffs = new ArrayList<>();
+        List<Double> diffs = new ArrayList<>();
 
-        for (int i = 0; i < this.domainValues.size(); i++) {
-            diffs.add(Math.abs(this.domainValues.get(i) - domainValue));
+        for (Double value : this.domainValues) {
+            diffs.add(Math.abs(value - domainValue));
         }
 
         double[] min = {Math.abs(this.domainValues.getFirst() - domainValue), 0};
@@ -83,14 +60,14 @@ public class CoefficientSlider extends SteppingSlider<Double> {
     public final static class Utility {
 
         private Utility() throws InstantiationException {
-            throw new InstantiationException("Can't instantiate utility class");
+            throw new InstantiationException();
         }
 
-        public static ArrayList<Double> createValues(final double min,
+        public static List<Double> createValues(final double min,
                                                      final double max,
                                                      final double step,
                                                      final double divisions) {
-            ArrayList<Double> values = new ArrayList<>();
+            List<Double> values = new ArrayList<>();
 
             int before = (int) ((Math.abs(min - max)) / step);
             int dividable = before;
@@ -124,7 +101,7 @@ public class CoefficientSlider extends SteppingSlider<Double> {
                                                                     final double divisions) {
 
             Hashtable<Integer, JLabel> labels = new Hashtable<>();
-            ArrayList<Double> values = createValues(min, max, step, divisions);
+            List<Double> values = createValues(min, max, step, divisions);
 
             int size = values.size();
 
@@ -143,7 +120,7 @@ public class CoefficientSlider extends SteppingSlider<Double> {
                                                final double max,
                                                final double step,
                                                final double divisions) {
-            ArrayList<Double> values = createValues(min, max, step, divisions);
+            List<Double> values = createValues(min, max, step, divisions);
 
             return new CoefficientSlider(
                     values,
@@ -159,7 +136,7 @@ public class CoefficientSlider extends SteppingSlider<Double> {
                                                             final double divisions) {
             Hashtable<Integer, JLabel> labels = new Hashtable<>();
 
-            ArrayList<Double> values = createValues(min, max, step, divisions);
+            List<Double> values = createValues(min, max, step, divisions);
 
             int pindex = -1;
 
@@ -379,5 +356,5 @@ public class CoefficientSlider extends SteppingSlider<Double> {
     private static final int COEFFICIENT_SLIDER_LOWER_QUARTER_INDEX = COEFFICIENT_SLIDER_DEFAULT_INDEX - COEFFICIENT_SLIDER_VALUES.size() / 4;
 
     private static final double STRICT_EPSILON = 0.1;
-    private static final double ROUGH_EPSILON = 0.2;
+    private static final double ROUGH_EPSILON  = 0.2;
 }

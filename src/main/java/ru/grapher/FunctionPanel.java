@@ -1,5 +1,7 @@
 package ru.grapher;
 
+import ru.mathparser.*;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
@@ -21,15 +23,6 @@ public class FunctionPanel extends JPanel {
     private static final Font _FONT_COEFFICIENT =
             GrapherGUI.getDefaultFont(22);
 
-    private static final Font _FONT_BUTTON =
-            GrapherGUI.getDefaultFont(16);
-
-    private static final Font _FONT_MAIN_BUTTON =
-            GrapherGUI.getDefaultFont(20);
-
-    private static final Dimension _BUTTON_DIMENSION =
-            new Dimension(147, 23);
-
     private static final Border BORDER = GrapherGUI.__UNIVERSAL_BORDER;
 
     private static final DefaultComboBoxModel<String> DEFAULT_COMBO_BOX_MODEL =
@@ -37,7 +30,7 @@ public class FunctionPanel extends JPanel {
 
     private static final DecimalFormat format       = new DecimalFormat("#.##");
 
-    private final MathGeneratorV1 generator = (MathGeneratorV1) new MathGeneratorBuilder()
+    private final AbstractMathGenerator generator = (MathGeneratorV1) new MathGeneratorBuilder()
             .setMinExpressionLength(1)
             .setMaxExpressionLength(3)
             .setMinNumber(-10)
@@ -55,12 +48,12 @@ public class FunctionPanel extends JPanel {
     private final JTextField functionTextField      = new JTextField(generator.generateFunctionWithCoefficients('x'));
     private final JTextField coefficientTextField   = new JTextField();
 
-    private final JButton    exitButton             = new JButton("Exit");
-    private final JButton    generateButton         = new JButton("Generate");
-    private final JButton    confirmButton          = new JButton("Confirm");
-    private final JButton    clearButton            = new JButton("Clear");
-    private final JButton    parametricButton       = new JButton("Parametric");
-    private final JButton    testButton             = new JButton("Nothing");
+    private final JButton    exitButton             = new DynamicButton("Exit", 20);
+    private final JButton    generateButton         = new DynamicButton("Generate");
+    private final JButton    confirmButton          = new DynamicButton("Confirm", 20);
+    private final JButton    clearButton            = new DynamicButton("Clear");
+    private final JButton    parametricButton       = new DynamicButton("Parametric");
+    private final JButton    testButton             = new DynamicButton("Nothing");
 
     private boolean          done                   = false;
     private boolean          interrupted            = false;
@@ -84,7 +77,7 @@ public class FunctionPanel extends JPanel {
 
     private void initStyle() {
         UIManager.getDefaults().put("Button.disabledText", GrapherGUI.COLOR_DEATH);
-        UIManager.getDefaults().put("Button.enabledText", GrapherGUI.COLOR_WE_WILL_LIVE);
+        UIManager.getDefaults().put("Button.enabledText",  GrapherGUI.COLOR_WE_WILL_LIVE);
 
         separator.setBackground(Color.BLACK);
         separator.setForeground(Color.WHITE);
@@ -104,12 +97,6 @@ public class FunctionPanel extends JPanel {
         coefficientTextField.setEnabled(false);
         coefficientTextField.setFont(_FONT_COEFFICIENT);
         coefficientTextField.setBorder(BORDER);
-
-        GrapherGUI.setDefaultButtonStyle(_FONT_BUTTON,
-                parametricButton, generateButton, clearButton, testButton);
-
-        GrapherGUI.setDefaultButtonStyle(_FONT_MAIN_BUTTON,
-                exitButton, confirmButton);
     }
 
     private void initActions() {
@@ -209,7 +196,7 @@ public class FunctionPanel extends JPanel {
                     dispose();
 
                 if (KEY == KeyEvent.VK_SHIFT) {
-                    shiftCycleShift();
+                    shiftChoiceBox();
                 }
             }
         });
@@ -231,7 +218,7 @@ public class FunctionPanel extends JPanel {
                     dispose();
 
                 if (KEY == KeyEvent.VK_SHIFT) {
-                    shiftCycleShift();
+                    shiftChoiceBox();
                 }
             }
         });
@@ -242,99 +229,81 @@ public class FunctionPanel extends JPanel {
             functionTextField.setText(Grapher.getPreviousInput());
         }
 
-        parametricButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JDialog instance = (JDialog) SwingUtilities.getWindowAncestor((Component) e.getSource());
-                FunctionPanel panelInstance = (FunctionPanel) ((JButton) e.getSource()).getParent();
+        parametricButton.addActionListener(e -> {
+            JDialog instance = (JDialog) SwingUtilities.getWindowAncestor((Component) e.getSource());
+            FunctionPanel panelInstance = (FunctionPanel) ((JButton) e.getSource()).getParent();
 
-                JDialog inputDialog = new JDialog(
-                        instance,
-                        "Parametric Function Input",
-                        true
-                );
+            JDialog inputDialog = new JDialog(
+                    instance,
+                    "Parametric Function Input",
+                    true
+            );
 
-                inputDialog.setResizable(false);
-                inputDialog.setIconImage(GrapherGUI.__IMAGE);
+            inputDialog.setResizable(false);
+            inputDialog.setIconImage(GrapherGUI.__IMAGE);
 
 
-                ParametricFunctionPanel parametricFunctionPanel
-                        = new ParametricFunctionPanel(instance, panelInstance);
+            ParametricFunctionPanel parametricFunctionPanel
+                    = new ParametricFunctionPanel(instance, panelInstance);
 
-                inputDialog.getContentPane().add(parametricFunctionPanel);
-                inputDialog.pack();
+            inputDialog.getContentPane().add(parametricFunctionPanel);
+            inputDialog.pack();
 
-                inputDialog.setIconImage(GrapherGUI.__IMAGE);
-                inputDialog.setLocationRelativeTo(instance);
-                inputDialog.setVisible(true);
-                inputDialog.setResizable(false);
+            inputDialog.setIconImage(GrapherGUI.__IMAGE);
+            inputDialog.setLocationRelativeTo(instance);
+            inputDialog.setVisible(true);
+            inputDialog.setResizable(false);
 
-                if (parametricFunctionPanel.isDone()) {
-                    parametricFunctionPanel.setDone(true);
+            if (parametricFunctionPanel.isDone()) {
+                parametricFunctionPanel.setDone(true);
 
-                    inputDialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                    inputDialog.dispose();
-                    inputDialog.setVisible(false);
-                }
+                inputDialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                inputDialog.dispose();
+                inputDialog.setVisible(false);
             }
         });
 
-        exitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                Grapher.setPreviousInput(functionTextField.getText());
-                setInterrupted(true);
+        exitButton.addActionListener(evt -> {
+            Grapher.setPreviousInput(functionTextField.getText());
+            setInterrupted(true);
 
-                coefficientStringMap.clear();
+            coefficientStringMap.clear();
 
-                resetFieldAndBox();
+            resetFieldAndBox();
 
-                JDialog dialog = (JDialog) SwingUtilities.getWindowAncestor(
-                        (JPanel) ((JButton) evt.getSource()).getParent()
-                );
+            JDialog dialog = (JDialog) SwingUtilities.getWindowAncestor(
+                    (JPanel) ((JButton) evt.getSource()).getParent()
+            );
 
-                dialog.setVisible(false);
-                dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            }
+            dialog.setVisible(false);
+            dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         });
 
-        generateButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                String generated = generator.generateFunctionWithCoefficients('x');
+        generateButton.addActionListener(evt -> {
+            String generated = generator.generateFunctionWithCoefficients('x');
 
-                functionTextField.setText(generated);
-            }
+            functionTextField.setText(generated);
         });
 
-        confirmButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                setDone(true);
-                setInterrupted(false);
+        confirmButton.addActionListener(evt -> {
+            setDone(true);
+            setInterrupted(false);
 
-                firstResponse = functionTextField.getText();
-                secondResponse = "";
+            firstResponse = functionTextField.getText();
+            secondResponse = "";
 
-                toDoubleMap();
+            toDoubleMap();
 
-                Grapher.setPreviousInput(null);
+            Grapher.setPreviousInput(null);
 
-                JDialog dialog = (JDialog) SwingUtilities.getWindowAncestor(
-                        (JPanel) ((JButton) evt.getSource()).getParent());
+            JDialog dialog = (JDialog) SwingUtilities.getWindowAncestor(
+                    (JPanel) ((JButton) evt.getSource()).getParent());
 
-                dialog.setVisible(false);
+            dialog.setVisible(false);
 
-            }
         });
 
-        clearButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                functionTextField.setText("");
-            }
-        });
-
+        clearButton.addActionListener(e -> functionTextField.setText(""));
     }
 
     private void initLayout() {
@@ -398,14 +367,11 @@ public class FunctionPanel extends JPanel {
                                 .addGap(30, 30, 30))
         );
 
-        layout.linkSize(SwingConstants.VERTICAL, new Component[]
-                {clearButton, generateButton, parametricButton, testButton});
+        layout.linkSize(SwingConstants.VERTICAL, clearButton, generateButton, parametricButton, testButton);
 
-        layout.linkSize(SwingConstants.VERTICAL, new Component[]
-                {confirmButton, exitButton});
+        layout.linkSize(SwingConstants.VERTICAL, confirmButton, exitButton);
 
-        layout.linkSize(SwingConstants.VERTICAL, new Component[]
-                {choiceBox, coefficientTextField});
+        layout.linkSize(SwingConstants.VERTICAL, choiceBox, coefficientTextField);
 
 
     }
@@ -414,7 +380,7 @@ public class FunctionPanel extends JPanel {
         exitButton.doClick();
     }
 
-    private void shiftCycleShift() {
+    private void shiftChoiceBox() {
         try {
             choiceBox.setSelectedItem(coefficientArray[(choiceBox.getSelectedIndex() + 1) % coefficientArray.length]);
         } catch (Exception ignored) {
@@ -483,7 +449,7 @@ public class FunctionPanel extends JPanel {
         coefficientStringMap.clear();
         allAreSet = false;
 
-        HashSet<String> coefficientSet = new HashSet<>(FunctionParsingUtilities.Explicit.getCoefficients(functionTextField.getText()));
+        HashSet<String> coefficientSet = new HashSet<>(MathFunctionParser.Explicit.getCoefficients(functionTextField.getText()));
 
         coefficientArray = new String[coefficientSet.size()];
         coefficientArray = coefficientSet.toArray(coefficientArray);
@@ -500,7 +466,7 @@ public class FunctionPanel extends JPanel {
     private void updateOnFunction() {
         if ((MathParser.getParsingResult(functionTextField.getText()) == ParsingResult.ERROR ||
                 MathParser.getParsingResult(functionTextField.getText()) == ParsingResult.EXPRESSION) ||
-                !FunctionParsingUtilities.Explicit.isFunction(functionTextField.getText())) {
+                !MathFunctionParser.Explicit.isFunction(functionTextField.getText())) {
 
             choiceBox.setEnabled(false);
 
@@ -584,10 +550,6 @@ public class FunctionPanel extends JPanel {
         this.done = done;
     }
 
-    public HashMap<String, String> getCoefficientStringMap() {
-        return coefficientStringMap;
-    }
-
     public void setCoefficientDoubleMap(HashMap<String, Double> map) {
         coefficientDoubleMap.clear();
         coefficientDoubleMap.putAll(map);
@@ -613,11 +575,6 @@ public class FunctionPanel extends JPanel {
         return firstResponse;
     }
 
-    public JTextField getCoefficientTextField() {
-        return coefficientTextField;
-    }
-
-    // only for testing
 
     public static void main(String[] args) {
         JFrame frame = new JFrame();
