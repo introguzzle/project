@@ -91,7 +91,7 @@ public final class PseudoValidMoves {
         if (cell instanceof WhiteCell)
             return cell.getPosition().cross(filter(cells, cell));
         else
-            return getForKing(cells, cell);
+            return cell.getPosition().around(filter(cells, cell));
     }
 
     static List<Position> getForWizard(Cell[][] cells, Cell cell) {

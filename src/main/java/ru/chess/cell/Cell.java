@@ -136,4 +136,13 @@ public abstract sealed class Cell extends JLabel permits WhiteCell, BlackCell {
             g2d.fillOval(dx, dy, d, d);
         }
     }
+
+    @Override
+    public String toString() {
+        return "Cell{" +
+                "pieceType=" + pieceType +
+                ", absolutePieceType=" + absolutePieceType +
+                ", position=" + position +
+                '}';
+    }
 }
