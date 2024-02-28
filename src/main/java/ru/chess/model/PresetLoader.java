@@ -15,7 +15,6 @@ public final class PresetLoader {
             "bra8 bkb8 bbc8 bqd8 bKe8 bbf8 bkg8 brh8";
 
     static void load(Model model, String preset) {
-
         if (preset.contains("/")) {
             String[] presetParts = preset.split(" / ");
 

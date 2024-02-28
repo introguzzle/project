@@ -3,9 +3,7 @@ package ru.chess.model;
 import java.util.*;
 
 import ru.chess.*;
-import ru.chess.cell.BlackCell;
 import ru.chess.cell.Cell;
-import ru.chess.cell.WhiteCell;
 import ru.chess.model.Model.State;
 import ru.chess.position.Position;
 import ru.chess.position.Positions;
@@ -16,74 +14,32 @@ public final class ValidMoves {
 
     }
 
-    public static final int VERTICAL_BOUND   = Model.VERTICAL_BOUND;
-    public static final int HORIZONTAL_BOUND = Model.HORIZONTAL_BOUND;
-
-    static boolean isKingUnderAttack(Model model, AbsolutePieceType absoluteKingType) {
-        PieceType         kingType       = absoluteKingType == AbsolutePieceType.WHITE ? PieceType.WHITE_KING : PieceType.BLACK_KING;
-        AbsolutePieceType enemyPieceType = kingType.absolute().invert();
-
-        for (Position p: getAllMoves(model.getBoard().cells, enemyPieceType)) {
-            if (model.getBoard().getCell(p).pieceType == kingType) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    static boolean isEmptyForAll(Model model, AbsolutePieceType absolutePieceType) {
-        for (int i = 0; i < VERTICAL_BOUND; i++)
-            for (int j = 0; j < HORIZONTAL_BOUND; j++) {
-
-                if (model.getBoard().cells[i][j].absolutePieceType == absolutePieceType)
-                    if (!get(model, model.getBoard().cells[i][j]).isEmpty())
-                        return false;
-            }
-
-        return true;
-    }
-
     static List<Position> get(Model model, Cell cell) {
-        List<Position> result = new Positions();
+        List<Position> result   = new Positions();
         List<Position> toFilter = PseudoValidMoves.get(model.getBoard().cells, cell);
 
         toFilter.addAll(getCastlingPositions(model, cell));
 
+        Cell[][] future = model.copyCells();
+
         for (Position p: toFilter) {
-            Cell[][] future = new Cell[VERTICAL_BOUND][HORIZONTAL_BOUND];
-
-            for (int i = 0; i < VERTICAL_BOUND; i++) {
-                for (int j = 0; j < HORIZONTAL_BOUND; j++) {
-                    if (Math.floorMod(i, 2) == 0)
-                        future[i][j] = Math.floorMod(j, 2) == 0
-                                ? new WhiteCell(new Position(i, j))
-                                : new BlackCell(new Position(i, j));
-                    else
-                        future[i][j] = Math.floorMod(j, 2) == 1
-                                ? new WhiteCell(new Position(i, j))
-                                : new BlackCell(new Position(i, j));
-                }
-            }
-
             State             state          = State.ONGOING;
             AbsolutePieceType enemyPieceType = cell.absolutePieceType.invert();
 
-            copy(future, model.getBoard().cells);
-            movePiece(future, cell, p);
+            movePiece(future, cell.position, p);
 
             List<Position> allMoves = getAllMoves(future, enemyPieceType);
 
-            for (Position inner: allMoves) {
-                if (future[inner.getHeight()][inner.getWidth()].pieceType == getKingType(enemyPieceType)) {
+            for (Position e: allMoves)
+                if (future[e.getHeight()][e.getWidth()].pieceType == getKingType(enemyPieceType)) {
                     state = getCheckState(enemyPieceType);
                     break;
                 }
-            }
 
-            if (state == State.ONGOING) {
+            if (state == State.ONGOING)
                 result.add(p);
-            }
+
+            movePiece(future, p, cell.position);
         }
 
         return result;
@@ -205,14 +161,14 @@ public final class ValidMoves {
         return blackCastlingPositions;
     }
 
-    private static void movePiece(Cell[][] cells, Cell cell, Position newPosition) {
-        PieceType thisPieceType = cell.pieceType;
+    private static void movePiece(Cell[][] cells, Position oldPosition, Position newPosition) {
+        PieceType thisPieceType = cells[oldPosition.getHeight()][oldPosition.getWidth()].pieceType;
 
-        cells[cell.position.getHeight()][cell.position.getWidth()].removePiece();
+        cells[oldPosition.getHeight()][oldPosition.getWidth()].removePiece();
         cells[newPosition.getHeight()][newPosition.getWidth()].setPiece(thisPieceType);
     }
 
-    private static List<Position> getAllMoves(Cell[][] cells, AbsolutePieceType absolutePieceType) {
+    static List<Position> getAllMoves(Cell[][] cells, AbsolutePieceType absolutePieceType) {
         List<Position> positions = new ArrayList<>();
 
         for (Cell[] cellArray : cells)
@@ -225,14 +181,6 @@ public final class ValidMoves {
             }
 
         return positions;
-    }
-
-    private static void copy(Cell[][] target, Cell[][] source) {
-        for (int i = 0; i < VERTICAL_BOUND; i++) {
-            for (int j = 0; j < HORIZONTAL_BOUND; j++) {
-                target[i][j].setPiece(source[i][j].pieceType);
-            }
-        }
     }
 
     private static PieceType getKingType(AbsolutePieceType absolutePieceType) {

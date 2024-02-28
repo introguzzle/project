@@ -60,10 +60,10 @@ public final class PseudoValidMoves {
     static List<Position> getForRook(Cell[][] cells, Cell cell) {
         List<Position> positions = new Positions();
 
-        positions.addAll(cell.getPosition().vertical(filter(cells, cell), true));
-        positions.addAll(cell.getPosition().vertical(filter(cells, cell), false));
-        positions.addAll(cell.getPosition().horizontal(filter(cells, cell), true));
-        positions.addAll(cell.getPosition().horizontal(filter(cells, cell), false));
+        positions.addAll(cell.getPosition().vertical(stop(cells), filter(cells, cell), true));
+        positions.addAll(cell.getPosition().vertical(stop(cells), filter(cells, cell), false));
+        positions.addAll(cell.getPosition().horizontal(stop(cells), filter(cells, cell),true));
+        positions.addAll(cell.getPosition().horizontal(stop(cells), filter(cells, cell), false));
 
         return positions;
     }
@@ -71,10 +71,10 @@ public final class PseudoValidMoves {
     static List<Position> getForBishop(Cell[][] cells, Cell cell) {
         List<Position> positions = new Positions();
 
-        positions.addAll(cell.getPosition().diagonal(filter(cells, cell), true, true));
-        positions.addAll(cell.getPosition().diagonal(filter(cells, cell), false, true));
-        positions.addAll(cell.getPosition().diagonal(filter(cells, cell), true, false));
-        positions.addAll(cell.getPosition().diagonal(filter(cells, cell), false, false));
+        positions.addAll(cell.getPosition().diagonal(stop(cells), filter(cells, cell), true, true));
+        positions.addAll(cell.getPosition().diagonal(stop(cells), filter(cells, cell), false, true));
+        positions.addAll(cell.getPosition().diagonal(stop(cells), filter(cells, cell), true, false));
+        positions.addAll(cell.getPosition().diagonal(stop(cells), filter(cells, cell), false, false));
 
         return positions;
     }
@@ -113,5 +113,9 @@ public final class PseudoValidMoves {
 
     static Predicate<Position> filter(Cell[][] cells, Cell cell) {
         return p -> cells[p.getHeight()][p.getWidth()].absolutePieceType == cell.absolutePieceType;
+    }
+
+    static Predicate<Position> stop(Cell[][] cells) {
+        return p -> cells[p.getHeight()][p.getWidth()].absolutePieceType != AbsolutePieceType.NONE;
     }
 }

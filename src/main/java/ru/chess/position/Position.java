@@ -112,15 +112,13 @@ public final class Position extends AbstractPosition {
             if (moveCondition.test(first))
                 positions.add(first);
 
-        if (second.isValid())
-            if (white && this.h == VERTICAL_BOUND - 2)
-                if (moveCondition.test(second))
-                    positions.add(second);
+        if (second.isValid() && white && this.h == VERTICAL_BOUND - 2)
+            if (moveCondition.test(second))
+                positions.add(second);
 
-        if (second.isValid())
-            if (white && this.h == 1)
-                if (moveCondition.test(second))
-                    positions.add(second);
+        if (second.isValid() && !white && this.h == 1)
+            if (moveCondition.test(second))
+                positions.add(second);
 
         Position left = first.left();
 
@@ -139,7 +137,7 @@ public final class Position extends AbstractPosition {
 
     /**
      *
-     * @param filter If true positions that satisfy this predicate don't include
+     * @param stopCondition If true positions that satisfy this predicate don't include
      * @param isDirectedUp True if direction is up.
      *                     <br>False if otherwise
      * @return Ordered list of positions on the same vertical line
@@ -147,31 +145,36 @@ public final class Position extends AbstractPosition {
      * @see #VERTICAL_BOUND
      */
 
-    public List<Position> vertical(Predicate<Position> filter, boolean isDirectedUp) {
+    public List<Position> vertical(Predicate<Position> stopCondition,
+                                   Predicate<Position> removeLastCondition,
+                                   boolean isDirectedUp) {
         Positions positions = new Positions();
 
         for (int i = isDirectedUp ? this.h + 1 : this.h - 1;
              i != (isDirectedUp ? VERTICAL_BOUND : -1);
              i += isDirectedUp ? 1 : -1) {
 
-            if (filter == null)
+            if (stopCondition == null)
                 positions.add(new Position(i, this.w));
             else {
                 Position p = new Position(i, this.w);
+                positions.add(p);
 
-                if (!filter.test(p))
-                    positions.add(p);
-                else
+                if (stopCondition.test(p))
                     break;
             }
         }
+
+        if (!positions.isEmpty() && removeLastCondition != null)
+            if (removeLastCondition.test(positions.getLast()))
+                positions.removeLast();
 
         return positions;
     }
 
     /**
      *
-     * @param filter If true positions that satisfy this predicate don't include
+     * @param stopCondition If true positions that satisfy this predicate don't include
      * @param isDirectedRight True if direction is right.
      *                        <br>False if otherwise
      * @return Ordered list of positions on the same horizontal line
@@ -179,24 +182,29 @@ public final class Position extends AbstractPosition {
      * @see #HORIZONTAL_BOUND
      */
 
-    public List<Position> horizontal(Predicate<Position> filter, boolean isDirectedRight) {
+    public List<Position> horizontal(Predicate<Position> stopCondition,
+                                     Predicate<Position> removeLastCondition,
+                                     boolean isDirectedRight) {
         Positions positions = new Positions();
 
         for (int i = isDirectedRight ? this.w + 1 : this.w - 1;
              i != (isDirectedRight ? HORIZONTAL_BOUND : -1);
              i += isDirectedRight ? 1 : -1) {
 
-            if (filter == null)
+            if (stopCondition == null)
                 positions.add(new Position(this.h, i));
             else {
                 Position p = new Position(this.h, i);
+                positions.add(p);
 
-                if (!filter.test(p))
-                    positions.add(p);
-                else
+                if (stopCondition.test(p))
                     break;
             }
         }
+
+        if (!positions.isEmpty() && removeLastCondition != null)
+            if (removeLastCondition.test(positions.getLast()))
+                positions.removeLast();
 
         return positions;
     }
@@ -211,16 +219,13 @@ public final class Position extends AbstractPosition {
     public Set<Position> vertical(Position endPosition) {
         Set<Position> positions = new HashSet<>();
 
-        if (this.equals(endPosition))
-            return positions;
 
-        String w = this.getChessPosition().substring(0, 1);
-
-        int up   = Math.max(this.getChessHeight(), endPosition.getChessHeight());
-        int down = Math.min(this.getChessHeight(), endPosition.getChessHeight());
-
-        for (int i = down + 1; i < up; i++)
-            positions.add(new Position(w + i));
+        if (this.h < endPosition.h)
+            for (int i = this.h + 1; i < endPosition.h; i++)
+                positions.add(new Position(i, this.w));
+        else
+            for (int i = endPosition.h + 1; i < this.h; i++)
+                positions.add(new Position(i, this.w));
 
         return positions;
     }
@@ -228,32 +233,28 @@ public final class Position extends AbstractPosition {
     public Set<Position> horizontal(Position endPosition) {
         Set<Position> positions = new HashSet<>();
 
-        if (this.equals(endPosition))
-            return positions;
+        if (this.w < endPosition.w)
+            for (int i = this.w + 1; i < endPosition.w; i++)
+                positions.add(new Position(this.h, i));
+        else
+            for (int i = endPosition.w + 1; i < this.w; i++)
+                positions.add(new Position(this.h, i));
 
-        String w = this.getChessPosition().substring(0, 1);
-
-        int left  = Math.min(toArrayWidth(w), toArrayWidth(endPosition.getChessPosition().substring(0, 1)));
-        int right = Math.max(toArrayWidth(w), toArrayWidth(endPosition.getChessPosition().substring(0, 1)));
-
-        int    h = Integer.parseInt(this.getChessPosition().substring(1));
-
-        for (int i = left + 1; i < right; i++)
-            positions.add(new Position(toChessWidth(i) + h));
 
         return positions;
     }
 
     /**
      *
-     * @param filter If true positions that satisfy this predicate don't include
+     * @param stopCondition If true positions that satisfy this predicate don't include
      * @param isDirectedUp If direction is up
      * @param isDirectedRight If direction is right
      * @return Ordered list of diagonal positions to end of the board
      * @see #VERTICAL_BOUND
      * @see #HORIZONTAL_BOUND
      */
-    public List<Position> diagonal(Predicate<Position> filter,
+    public List<Position> diagonal(Predicate<Position> stopCondition,
+                                   Predicate<Position> removeLastCondition,
                                    boolean isDirectedUp,
                                    boolean isDirectedRight) {
         Positions positions = new Positions();
@@ -264,17 +265,20 @@ public final class Position extends AbstractPosition {
 
                      i += isDirectedUp    ? 1 : -1,
                      j += isDirectedRight ? 1 : -1) {
-            if (filter == null)
+            if (stopCondition == null)
                 positions.add(new Position(i, j));
             else {
                 Position p = new Position(i, j);
+                positions.add(p);
 
-                if (!filter.test(p))
-                    positions.add(p);
-                else
+                if (stopCondition.test(p))
                     break;
             }
         }
+
+        if (!positions.isEmpty() && removeLastCondition != null)
+            if (removeLastCondition.test(positions.getLast()))
+                positions.removeLast();
 
         return positions;
     }

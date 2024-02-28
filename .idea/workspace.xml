@@ -5,117 +5,42 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="912ac5a4-e8a8-42a8-a147-180b456244bb" name="Changes" comment="XD">
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/chess/Preset.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/chess/Run.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/chess/gui/ImageReader.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/chess/images/BClown.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/chess/images/BTamplier.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/chess/images/BWizard.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/chess/images/WClown.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/chess/images/WTamplier.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/chess/images/WWizard.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/PresetFactory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/chess/position/AbstractPosition.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/chess/position/Position.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/chess/position/Positions.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/chess/sounds/move.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/chess/sounds/move.wav" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/chess/sounds/start.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/chess/sounds/start.wav" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/utils/ObjectDump.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/gui/Board.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/AbsolutePieceType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/AbsolutePieceType.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/Chess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/Chess.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/ChessGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/gui/GUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/ImageReader.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/Main.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/MateDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/dialog/MateDialog.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/PawnPromotionDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/dialog/PawnPromotionDialog.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/PieceType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/PieceType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/Position.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/Preset.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/Preset.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/Run.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/Run.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/cell/BlackCell.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/cell/BlackCell.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/cell/Cell.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/cell/Cell.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/cell/CellType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/cell/CellType.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/cell/WhiteCell.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/cell/WhiteCell.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/dialog/MateDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/dialog/MateDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/dialog/PawnPromotionDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/dialog/PawnPromotionDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/gui/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/gui/Board.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/gui/GUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/gui/GUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/gui/ImageReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/gui/ImageReader.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/model/Model.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/Model.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/model/PieceSetupLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/PieceSetupLoader.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/model/PieceSetupReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/PieceSetupReader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/model/PresetFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/PresetFactory.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/model/PresetLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/PresetLoader.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/model/PresetReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/PresetReader.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/model/PseudoValidMoves.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/PseudoValidMoves.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/model/ValidMoves.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/ValidMoves.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/FunctionPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/FunctionPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/Grapher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/Grapher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/InputFunctionPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/InputFunctionPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/Run.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/ParametricFunctionPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/ParametricFunctionPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mathparser/MathFunctionParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/mathparser/MathFunctionParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mathparser/MathFunctions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/mathparser/MathFunctions.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mathparser/MathParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/mathparser/MathParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mathparser/MathParserException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/mathparser/MathParserException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mathparser/ParsingResult.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/mathparser/ParsingResult.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mathparser/Token.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/mathparser/Token.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mathparser/TokenBuffer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/mathparser/TokenBuffer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/utils/FieldsToString.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/ru/grapher/ParsingResultTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ru/grapher/ParsingResultTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/Main$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/Board.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/position/AbstractPosition.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/position/AbstractPosition.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/position/Position.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/position/Position.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/position/Positions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/position/Positions.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/Chess.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/Chess.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/ChessGUI$Cell.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/ChessGUI.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/ImageReader.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/Main.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/MateDialog$MatePanel$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/MateDialog$MatePanel$ActionLabel.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/MateDialog$MatePanel$ExitMouseHandler.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/MateDialog$MatePanel$ReplayMouseHandler.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/MateDialog$MatePanel$WinnerLabel.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/MateDialog$MatePanel.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/MateDialog.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/PawnPromotionDialog$PawnPromotionPanel$ChoiceLabel.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/PawnPromotionDialog$PawnPromotionPanel$MouseHandler.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/PawnPromotionDialog$PawnPromotionPanel.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/PawnPromotionDialog.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/PieceType.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/PieceType.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/Position.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/cell/BlackCell.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/cell/BlackCell.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/cell/Cell$State.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/cell/Cell$State.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/Run.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/Run.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/cell/Cell.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/cell/Cell.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/cell/WhiteCell.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/cell/WhiteCell.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/gui/Board.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/gui/Board.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/Model$LeftArrowKeyHandleAction.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/Model$LeftArrowKeyHandleAction.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/Model$MouseHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/Model$MouseHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/Model$State.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/Model$State.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/Model.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/Model.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/PieceSetupLoader.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/PieceSetupLoader.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/PieceSetupReader$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/PieceSetupReader$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/PieceSetupReader.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/PieceSetupReader.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/PresetLoader.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/PresetLoader.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/PresetReader$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/PresetReader$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/PresetReader.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/PresetReader.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/PseudoValidMoves$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/PseudoValidMoves$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/PseudoValidMoves.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/PseudoValidMoves.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/ValidMoves.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/ValidMoves.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/FunctionPanel$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/FunctionPanel$4.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/FunctionPanel.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/FunctionPanel.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Grapher$10.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/Grapher$10.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Grapher$9.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/Grapher$9.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Grapher.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/Grapher.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/InputFunctionPanel$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/InputFunctionPanel$3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Main.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/MathFunctionsTest$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/MathFunctionsTest$2.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/ParametricFunctionPanel.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/ParametricFunctionPanel.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/ParsingResultTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/ParsingResultTest.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/mathparser/MathFunctionParser.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/mathparser/MathFunctionParser.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/mathparser/MathFunctions.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/mathparser/MathFunctions.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/mathparser/MathParser$Syntax.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/mathparser/MathParser$Syntax.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/mathparser/MathParser.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/mathparser/MathParser.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/mathparser/MathParserException.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/mathparser/MathParserException.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/mathparser/ParsingResult.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/mathparser/ParsingResult.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/mathparser/Token.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/mathparser/Token.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/mathparser/TokenBuffer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/mathparser/TokenBuffer.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/utils/FieldsToString.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/position/Position.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/position/Position.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -309,6 +234,9 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Project$Graph.ic" NAME="Graph Coverage Results" MODIFIED="1702299375844" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>com.mathp.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/Project$Chess.ic" NAME="Chess Coverage Results" MODIFIED="1709145814295" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>ru.chess.*</FILTER>
     </SUITE>
   </component>
 </project>

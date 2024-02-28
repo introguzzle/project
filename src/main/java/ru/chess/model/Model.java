@@ -107,18 +107,18 @@ public class Model {
     }
 
     private void initCastling() {
-        var downLine = new Position("a1").horizontal(null, true);
-        downLine.addFirst(new Position("a1"));
+        var downLine = new Position(VERTICAL_BOUND - 1, 0).horizontal(null, null, true);
+        downLine.addFirst(new Position(VERTICAL_BOUND - 1, 0));
 
-        var upLine   = new Position("a" + VERTICAL_BOUND).horizontal(null, true);
-        upLine.addFirst(new Position("a" + VERTICAL_BOUND));
+        var upLine   = new Position(0, 0).horizontal(null, null, true);
+        upLine.addFirst(new Position(0, 0));
 
-        for (Position p: downLine) {
-            if (board.getCell(p).pieceType == PieceType.WHITE_KING) {
-                whiteKingPosition = p;
-                break;
-            }
-        }
+        for (int i = 0; i < VERTICAL_BOUND; i++)
+            for (int j = 0; j < HORIZONTAL_BOUND; j++)
+                if (board.cells[i][j].pieceType == PieceType.WHITE_KING) {
+                    whiteKingPosition = new Position(i, j);
+                    break;
+                }
 
         for (Position p: downLine) {
             if (board.getCell(p).pieceType == PieceType.WHITE_ROOK) {
@@ -134,12 +134,12 @@ public class Model {
             }
         }
 
-        for (Position p: upLine) {
-            if (board.getCell(p).pieceType == PieceType.BLACK_KING) {
-                blackKingPosition = p;
-                break;
-            }
-        }
+        for (int i = 0; i < VERTICAL_BOUND; i++)
+            for (int j = 0; j < HORIZONTAL_BOUND; j++)
+                if (board.cells[i][j].pieceType == PieceType.BLACK_KING) {
+                    blackKingPosition = new Position(i, j);
+                    break;
+                }
 
         for (Position p: upLine) {
             if (board.getCell(p).pieceType == PieceType.BLACK_ROOK) {
@@ -200,9 +200,36 @@ public class Model {
 
     private void handleState(AbsolutePieceType absolutePieceType) {
 
-        if (ValidMoves.isEmptyForAll(this, absolutePieceType)) {
+        class CheckmateChecker {
+            static boolean isEmptyForAll(Model model, AbsolutePieceType absolutePieceType) {
+                for (int i = 0; i < VERTICAL_BOUND; i++)
+                    for (int j = 0; j < HORIZONTAL_BOUND; j++) {
 
-            if (ValidMoves.isKingUnderAttack(this, absolutePieceType)) {
+                        if (model.getBoard().cells[i][j].absolutePieceType == absolutePieceType)
+                            if (!ValidMoves.get(model, model.getBoard().cells[i][j]).isEmpty())
+                                return false;
+                    }
+
+                return true;
+            }
+
+            static boolean isKingUnderAttack(Model model, AbsolutePieceType absoluteKingType) {
+                PieceType         kingType       = absoluteKingType == AbsolutePieceType.WHITE ? PieceType.WHITE_KING : PieceType.BLACK_KING;
+                AbsolutePieceType enemyPieceType = kingType.absolute().invert();
+
+                for (Position p: ValidMoves.getAllMoves(model.getBoard().cells, enemyPieceType)) {
+                    if (model.getBoard().getCell(p).pieceType == kingType) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        }
+
+        if (CheckmateChecker.isEmptyForAll(this, absolutePieceType)) {
+
+            if (CheckmateChecker.isKingUnderAttack(this, absolutePieceType)) {
                 state = absolutePieceType == AbsolutePieceType.WHITE
                         ? State.CHECKMATE_TO_WHITE
                         : State.CHECKMATE_TO_BLACK;
@@ -389,11 +416,11 @@ public class Model {
         }
     }
 
-    public void playSound(File file) {
+    public static void playSound(File file) {
         playSound(file, -10.0f);
     }
 
-    public void playSound(File file, float volume) {
+    public static void playSound(File file, float volume) {
         try {
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(file);
 
@@ -408,6 +435,26 @@ public class Model {
 
         } catch (Exception ignored) {
 
+        }
+    }
+
+    public Cell[][] copyCells() {
+        Cell[][] result = Board.createCellMatrix();
+
+        for (int i = 0; i < VERTICAL_BOUND; i++) {
+            for (int j = 0; j < HORIZONTAL_BOUND; j++) {
+                result[i][j].setPiece(board.cells[i][j].pieceType);
+            }
+        }
+
+        return result;
+    }
+
+    public void reset() {
+        for (int i = 0; i < VERTICAL_BOUND; i++) {
+            for (int j = 0; j < HORIZONTAL_BOUND; j++) {
+                board.cells[i][j].removePiece();
+            }
         }
     }
 

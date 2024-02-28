@@ -80,12 +80,12 @@ public final class PresetFactory {
         for (int i = 0; i < HORIZONTAL_BOUND; i++) {
             int pick = random(0, whites.size() - 1);
 
-            String whitePiece         = PieceSetupReader.getPieceTypeEncoded(whites.get(pick));
+            String whitePiece         = whites.get(pick).code;
             String whitePiecePosition = new Position(VERTICAL_BOUND - 1, i).getChessPosition();
 
             list.add(" " + whitePiece + whitePiecePosition);
 
-            String blackPiece         = PieceSetupReader.getPieceTypeEncoded(blacks.get(pick));
+            String blackPiece         = blacks.get(pick).code;
             String blackPiecePosition = new Position(0, i).getChessPosition();
 
             list.add(" " + blackPiece + blackPiecePosition);

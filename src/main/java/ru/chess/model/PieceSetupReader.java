@@ -14,38 +14,12 @@ public final class PieceSetupReader {
                 PieceType t = model.getBoard().cells[i][j].pieceType;
                 Position  p = model.getBoard().cells[i][j].position;
 
-                if (!getPieceTypeEncoded(t).isEmpty()) {
-                    pieceSetup.append(getPieceTypeEncoded(t)).append(getPositionEncoded(p)).append(" ");
+                if (!t.code.isEmpty()) {
+                    pieceSetup.append(t.code).append(getPositionEncoded(p)).append(" ");
                 }
             }
 
         return pieceSetup.toString();
-    }
-
-    public static String getPieceTypeEncoded(PieceType pieceType) {
-        return switch (pieceType) {
-            case NONE           -> "";
-
-            case WHITE_PAWN     -> "wp";
-            case WHITE_ROOK     -> "wr";
-            case WHITE_KNIGHT   -> "wk";
-            case WHITE_BISHOP   -> "wb";
-            case WHITE_QUEEN    -> "wq";
-            case WHITE_CLOWN    -> "wc";
-            case WHITE_WIZARD   -> "ww";
-            case WHITE_TAMPLIER -> "wt";
-            case WHITE_KING     -> "wK";
-
-            case BLACK_PAWN     -> "bp";
-            case BLACK_ROOK     -> "br";
-            case BLACK_KNIGHT   -> "bk";
-            case BLACK_BISHOP   -> "bb";
-            case BLACK_QUEEN    -> "bq";
-            case BLACK_CLOWN    -> "bc";
-            case BLACK_WIZARD   -> "bw";
-            case BLACK_TAMPLIER -> "bt";
-            case BLACK_KING     -> "bK";
-        };
     }
 
     static String getPositionEncoded(Position position) {

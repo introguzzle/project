@@ -42,7 +42,7 @@ public class Board extends JPanel {
         return this.cells[position.getHeight()][position.getWidth()];
     }
 
-    private Cell[][] createCellMatrix() {
+    public static Cell[][] createCellMatrix() {
         Cell[][] cells = new Cell[VERTICAL_BOUND][HORIZONTAL_BOUND];
 
         for (int h = 0; h < VERTICAL_BOUND; h++) {

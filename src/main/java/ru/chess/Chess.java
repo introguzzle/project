@@ -27,9 +27,8 @@ public class Chess extends JFrame {
     private void init() {
         this.setLayout(new FlowLayout());
 
-        model = new Model(9, 8);
-        //model.loadDefaultPreset();
-        model.loadPreset("wKa1 bKb4 wch4 wwg5 wkg4 wpa2 bpb3");
+        model = new Model(7, 12);
+        model.loadDefaultPreset();
 
         this.add(model.getBoard());
         this.pack();
