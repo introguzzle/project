@@ -344,8 +344,8 @@ public class ParametricFunctionPanel extends JPanel {
 
     private void toDoubleMap() {
 
-        if (firstResult == ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMS ||
-                secondResult == ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMS)
+        if (firstResult == ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMETERS ||
+                secondResult == ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMETERS)
 
             for (var entry: coefficientStringMap.entrySet()) {
                 coefficientDoubleMap.put(entry.getKey(), Double.valueOf(entry.getValue()));
@@ -464,7 +464,7 @@ public class ParametricFunctionPanel extends JPanel {
                 setCoefficientsDisabled();
                 setConfirmButtonEnabled();
 
-            } else if (secondResult == ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMS) {
+            } else if (secondResult == ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMETERS) {
 
                 setCoefficientsEnabled();
                 setConfirmButtonDisabled();
@@ -474,7 +474,7 @@ public class ParametricFunctionPanel extends JPanel {
                 setConfirmButtonDisabled();
             }
 
-        } else if (result == ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMS) {
+        } else if (result == ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMETERS) {
             firstResult = result;
             firstCoefficientNames.clear();
 
@@ -498,7 +498,7 @@ public class ParametricFunctionPanel extends JPanel {
                 setConfirmButtonDisabled();
             }
 
-            if (secondResult == ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMS) {
+            if (secondResult == ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMETERS) {
 
                 coefficientStringMap.clear();
 
@@ -518,7 +518,7 @@ public class ParametricFunctionPanel extends JPanel {
             firstResult = result;
             firstCoefficientNames.clear();
 
-            if (secondResult == ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMS) {
+            if (secondResult == ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMETERS) {
                 setCoefficientsEnabled();
 
             } else {
@@ -540,7 +540,7 @@ public class ParametricFunctionPanel extends JPanel {
                 setCoefficientsDisabled();
                 setConfirmButtonEnabled();
 
-            } else if (firstResult == ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMS) {
+            } else if (firstResult == ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMETERS) {
 
                 setCoefficientsEnabled();
                 setConfirmButtonDisabled();
@@ -550,7 +550,7 @@ public class ParametricFunctionPanel extends JPanel {
                 setConfirmButtonDisabled();
             }
 
-        } else if (result == ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMS) {
+        } else if (result == ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMETERS) {
             secondResult = result;
 
             setCoefficientsEnabled();
@@ -571,7 +571,7 @@ public class ParametricFunctionPanel extends JPanel {
                 setConfirmButtonDisabled();
             }
 
-            if (firstResult == ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMS) {
+            if (firstResult == ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMETERS) {
 
                 secondCoefficientNames.addAll(MathFunctionParser.Parametric.getCoefficients(text));
                 secondCoefficientNames.addAll(firstCoefficientNames);
@@ -588,7 +588,7 @@ public class ParametricFunctionPanel extends JPanel {
             secondResult = result;
             secondCoefficientNames.clear();
 
-            if (firstResult == ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMS) {
+            if (firstResult == ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMETERS) {
                 setCoefficientsEnabled();
 
             } else {

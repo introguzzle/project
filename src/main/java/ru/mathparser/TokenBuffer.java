@@ -3,15 +3,16 @@ package ru.mathparser;
 import java.util.List;
 
 public final class TokenBuffer {
+
     private int pos;
-    public List<Token> tokens;
+    private final List<Token> tokens;
 
     public TokenBuffer(List<Token> tokens) {
         this.tokens = tokens;
     }
 
     public Token getNextToken() {
-        return tokens.get(pos++);
+        return getTokens().get(pos++);
     }
 
     public void returnBack() {
@@ -22,4 +23,7 @@ public final class TokenBuffer {
         return pos;
     }
 
+    public List<Token> getTokens() {
+        return tokens;
+    }
 }

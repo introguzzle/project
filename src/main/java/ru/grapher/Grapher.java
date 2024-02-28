@@ -918,8 +918,7 @@ public class Grapher extends JFrame {
     }
 
     public static double parametricCompute(final String expression,
-                                           final double value)
-            throws MathParserException {
+                                           final double value) {
 
         String changed = MathFunctionParser.Parametric.replaceVariable(expression, value);
 
@@ -943,8 +942,7 @@ public class Grapher extends JFrame {
     }
 
     public static double compute(final String expression,
-                                 final double value)
-            throws MathParserException {
+                                 final double value) {
 
         String changed = expression;
 

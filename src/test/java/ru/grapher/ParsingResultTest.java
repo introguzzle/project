@@ -32,15 +32,15 @@ public class ParsingResultTest {
                 ParsingResult.EXPLICIT_FUNCTION);
 
         assertEquals(MathParser.getParsingResult("f(x) = a + b"),
-                ParsingResult.EXPLICIT_FUNCTION_WITH_PARAMS);
+                ParsingResult.EXPLICIT_FUNCTION_WITH_PARAMETERS);
         assertEquals(MathParser.getParsingResult("f(x) = pi - c - d"),
-                ParsingResult.EXPLICIT_FUNCTION_WITH_PARAMS);
+                ParsingResult.EXPLICIT_FUNCTION_WITH_PARAMETERS);
         assertEquals(MathParser.getParsingResult("f(x) = pi + r"),
-                ParsingResult.EXPLICIT_FUNCTION_WITH_PARAMS);
+                ParsingResult.EXPLICIT_FUNCTION_WITH_PARAMETERS);
         assertEquals(MathParser.getParsingResult("f(x) = sin(a) - sin(b) / tg(a - x)"),
-                ParsingResult.EXPLICIT_FUNCTION_WITH_PARAMS);
+                ParsingResult.EXPLICIT_FUNCTION_WITH_PARAMETERS);
         assertEquals(MathParser.getParsingResult("f(x) = ln(ln(d)) + x / 2.34"),
-                ParsingResult.EXPLICIT_FUNCTION_WITH_PARAMS);
+                ParsingResult.EXPLICIT_FUNCTION_WITH_PARAMETERS);
 
         assertEquals(MathParser.getParsingResult("t"),
                 ParsingResult.PARAMETRIC_FUNCTION);
@@ -52,13 +52,13 @@ public class ParsingResultTest {
                 ParsingResult.PARAMETRIC_FUNCTION);
 
         assertEquals(MathParser.getParsingResult("t - a"),
-                ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMS);
+                ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMETERS);
         assertEquals(MathParser.getParsingResult("d"),
-                ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMS);
+                ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMETERS);
         assertEquals(MathParser.getParsingResult("j - i / t"),
-                ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMS);
+                ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMETERS);
         assertEquals(MathParser.getParsingResult("t ^ t ^ sin(t / a)"),
-                ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMS);
+                ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMETERS);
 
 
     }

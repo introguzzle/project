@@ -4,8 +4,8 @@ import java.util.*;
 
 public final class MathFunctionParser {
 
-    private MathFunctionParser() throws InstantiationError {
-        throw new InstantiationError();
+    private MathFunctionParser() throws InstantiationException {
+        throw new InstantiationException();
     }
 
     public static boolean canBeConvertedToExplicit(final String function) {

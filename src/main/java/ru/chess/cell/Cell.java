@@ -1,6 +1,10 @@
 package ru.chess.cell;
 
 import ru.chess.*;
+import ru.chess.gui.Board;
+import ru.chess.gui.GUI;
+import ru.chess.gui.ImageReader;
+import ru.chess.position.Position;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,12 +15,13 @@ public abstract sealed class Cell extends JLabel permits WhiteCell, BlackCell {
         DEFAULT,
         SELECTED,
         HIGHLIGHTED,
-        NOTED
+        CHECKMATE_NOTED,
+        STALEMATE_NOTED
     }
 
     private static final Dimension DIMENSION = Board.DIMENSION_CELL;
 
-    public PieceType pieceType         = PieceType.NONE;
+    public PieceType         pieceType         = PieceType.NONE;
     public AbsolutePieceType absolutePieceType = AbsolutePieceType.NONE;
 
     public State state = State.DEFAULT;
@@ -35,10 +40,10 @@ public abstract sealed class Cell extends JLabel permits WhiteCell, BlackCell {
         this.state = State.SELECTED;
 
         this.setBackground(type == CellType.WHITE
-                ? ChessGUI.Cell.WHITE_SELECTED_COLOR
-                : ChessGUI.Cell.BLACK_SELECTED_COLOR);
+                ? GUI.Cell.WHITE_SELECTED_COLOR
+                : GUI.Cell.BLACK_SELECTED_COLOR);
 
-        this.setBorder(ChessGUI.Cell.SELECTED_BORDER);
+        this.setBorder(GUI.Cell.SELECTED_BORDER);
 
         this.repaint();
     }
@@ -46,7 +51,7 @@ public abstract sealed class Cell extends JLabel permits WhiteCell, BlackCell {
     public void restore() {
         this.state = State.DEFAULT;
 
-        this.setBackground(type == CellType.WHITE ? ChessGUI.Cell.WHITE_COLOR : ChessGUI.Cell.BLACK_COLOR);
+        this.setBackground(type == CellType.WHITE ? GUI.Cell.WHITE_COLOR : GUI.Cell.BLACK_COLOR);
         this.setBorder(BorderFactory.createLineBorder(this.getBackground(), 1));
 
         this.repaint();
@@ -56,24 +61,33 @@ public abstract sealed class Cell extends JLabel permits WhiteCell, BlackCell {
         this.state = State.HIGHLIGHTED;
 
         this.setBackground(type == CellType.WHITE
-                ? ChessGUI.Cell.WHITE_MOVE_COLOR
-                : ChessGUI.Cell.BLACK_MOVE_COLOR);
+                ? GUI.Cell.WHITE_MOVE_COLOR
+                : GUI.Cell.BLACK_MOVE_COLOR);
         this.setBorder(BorderFactory.createLineBorder(this.getBackground(), 1));
 
         this.repaint();
     }
 
-    public void note() {
-        this.state = State.NOTED;
+    public void noteLose() {
+        this.state = State.CHECKMATE_NOTED;
 
-        this.setBackground(ChessGUI.Cell.NOTED);
+        this.setBackground(GUI.Cell.CHECKMATE_NOTED);
+        this.setBorder(BorderFactory.createLineBorder(this.getBackground(), 1));
+
+        this.repaint();
+    }
+
+    public void noteDraw() {
+        this.state = State.STALEMATE_NOTED;
+
+        this.setBackground(GUI.Cell.STALEMATE_NOTED);
         this.setBorder(BorderFactory.createLineBorder(this.getBackground(), 1));
 
         this.repaint();
     }
 
     public void setPiece(PieceType pieceType) {
-        ImageIcon icon = ImageReader.get(pieceType);
+        ImageIcon icon = ImageReader.get(pieceType, DIMENSION.width, DIMENSION.height);
 
         super.setIcon(icon);
         this.pieceType = pieceType;
@@ -106,20 +120,20 @@ public abstract sealed class Cell extends JLabel permits WhiteCell, BlackCell {
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
 
-        ChessGUI.setQuality(g2d, 2);
+        GUI.setQuality(g2d, 2);
 
         super.paint(g2d);
 
         if (this.state == State.HIGHLIGHTED) {
-            int r = ChessGUI.Cell.AVAILABLE_MOVE_RADIUS;
+            int d = GUI.Cell.AVAILABLE_MOVE_DIAMETER;
 
-            int dx = this.getSize().height / 2 - r / 2;
-            int dy = this.getSize().width / 2 - r / 2;
+            int dx = this.getSize().height / 2 - d / 2;
+            int dy = this.getSize().width / 2 - d / 2;
 
-            g2d.setColor(ChessGUI.Cell.AVAILABLE_MOVE_COLOR);
+            g2d.setColor(GUI.Cell.AVAILABLE_MOVE_COLOR);
 
-            g2d.drawOval(dx, dy, r, r);
-            g2d.fillOval(dx, dy, r, r);
+            g2d.drawOval(dx, dy, d, d);
+            g2d.fillOval(dx, dy, d, d);
         }
     }
 }

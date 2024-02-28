@@ -124,7 +124,7 @@ public final class InputFunctionPanel extends JPanel {
 
                 result = MathParser.getParsingResult(function);
 
-                if (result == ParsingResult.EXPLICIT_FUNCTION_WITH_PARAMS) {
+                if (result == ParsingResult.EXPLICIT_FUNCTION_WITH_PARAMETERS) {
                     coefficientInputTextField.setEnabled(true);
                 }
 

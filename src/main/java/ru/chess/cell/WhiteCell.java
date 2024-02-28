@@ -1,6 +1,6 @@
 package ru.chess.cell;
 
-import ru.chess.Position;
+import ru.chess.position.Position;
 
 public non-sealed class WhiteCell extends Cell {
 

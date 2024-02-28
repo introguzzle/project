@@ -2,13 +2,24 @@ package ru.chess.model;
 
 import ru.chess.*;
 import ru.chess.cell.Cell;
+import ru.chess.dialog.MateDialog;
+import ru.chess.dialog.PawnPromotionDialog;
+import ru.chess.gui.Board;
+import ru.chess.gui.ImageReader;
+import ru.chess.position.Position;
 
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.util.Stack;
 
 public class Model {
+
+    public File moveSound  = new File(".\\src\\main\\java\\ru\\chess\\sounds\\move.wav");
+    public File startSound = new File(".\\src\\main\\java\\ru\\chess\\sounds\\start.wav");
+    // public File endSound   = new File(".\\src\\main\\java\\ru\\chess\\sounds\\end.wav");
 
     public enum State {
         ONGOING,
@@ -19,32 +30,63 @@ public class Model {
         CHECKMATE_TO_BLACK
     }
 
-    private Board board;
+    private final Board board;
 
-    protected boolean initLoad = true;
-    protected String  initPreset;
+    public static int VERTICAL_BOUND;
+    public static int HORIZONTAL_BOUND;
 
-    protected Stack<String> history;
+    protected boolean  initLoad  = true;
+    protected String   initPreset;
 
-    protected State   state = State.ONGOING;
+    public    Stack<String> history;
+
+    public    State   state = State.ONGOING;
     protected boolean turn  = true;
 
-    public boolean whiteKingMoved      = false;
-    public boolean whiteLeftRookMoved  = false;
-    public boolean whiteRightRookMoved = false;
+    protected boolean needWhiteCastlingNotify = true;
+    protected boolean needBlackCastlingNotify = true;
 
-    public boolean blackKingMoved      = false;
-    public boolean blackLeftRookMoved  = false;
-    public boolean blackRightRookMoved = false;
+    public boolean  whiteKingMoved        = false;
+    public boolean  whiteLeftRookMoved    = false;
+    public boolean  whiteRightRookMoved   = false;
 
-    public Model() {
+    public Position whiteKingPosition     ;
+    public Position whiteLeftRookPosition ;
+    public Position whiteRightRookPosition;
+
+    public boolean  blackKingMoved        = false;
+    public boolean  blackLeftRookMoved    = false;
+    public boolean  blackRightRookMoved   = false;
+
+    public Position blackKingPosition     ;
+    public Position blackLeftRookPosition ;
+    public Position blackRightRookPosition;
+
+    public PieceType lastWhiteMovedPieceType = PieceType.NONE;
+    public PieceType lastBlackMovedPieceType = PieceType.NONE;
+
+    public Model(int vertical, int horizontal) {
+        playSound(startSound);
+
+        VERTICAL_BOUND   = vertical;
+        HORIZONTAL_BOUND = horizontal;
+
+        // Stupid static hack. If Model constructor isn't being called,
+        // entire Position class doesn't work.
+        // But on other hand, it does make sense,
+        // because Position does need to know what are bounds of Board
+        // which in its turn need Model to play game
+
+        Position.VERTICAL_BOUND   = vertical;
+        Position.HORIZONTAL_BOUND = horizontal;
+
+        board   = new Board(vertical, horizontal);
+        history = new Stack<>();
+
         init();
     }
 
     private void init() {
-        board   = new Board();
-        history = new Stack<>();
-
         MouseHandler mouseHandler = new MouseHandler(this);
 
         board.addMouseListener(mouseHandler);
@@ -55,7 +97,67 @@ public class Model {
     }
 
     public void loadDefaultPreset() {
-        loadPreset(PresetLoader.DEFAULT);
+        if (isDefaultBoard()) {
+            loadPreset(PresetLoader.DEFAULT);
+        } else {
+            loadPreset(PresetFactory.create());
+        }
+
+        initCastling();
+    }
+
+    private void initCastling() {
+        var downLine = new Position("a1").horizontal(null, true);
+        downLine.addFirst(new Position("a1"));
+
+        var upLine   = new Position("a" + VERTICAL_BOUND).horizontal(null, true);
+        upLine.addFirst(new Position("a" + VERTICAL_BOUND));
+
+        for (Position p: downLine) {
+            if (board.getCell(p).pieceType == PieceType.WHITE_KING) {
+                whiteKingPosition = p;
+                break;
+            }
+        }
+
+        for (Position p: downLine) {
+            if (board.getCell(p).pieceType == PieceType.WHITE_ROOK) {
+                whiteLeftRookPosition = p;
+                break;
+            }
+        }
+
+        for (Position p: downLine.reversed()) {
+            if (board.getCell(p).pieceType == PieceType.WHITE_ROOK) {
+                whiteRightRookPosition = p;
+                break;
+            }
+        }
+
+        for (Position p: upLine) {
+            if (board.getCell(p).pieceType == PieceType.BLACK_KING) {
+                blackKingPosition = p;
+                break;
+            }
+        }
+
+        for (Position p: upLine) {
+            if (board.getCell(p).pieceType == PieceType.BLACK_ROOK) {
+                blackLeftRookPosition = p;
+                break;
+            }
+        }
+
+        for (Position p: upLine.reversed()) {
+            if (board.getCell(p).pieceType == PieceType.BLACK_ROOK) {
+                blackRightRookPosition = p;
+                break;
+            }
+        }
+    }
+
+    public boolean isDefaultBoard() {
+        return VERTICAL_BOUND == 8 && HORIZONTAL_BOUND == 8;
     }
 
     public void loadPreset(String preset) {
@@ -70,11 +172,13 @@ public class Model {
         } else {
             PresetLoader.load(this, preset);
         }
+
+        initCastling();
     }
 
     private void restoreAll() {
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
+        for (int i = 0; i < VERTICAL_BOUND; i++) {
+            for (int j = 0; j < HORIZONTAL_BOUND; j++) {
                 board.cells[i][j].restore();
             }
         }
@@ -112,29 +216,42 @@ public class Model {
                             Position  newPosition,
                             PieceType movedPieceType) {
 
+        playSound(moveSound);
+
         AbsolutePieceType absolutePieceType = movedPieceType.absolute();
 
         if (movedPieceType == PieceType.WHITE_PAWN || movedPieceType == PieceType.BLACK_PAWN) {
-            if (newPosition.getChessHeight() == (movedPieceType.absolute() == AbsolutePieceType.WHITE ? 8 : 1))
+            if (newPosition.getChessHeight() == (movedPieceType.absolute() == AbsolutePieceType.WHITE ? VERTICAL_BOUND : 1))
                 executePawnPromotion(newPosition, movedPieceType.absolute());
         }
 
         if (movedPieceType == PieceType.WHITE_KING || movedPieceType == PieceType.BLACK_KING)
-            if (Math.abs(oldPosition.w - newPosition.w) == 2)
+            if (Math.abs(oldPosition.getWidth() - newPosition.getWidth()) == 2)
                 executeCastling(newPosition, movedPieceType.absolute());
 
         handleState(absolutePieceType.invert());
+
+        if (movedPieceType.absolute() == AbsolutePieceType.WHITE)
+            if (movedPieceType != PieceType.WHITE_CLOWN && movedPieceType != PieceType.NONE)
+                lastWhiteMovedPieceType = movedPieceType;
+
+        if (movedPieceType.absolute() == AbsolutePieceType.BLACK)
+            if (movedPieceType != PieceType.BLACK_CLOWN && movedPieceType != PieceType.NONE)
+                lastBlackMovedPieceType = movedPieceType;
 
         turn = !turn;
 
         history.push(PresetReader.read(this));
 
-        notifyCastling(newPosition);
+        if (needWhiteCastlingNotify || needBlackCastlingNotify)
+            notifyCastling(newPosition);
 
         if (state == State.CHECKMATE_TO_WHITE || state == State.CHECKMATE_TO_BLACK || state == State.STALEMATE) {
+            // playSound(endSound);
+
             Chess owner = (Chess) SwingUtilities.getWindowAncestor(board);
 
-            highlightLoseCause(movedPieceType);
+            highlightLoseCause(movedPieceType, state);
 
             board.repaint();
 
@@ -146,29 +263,43 @@ public class Model {
     private void undoMove() {
         if (history.size() > 1) {
             history.pop();
+            playSound(moveSound);
             loadPreset(history.peek());
         } else {
             loadPreset(history.firstElement());
         }
     }
 
-    private void highlightLoseCause(PieceType pieceType) {
+    private void highlightLoseCause(PieceType pieceType, State state) {
 
-        AbsolutePieceType winnerType = pieceType.absolute();
-        PieceType         lostKing   = winnerType == AbsolutePieceType.WHITE ? PieceType.BLACK_KING : PieceType.WHITE_KING;
+        if (state == State.CHECKMATE_TO_WHITE || state == State.CHECKMATE_TO_BLACK) {
+            AbsolutePieceType winnerType       = pieceType.absolute();
+            PieceType         lostKing         = winnerType == AbsolutePieceType.WHITE ? PieceType.BLACK_KING : PieceType.WHITE_KING;
 
-        Position          lostKingPosition = null;
+            Position          lostKingPosition = null;
 
-        for (int i = 0; i < 8; i++)
-            for (int j = 0; j < 8; j++) {
-                if (board.cells[i][j].pieceType == lostKing) {
-                    board.cells[i][j].setBackground(Color.RED);
-                    lostKingPosition = board.cells[i][j].position;
+            for (int i = 0; i < VERTICAL_BOUND; i++)
+                for (int j = 0; j < HORIZONTAL_BOUND; j++) {
+                    if (board.cells[i][j].pieceType == lostKing) {
+                        board.cells[i][j].noteLose();
+                        lostKingPosition = board.cells[i][j].position;
+                    }
                 }
-            }
 
-        for (Cell c: PseudoValidMoves.getIntersecting(board, lostKingPosition, lostKing.absolute()))
-            c.setBackground(Color.RED);
+            for (Cell c : PseudoValidMoves.getIntersecting(board.cells, lostKingPosition, lostKing.absolute()))
+                c.noteLose();
+        }
+
+        if (state == State.STALEMATE) {
+            for (int i = 0; i < VERTICAL_BOUND; i++)
+                for (int j = 0; j < HORIZONTAL_BOUND; j++) {
+                    if (board.cells[i][j].pieceType == PieceType.WHITE_KING)
+                        board.cells[i][j].noteDraw();
+
+                    if (board.cells[i][j].pieceType == PieceType.BLACK_KING)
+                        board.cells[i][j].noteDraw();
+                }
+        }
     }
 
     private boolean turn(AbsolutePieceType absolutePieceType) {
@@ -181,63 +312,102 @@ public class Model {
         PawnPromotionDialog pawnPromotionDialog = new PawnPromotionDialog(owner, pawnType);
         pawnPromotionDialog.setVisible(true);
 
-        setPiece(pawnPosition, pawnPromotionDialog.pawnPromotionPanel.chosenPieceType);
+        PieceType chosenPieceType = pawnPromotionDialog.pawnPromotionPanel.chosenPieceType;
+
+        if (chosenPieceType != null)
+            setPiece(pawnPosition, chosenPieceType);
+        else {
+            executePawnPromotion(pawnPosition, pawnType);
+        }
+
     }
 
-    private void executeCastling(Position kingPosition, AbsolutePieceType kingType) {
+    private void executeCastling(Position newKingPosition, AbsolutePieceType kingType) {
         if (kingType == AbsolutePieceType.WHITE) {
-            if (kingPosition.equals(new Position("g1"))) {
-                removePiece(new Position("h1"));
-                setPiece(new Position("f1"), PieceType.WHITE_ROOK);
+            if (newKingPosition.equals(whiteKingPosition.right().right())) {
+
+                removePiece(whiteRightRookPosition);
+                setPiece(newKingPosition.left(), PieceType.WHITE_ROOK);
+                needWhiteCastlingNotify = false;
             }
 
-            if (kingPosition.equals(new Position("c1"))) {
-                removePiece(new Position("a1"));
-                setPiece(new Position("d1"), PieceType.WHITE_ROOK);
+            if (newKingPosition.equals(whiteKingPosition.left().left())) {
+
+                removePiece(whiteLeftRookPosition);
+                setPiece(newKingPosition.right(), PieceType.WHITE_ROOK);
+                needWhiteCastlingNotify = false;
             }
         }
 
         else if (kingType == AbsolutePieceType.BLACK) {
-            if (kingPosition.equals(new Position("g8"))) {
-                removePiece(new Position("h8"));
-                setPiece(new Position("f8"), PieceType.BLACK_ROOK);
+            if (newKingPosition.equals(blackKingPosition.right().right())) {
+
+                removePiece(blackRightRookPosition);
+                setPiece(newKingPosition.left(), PieceType.BLACK_ROOK);
+                needBlackCastlingNotify = false;
             }
 
-            if (kingPosition.equals(new Position("c8"))) {
-                removePiece(new Position("a8"));
-                setPiece(new Position("d8"), PieceType.BLACK_ROOK);
+            if (newKingPosition.equals(blackKingPosition.left().left())) {
+
+                removePiece(blackLeftRookPosition);
+                setPiece(newKingPosition.right(), PieceType.BLACK_ROOK);
+                needBlackCastlingNotify = false;
             }
         }
     }
 
     private void notifyCastling(Position position) {
-        if (position.equals(new Position("e1"))) {
+        if (position.equals(whiteKingPosition)) {
             whiteKingMoved = true;
+            needWhiteCastlingNotify = false;
             return;
         }
 
-        if (position.equals(new Position("e8"))) {
+        if (position.equals(blackKingPosition)) {
             blackKingMoved = true;
+            needBlackCastlingNotify = false;
             return;
         }
 
-        if (position.equals(new Position("a1"))) {
+        if (position.equals(whiteLeftRookPosition)) {
             whiteLeftRookMoved = true;
             return;
         }
 
-        if (position.equals(new Position("h1"))) {
+        if (position.equals(whiteRightRookPosition)) {
             whiteRightRookMoved = true;
             return;
         }
 
-        if (position.equals(new Position("a8"))) {
+        if (position.equals(blackLeftRookPosition)) {
             blackLeftRookMoved = true;
             return;
         }
 
-        if (position.equals(new Position("h8"))) {
+        if (position.equals(blackRightRookPosition)) {
             blackRightRookMoved = true;
+        }
+    }
+
+    public void playSound(File file) {
+        playSound(file, -10.0f);
+    }
+
+    public void playSound(File file, float volume) {
+        try {
+            AudioInputStream audioIn = AudioSystem.getAudioInputStream(file);
+
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioIn);
+
+            FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+
+            gainControl.setValue(gainControl.getValue() + volume);
+
+            clip.start();
+
+        } catch (Exception ignored) {
+
         }
     }
 
@@ -279,7 +449,10 @@ public class Model {
             if (pressedCell.pieceType != PieceType.NONE && model.turn(pressedCell.absolutePieceType)) {
                 this.successfulGrab = true;
 
-                board.activePieceImage = ImageReader.get(pressedCell.pieceType);
+                int width  = pressedCell.getWidth();
+                int height = pressedCell.getHeight();
+
+                board.activePieceImage = ImageReader.get(pressedCell.pieceType, width, height);
 
                 this.grabbedCellPieceType = pressedCell.pieceType;
                 this.grabbedCellPosition  = pressedCell.position;
@@ -326,7 +499,7 @@ public class Model {
         public void mouseDragged(MouseEvent e) {
             if (successfulGrab) {
                 // Look at paint() method in Board class
-                board.point    = e.getPoint();
+                board.point           = e.getPoint();
                 board.isMouseDragging = true;
 
                 board.setCursor(new Cursor(Cursor.HAND_CURSOR));

@@ -1,6 +1,6 @@
 package ru.mathparser;
 
-public class MathParserException extends Exception {
+public class MathParserException extends RuntimeException {
 
     public MathParserException() {
         super();

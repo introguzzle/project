@@ -1,15 +1,19 @@
 package ru.chess.model;
 
 import ru.chess.PieceType;
-import ru.chess.Position;
+import ru.chess.position.Position;
 
-public interface PieceSetupLoader {
+public class PieceSetupLoader {
+
+    PieceSetupLoader() {
+
+    }
 
     static void load(Model model, String pieceSetup) {
         String[] parts = pieceSetup.split(" ");
 
-        for (int i = 0; i < 8; i++)
-            for (int j = 0; j < 8; j++)
+        for (int i = 0; i < model.getBoard().cells.length; i++)
+            for (int j = 0; j < model.getBoard().cells[i].length; j++)
                 model.setPiece(new Position(i, j), PieceType.NONE);
 
         for (String part: parts) {
@@ -33,6 +37,9 @@ public interface PieceSetupLoader {
                 case 'b' -> PieceType.WHITE_BISHOP;
                 case 'k' -> PieceType.WHITE_KNIGHT;
                 case 'K' -> PieceType.WHITE_KING;
+                case 'c' -> PieceType.WHITE_CLOWN;
+                case 'w' -> PieceType.WHITE_WIZARD;
+                case 't' -> PieceType.WHITE_TAMPLIER;
                 case 'q' -> PieceType.WHITE_QUEEN;
                 default  -> PieceType.NONE;
             };
@@ -44,7 +51,10 @@ public interface PieceSetupLoader {
                 case 'r' -> PieceType.BLACK_ROOK;
                 case 'b' -> PieceType.BLACK_BISHOP;
                 case 'k' -> PieceType.BLACK_KNIGHT;
+                case 'c' -> PieceType.BLACK_CLOWN;
+                case 'w' -> PieceType.BLACK_WIZARD;
                 case 'K' -> PieceType.BLACK_KING;
+                case 't' -> PieceType.BLACK_TAMPLIER;
                 case 'q' -> PieceType.BLACK_QUEEN;
                 default  -> PieceType.NONE;
             };

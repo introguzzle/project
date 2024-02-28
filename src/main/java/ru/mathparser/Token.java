@@ -1,8 +1,8 @@
 package ru.mathparser;
 
 public final class Token {
-    public TokenType tokenType;
-    public String data;
+    private final TokenType tokenType;
+    private final String data;
 
     public Token(TokenType tokenType, String data) {
         this.tokenType = tokenType;
@@ -18,9 +18,12 @@ public final class Token {
         return this.tokenType;
     }
 
-    @Override
-    public String toString() {
-        return "Token{" + "type=" + tokenType + ", data= '" + data + "'}";
+    public String getData() {
+        return data;
     }
 
+    @Override
+    public String toString() {
+        return "Token{" + "type=" + getTokenType() + ", data= '" + getData() + "'}";
+    }
 }

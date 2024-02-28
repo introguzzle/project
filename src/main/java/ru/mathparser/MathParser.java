@@ -109,7 +109,7 @@ public final class MathParser implements MathConstants {
         }
 
         if (last == null && !MathFunctionParser.Explicit.isFunction(pf))
-            return ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMS;
+            return ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMETERS;
 
         if (MathFunctionParser.Parametric.isFunction(changed)) {
             final double t = 1.0;
@@ -146,7 +146,7 @@ public final class MathParser implements MathConstants {
                 }
 
                 if (err == null)
-                    return ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMS;
+                    return ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMETERS;
             }
 
             if (exception == null)
@@ -185,7 +185,7 @@ public final class MathParser implements MathConstants {
 
                     }
 
-                    return ParsingResult.EXPLICIT_FUNCTION_WITH_PARAMS;
+                    return ParsingResult.EXPLICIT_FUNCTION_WITH_PARAMETERS;
                 } catch (IllegalArgumentException | IndexOutOfBoundsException ill) {
                     return ParsingResult.ERROR;
 
@@ -212,7 +212,7 @@ public final class MathParser implements MathConstants {
             return ParsingResult.ERROR;
     }
 
-    public static double parseNoHandling(final String expression) throws MathParserException {
+    public static double parseNoHandling(final String expression) {
         return Syntax.expression(new TokenBuffer(tokenize(replaceConstants(expression))));
     }
 
@@ -236,7 +236,7 @@ public final class MathParser implements MathConstants {
         return 0;
     }
 
-    public static List<Token> tokenize(String expression) throws MathParserException {
+    public static List<Token> tokenize(String expression) {
         List<Token> tokenList = new ArrayList<>();
 
         Stack<Character> stack = new Stack<>();
@@ -371,9 +371,9 @@ public final class MathParser implements MathConstants {
             throw new InstantiationException();
         }
 
-        public static double expression(final TokenBuffer tokenBuffer) throws MathParserException {
+        public static double expression(final TokenBuffer tokenBuffer) {
             Token token = tokenBuffer.getNextToken();
-            if (token.tokenType == TokenType.EOF) {
+            if (token.getTokenType() == TokenType.EOF) {
                 return 0;
             } else {
                 tokenBuffer.returnBack();
@@ -381,11 +381,11 @@ public final class MathParser implements MathConstants {
             }
         }
 
-        public static double addSubtract(final TokenBuffer tokenBuffer) throws MathParserException {
+        public static double addSubtract(final TokenBuffer tokenBuffer) {
             double value = multiplyDivide(tokenBuffer);
             while (true) {
                 Token token = tokenBuffer.getNextToken();
-                switch (token.tokenType) {
+                switch (token.getTokenType()) {
                     case OPERATOR_ADD:
                         value += multiplyDivide(tokenBuffer);
                         break;
@@ -403,11 +403,11 @@ public final class MathParser implements MathConstants {
             }
         }
 
-        public static double multiplyDivide(final TokenBuffer tokenBuffer) throws MathParserException {
+        public static double multiplyDivide(final TokenBuffer tokenBuffer) {
             double value = exp(tokenBuffer);
             while (true) {
                 Token token = tokenBuffer.getNextToken();
-                switch (token.tokenType) {
+                switch (token.getTokenType()) {
                     case OPERATOR_MUL:
                         value *= exp(tokenBuffer);
                         break;
@@ -427,23 +427,22 @@ public final class MathParser implements MathConstants {
             }
         }
 
-        public static double exp(final TokenBuffer tokenBuffer) throws MathParserException {
+        public static double exp(final TokenBuffer tokenBuffer) {
             double value = factor(tokenBuffer);
             while (true) {
                 Token token = tokenBuffer.getNextToken();
-                switch (token.tokenType) {
+                switch (token.getTokenType()) {
                     case OPERATOR_EXP:
                         value = Math.pow(value, exp(tokenBuffer));
                         break;
 
-                    case
-                            OPERATOR_MUL,
-                            OPERATOR_DIV,
-                            EOF,
-                            RIGHT_BRACKET,
-                            COMMA,
-                            OPERATOR_ADD,
-                            OPERATOR_SUB:
+                    case OPERATOR_MUL:
+                    case OPERATOR_DIV:
+                    case EOF:
+                    case RIGHT_BRACKET:
+                    case COMMA:
+                    case OPERATOR_ADD:
+                    case OPERATOR_SUB:
 
                         tokenBuffer.returnBack();
                         return value;
@@ -454,10 +453,10 @@ public final class MathParser implements MathConstants {
             }
         }
 
-        public static double factor(final TokenBuffer tokenBuffer) throws MathParserException {
+        public static double factor(final TokenBuffer tokenBuffer) {
             Token token = tokenBuffer.getNextToken();
 
-            switch (token.tokenType) {
+            switch (token.getTokenType()) {
                 case FUNCTION_NAME:
                     tokenBuffer.returnBack();
                     return function(tokenBuffer);
@@ -466,12 +465,12 @@ public final class MathParser implements MathConstants {
                     return -factor(tokenBuffer);
 
                 case NUMBER:
-                    return Double.parseDouble(token.data);
+                    return Double.parseDouble(token.getData());
 
                 case LEFT_BRACKET:
                     double value = expression(tokenBuffer);
                     token = tokenBuffer.getNextToken();
-                    if (token.tokenType != TokenType.RIGHT_BRACKET) {
+                    if (token.getTokenType() != TokenType.RIGHT_BRACKET) {
                         throw new MathParserSyntaxException("Unexpected token: '" + token.getTokenType() + "' at pos " + tokenBuffer.getPos() + " in expression");
                     }
                     return value;
@@ -481,30 +480,31 @@ public final class MathParser implements MathConstants {
             }
         }
 
-        public static double function(final TokenBuffer tokenBuffer) throws MathParserException {
-            String function = tokenBuffer.getNextToken().data;
+        public static double function(final TokenBuffer tokenBuffer) {
+            String function = tokenBuffer.getNextToken().getData();
             Token token = tokenBuffer.getNextToken();
 
-            if (token.tokenType != TokenType.LEFT_BRACKET) {
+            if (token.getTokenType() != TokenType.LEFT_BRACKET) {
                 throw new MathParserSyntaxException();
             }
 
             List<Double> args = new ArrayList<>();
             token = tokenBuffer.getNextToken();
 
-            if (token.tokenType != TokenType.RIGHT_BRACKET) {
+            if (token.getTokenType() != TokenType.RIGHT_BRACKET) {
                 tokenBuffer.returnBack();
                 do {
 
                     args.add(expression(tokenBuffer));
                     token = tokenBuffer.getNextToken();
 
-                    if ((token.tokenType != TokenType.COMMA) && (token.tokenType != TokenType.RIGHT_BRACKET)) {
+                    if ((token.getTokenType() != TokenType.COMMA) && (token.getTokenType() != TokenType.RIGHT_BRACKET)) {
                         throw new MathParserSyntaxException();
                     }
 
-                } while (token.tokenType == TokenType.COMMA);
+                } while (token.getTokenType() == TokenType.COMMA);
             }
+
             return MathFunctions.FUNCTION_MAP.get(function).apply(args);
         }
     }

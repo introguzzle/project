@@ -2,237 +2,116 @@ package ru.chess.model;
 
 import ru.chess.*;
 import ru.chess.cell.Cell;
+import ru.chess.cell.WhiteCell;
+import ru.chess.position.Position;
+import ru.chess.position.Positions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
-public interface PseudoValidMoves {
+public final class PseudoValidMoves {
 
-    int WHITE_PAWN_START = 2;
-    int BLACK_PAWN_START = 7;
+    private PseudoValidMoves() {
 
-    int FIRST = 0;
-    int LAST  = 7;
+    }
 
-    static List<Position> get(Board board, Cell cell) {
+    static List<Position> get(Cell[][] cells, Cell cell) {
         return switch (cell.pieceType) {
-            case NONE -> new ArrayList<>();
+            case WHITE_PAWN,     BLACK_PAWN     -> getForPawn    (cells, cell);
+            case WHITE_ROOK,     BLACK_ROOK     -> getForRook    (cells, cell);
+            case WHITE_BISHOP,   BLACK_BISHOP   -> getForBishop  (cells, cell);
+            case WHITE_QUEEN,    BLACK_QUEEN    -> getForQueen   (cells, cell);
+            case WHITE_KNIGHT,   BLACK_KNIGHT   -> getForKnight  (cells, cell);
+            case WHITE_CLOWN,    BLACK_CLOWN    -> getForClown   (cells, cell);
+            case WHITE_WIZARD,   BLACK_WIZARD   -> getForWizard  (cells, cell);
+            case WHITE_TAMPLIER, BLACK_TAMPLIER -> getForTamplier(cells, cell);
+            case WHITE_KING,     BLACK_KING     -> getForKing    (cells, cell);
 
-            case WHITE_PAWN,   BLACK_PAWN   -> getForPawn(board, cell);
-            case WHITE_ROOK,   BLACK_ROOK   -> getForRook(board, cell);
-            case WHITE_BISHOP, BLACK_BISHOP -> getForBishop(board, cell);
-            case WHITE_QUEEN,  BLACK_QUEEN  -> getForQueen(board, cell);
-            case WHITE_KNIGHT, BLACK_KNIGHT -> getForKnight(board, cell);
-            case WHITE_KING,   BLACK_KING   -> getForKing(board, cell);
+            default -> new ArrayList<>();
         };
     }
 
-    static List<Cell> getIntersecting(Board board,
-                                             Position targetPosition,
-                                             AbsolutePieceType absolutePieceType) {
-        List<Cell> cells = new ArrayList<>();
+    static List<Cell> getIntersecting(Cell[][] cells,
+                                      Position targetPosition,
+                                      AbsolutePieceType absolutePieceType) {
+        List<Cell> intersectingCells = new ArrayList<>();
 
-        for (int i = 0; i < 8; i++)
-            for (int j = 0; j < 8; j++) {
-                AbsolutePieceType t         = board.cells[i][j].absolutePieceType.invert();
-                List<Position>    positions = get(board, board.cells[i][j]);
+        for (Cell[] cellArray : cells)
+            for (Cell cell : cellArray) {
+
+                AbsolutePieceType t = cell.absolutePieceType.invert();
+                List<Position> positions = get(cells, cell);
 
                 if (t == absolutePieceType && positions.contains(targetPosition))
-                    cells.add(board.cells[i][j]);
+                    intersectingCells.add(cell);
             }
 
-
-        return cells;
+        return intersectingCells;
     }
 
-    static List<Position> getAllMoves(Board board, AbsolutePieceType absolutePieceType) {
-        List<Position> positions = new ArrayList<>();
+    static List<Position> getForPawn(Cell[][] cells, Cell cell) {
+        return cell.getPosition().pawn(
+                p -> cells[p.getHeight()][p.getWidth()].absolutePieceType == AbsolutePieceType.NONE,
+                p -> cells[p.getHeight()][p.getWidth()].absolutePieceType == cell.absolutePieceType.invert(),
+                cell.absolutePieceType == AbsolutePieceType.WHITE);
+    }
 
-        for (int i = 0; i < 8; i++)
-            for (int j = 0; j < 8; j++) {
-                AbsolutePieceType t = board.cells[i][j].absolutePieceType;
+    static List<Position> getForRook(Cell[][] cells, Cell cell) {
+        List<Position> positions = new Positions();
 
-                if (t == absolutePieceType)
-                    positions.addAll(get(board, board.cells[i][j]));
-            }
-
+        positions.addAll(cell.getPosition().vertical(filter(cells, cell), true));
+        positions.addAll(cell.getPosition().vertical(filter(cells, cell), false));
+        positions.addAll(cell.getPosition().horizontal(filter(cells, cell), true));
+        positions.addAll(cell.getPosition().horizontal(filter(cells, cell), false));
 
         return positions;
     }
 
+    static List<Position> getForBishop(Cell[][] cells, Cell cell) {
+        List<Position> positions = new Positions();
 
-    private static List<Position> getForPawn(Board board, Cell cell) {
-        List<Position> positions = new ArrayList<>();
-
-        Position position = cell.position;
-        boolean  isWhite  = cell.absolutePieceType == AbsolutePieceType.WHITE;
-
-        AbsolutePieceType enemyPieceType = cell.absolutePieceType.invert();
-
-        if (position.getChessHeight() == 1 || position.getChessHeight() == 8)
-            return positions;
-
-        Position first    = isWhite ? position.up() : position.down();
-
-        if (board.getCell(first).pieceType == PieceType.NONE) {
-            positions.add(first);
-
-            if (position.getChessHeight() == (isWhite ? WHITE_PAWN_START: BLACK_PAWN_START)) {
-
-                Position second = isWhite ? first.up() : first.down();
-
-                if (board.getCell(second).pieceType == PieceType.NONE)
-                    positions.add(second);
-            }
-        }
-
-        if (first.w != LAST && board.getCell(first.right()).absolutePieceType == enemyPieceType)
-            positions.add(first.right());
-
-        if (first.w != FIRST && board.getCell(first.left()).absolutePieceType == enemyPieceType)
-            positions.add(first.left());
+        positions.addAll(cell.getPosition().diagonal(filter(cells, cell), true, true));
+        positions.addAll(cell.getPosition().diagonal(filter(cells, cell), false, true));
+        positions.addAll(cell.getPosition().diagonal(filter(cells, cell), true, false));
+        positions.addAll(cell.getPosition().diagonal(filter(cells, cell), false, false));
 
         return positions;
     }
 
-    private static List<Position> getForRook(Board board, Cell cell) {
-        List<Position> positions = new ArrayList<>();
+    static List<Position> getForQueen(Cell[][] cells, Cell cell) {
+        return new Positions(getForRook(cells, cell), getForBishop(cells, cell));
+    }
 
-        Position          position = cell.getPosition();
+    static List<Position> getForKnight(Cell[][] cells, Cell cell) {
+        return cell.getPosition().knight(filter(cells, cell));
+    }
 
-        AbsolutePieceType enemyPieceType = cell.absolutePieceType.invert();
+    static List<Position> getForClown(Cell[][] cells, Cell cell) {
+        if (cell instanceof WhiteCell)
+            return cell.getPosition().cross(filter(cells, cell));
+        else
+            return getForKing(cells, cell);
+    }
 
-        for (Position p: position.vertical(true)) {
-            if (board.getCell(p).pieceType == PieceType.NONE) {
-                positions.add(p);
-            } else {
-                if (board.getCell(p).absolutePieceType == enemyPieceType)
-                    positions.add(p);
-                break;
-            }
-        }
+    static List<Position> getForWizard(Cell[][] cells, Cell cell) {
+        List<Position> positions = cell.getPosition().around(filter(cells, cell), 2);
 
-        for (Position p: position.vertical(false)) {
-            if (board.getCell(p).pieceType == PieceType.NONE) {
-                positions.add(p);
-            } else {
-                if (board.getCell(p).absolutePieceType == enemyPieceType)
-                    positions.add(p);
-                break;
-            }
-        }
-
-        for (Position p: position.horizontal(true)) {
-            if (board.getCell(p).pieceType == PieceType.NONE) {
-                positions.add(p);
-            } else {
-                if (board.getCell(p).absolutePieceType == enemyPieceType)
-                    positions.add(p);
-                break;
-            }
-        }
-
-        for (Position p: position.horizontal(false)) {
-            if (board.getCell(p).pieceType == PieceType.NONE) {
-                positions.add(p);
-            } else {
-                if (board.getCell(p).absolutePieceType == enemyPieceType)
-                    positions.add(p);
-                break;
-            }
-        }
+        if (cell.getPosition().isCorner())
+            positions.addAll(cell.getPosition().corners(filter(cells, cell)));
 
         return positions;
     }
 
-    private static List<Position> getForBishop(Board board, Cell cell) {
-        ArrayList<Position> positions = new ArrayList<>();
-
-        Position          position = cell.getPosition();
-
-        AbsolutePieceType enemyPieceType = cell.absolutePieceType.invert();
-
-        for (Position p: position.diagonal(true, true)) {
-            if (board.getCell(p).pieceType == PieceType.NONE) {
-                positions.add(p);
-            } else {
-                if (board.getCell(p).absolutePieceType == enemyPieceType)
-                    positions.add(p);
-                break;
-            }
-        }
-
-        for (Position p: position.diagonal(true, false)) {
-            if (board.getCell(p).pieceType == PieceType.NONE) {
-                positions.add(p);
-            } else {
-                if (board.getCell(p).absolutePieceType == enemyPieceType)
-                    positions.add(p);
-                break;
-            }
-        }
-
-        for (Position p: position.diagonal(false, true)) {
-            if (board.getCell(p).pieceType == PieceType.NONE) {
-                positions.add(p);
-            } else {
-                if (board.getCell(p).absolutePieceType == enemyPieceType)
-                    positions.add(p);
-                break;
-            }
-        }
-
-        for (Position p: position.diagonal(false, false)) {
-            if (board.getCell(p).pieceType == PieceType.NONE) {
-                positions.add(p);
-            } else {
-                if (board.getCell(p).absolutePieceType == enemyPieceType)
-                    positions.add(p);
-                break;
-            }
-        }
-
-        return positions;
+    static List<Position> getForTamplier(Cell[][] cells, Cell cell) {
+        return cell.getPosition().tamplier(filter(cells, cell));
     }
 
-    private static List<Position> getForQueen(Board board, Cell cell) {
-        ArrayList<Position> positions = new ArrayList<>();
-
-        positions.addAll(getForRook(board, cell));
-        positions.addAll(getForBishop(board, cell));
-
-        return positions;
+    static List<Position> getForKing(Cell[][] cells, Cell cell) {
+        return cell.getPosition().around(filter(cells, cell));
     }
 
-    private static List<Position> getForKnight(Board board, Cell cell) {
-        ArrayList<Position> positions = new ArrayList<>();
-
-        AbsolutePieceType enemyPieceType = cell.absolutePieceType.invert();
-
-        for (Position p: cell.getPosition().knight()) {
-            AbsolutePieceType t = board.getCell(p).absolutePieceType;
-
-            if (t == enemyPieceType || t == AbsolutePieceType.NONE) {
-                positions.add(p);
-            }
-        }
-
-        return positions;
-    }
-
-    private static List<Position> getForKing(Board board, Cell cell) {
-        ArrayList<Position> positions = new ArrayList<>();
-
-        AbsolutePieceType enemyPieceType = cell.absolutePieceType.invert();
-
-        for (Position p: cell.getPosition().around()) {
-            AbsolutePieceType t = board.getCell(p).absolutePieceType;
-
-            if (t == enemyPieceType || t == AbsolutePieceType.NONE) {
-                positions.add(p);
-            }
-        }
-
-        return positions;
+    static Predicate<Position> filter(Cell[][] cells, Cell cell) {
+        return p -> cells[p.getHeight()][p.getWidth()].absolutePieceType == cell.absolutePieceType;
     }
 }

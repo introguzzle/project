@@ -183,7 +183,7 @@ public class FunctionPanel extends JPanel {
                 if (KEY == KeyEvent.VK_ENTER)
                     if (confirmButton.isEnabled()) {
                         confirmButton.doClick();
-                    } else if (result == ParsingResult.EXPLICIT_FUNCTION_WITH_PARAMS) {
+                    } else if (result == ParsingResult.EXPLICIT_FUNCTION_WITH_PARAMETERS) {
                         coefficientTextField.requestFocus();
 
                         requestAttention(coefficientTextField);
@@ -492,13 +492,13 @@ public class FunctionPanel extends JPanel {
             coefficientTextField.setEnabled(false);
             coefficientsExist = false;
 
-        } else if (MathParser.getParsingResult(functionTextField.getText()) == ParsingResult.EXPLICIT_FUNCTION_WITH_PARAMS) {
+        } else if (MathParser.getParsingResult(functionTextField.getText()) == ParsingResult.EXPLICIT_FUNCTION_WITH_PARAMETERS) {
 
             choiceBox.setEnabled(true);
 
             setConfirmButtonDisabled();
 
-            result = ParsingResult.EXPLICIT_FUNCTION_WITH_PARAMS;
+            result = ParsingResult.EXPLICIT_FUNCTION_WITH_PARAMETERS;
 
             coefficientTextField.setEnabled(true);
             coefficientsExist = true;

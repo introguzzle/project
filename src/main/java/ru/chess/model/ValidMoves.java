@@ -1,20 +1,29 @@
 package ru.chess.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import ru.chess.*;
+import ru.chess.cell.BlackCell;
 import ru.chess.cell.Cell;
+import ru.chess.cell.WhiteCell;
 import ru.chess.model.Model.State;
+import ru.chess.position.Position;
+import ru.chess.position.Positions;
 
-public interface ValidMoves {
+public final class ValidMoves {
+
+    private ValidMoves() {
+
+    }
+
+    public static final int VERTICAL_BOUND   = Model.VERTICAL_BOUND;
+    public static final int HORIZONTAL_BOUND = Model.HORIZONTAL_BOUND;
 
     static boolean isKingUnderAttack(Model model, AbsolutePieceType absoluteKingType) {
-        PieceType kingType       = absoluteKingType == AbsolutePieceType.WHITE ? PieceType.WHITE_KING : PieceType.BLACK_KING;
-
+        PieceType         kingType       = absoluteKingType == AbsolutePieceType.WHITE ? PieceType.WHITE_KING : PieceType.BLACK_KING;
         AbsolutePieceType enemyPieceType = kingType.absolute().invert();
 
-        for (Position p: PseudoValidMoves.getAllMoves(model.getBoard(), enemyPieceType)) {
+        for (Position p: getAllMoves(model.getBoard().cells, enemyPieceType)) {
             if (model.getBoard().getCell(p).pieceType == kingType) {
                 return true;
             }
@@ -24,8 +33,9 @@ public interface ValidMoves {
     }
 
     static boolean isEmptyForAll(Model model, AbsolutePieceType absolutePieceType) {
-        for (int i = 0; i < 8; i++)
-            for (int j = 0; j < 8; j++) {
+        for (int i = 0; i < VERTICAL_BOUND; i++)
+            for (int j = 0; j < HORIZONTAL_BOUND; j++) {
+
                 if (model.getBoard().cells[i][j].absolutePieceType == absolutePieceType)
                     if (!get(model, model.getBoard().cells[i][j]).isEmpty())
                         return false;
@@ -35,23 +45,39 @@ public interface ValidMoves {
     }
 
     static List<Position> get(Model model, Cell cell) {
-        List<Position> result   = new ArrayList<>();
-        List<Position> toFilter = PseudoValidMoves.get(model.getBoard(), cell);
+        List<Position> result = new Positions();
+        List<Position> toFilter = PseudoValidMoves.get(model.getBoard().cells, cell);
 
         toFilter.addAll(getCastlingPositions(model, cell));
 
         for (Position p: toFilter) {
-            Board future = new Board();
-            State state  = State.ONGOING;
+            Cell[][] future = new Cell[VERTICAL_BOUND][HORIZONTAL_BOUND];
 
-            copy(future.cells, model.getBoard().cells);
-            movePieceFuture(future, cell, p);
+            for (int i = 0; i < VERTICAL_BOUND; i++) {
+                for (int j = 0; j < HORIZONTAL_BOUND; j++) {
+                    if (Math.floorMod(i, 2) == 0)
+                        future[i][j] = Math.floorMod(j, 2) == 0
+                                ? new WhiteCell(new Position(i, j))
+                                : new BlackCell(new Position(i, j));
+                    else
+                        future[i][j] = Math.floorMod(j, 2) == 1
+                                ? new WhiteCell(new Position(i, j))
+                                : new BlackCell(new Position(i, j));
+                }
+            }
 
+            State             state          = State.ONGOING;
             AbsolutePieceType enemyPieceType = cell.absolutePieceType.invert();
 
-            for (Position inner: PseudoValidMoves.getAllMoves(future, enemyPieceType)) {
-                if (future.getCell(inner).pieceType == getKingType(enemyPieceType)) {
+            copy(future, model.getBoard().cells);
+            movePiece(future, cell, p);
+
+            List<Position> allMoves = getAllMoves(future, enemyPieceType);
+
+            for (Position inner: allMoves) {
+                if (future[inner.getHeight()][inner.getWidth()].pieceType == getKingType(enemyPieceType)) {
                     state = getCheckState(enemyPieceType);
+                    break;
                 }
             }
 
@@ -64,22 +90,36 @@ public interface ValidMoves {
     }
 
     private static List<Position> getCastlingPositions(Model model, Cell cell) {
+        boolean whiteCastlingPossible = model.whiteKingPosition != null
+                && model.whiteLeftRookPosition  != null
+                && model.whiteRightRookPosition != null;
+
+        boolean blackCastlingPossible = model.blackKingPosition != null
+                && model.blackLeftRookPosition  != null
+                && model.blackRightRookPosition != null;
+
         AbsolutePieceType kingType;
 
-        if (cell.pieceType == PieceType.WHITE_KING && cell.position.equals(new Position("e1"))) {
+        if (cell.pieceType == PieceType.WHITE_KING
+                && cell.position.equals(model.whiteKingPosition)) {
             kingType = AbsolutePieceType.WHITE;
 
-        } else if (cell.pieceType == PieceType.BLACK_KING && cell.position.equals(new Position("e8"))) {
+        } else if (cell.pieceType == PieceType.BLACK_KING
+                && cell.position.equals(model.blackKingPosition)) {
             kingType = AbsolutePieceType.BLACK;
 
         } else {
             return new ArrayList<>();
         }
 
-        if (kingType == AbsolutePieceType.WHITE)
+        if (kingType == AbsolutePieceType.WHITE && whiteCastlingPossible)
             return getWhiteCastlingPositions(model);
-        else
+
+        else if (kingType == AbsolutePieceType.BLACK && blackCastlingPossible)
             return getBlackCastlingPositions(model);
+
+        else
+            return new ArrayList<>();
     }
 
     private static List<Position> getWhiteCastlingPositions(Model model) {
@@ -88,42 +128,37 @@ public interface ValidMoves {
         if (model.whiteKingMoved)
             return whiteCastlingPositions;
 
-        if (!model.whiteLeftRookMoved) {
+        if (!model.whiteLeftRookMoved && Math.abs(model.whiteLeftRookPosition.getWidth() - model.whiteKingPosition.getWidth()) > 2) {
 
-            Position d1 = new Position("d1");
-            Position c1 = new Position("c1");
-            Position b1 = new Position("b1");
+            Set<Position> line = model.whiteLeftRookPosition.horizontal(model.whiteKingPosition);
 
-            boolean isLineFree = model.getBoard().getCell(d1).pieceType == PieceType.NONE;
+            boolean freeLine = true;
 
-            isLineFree &= model.getBoard().getCell(c1).pieceType == PieceType.NONE;
-            isLineFree &= model.getBoard().getCell(b1).pieceType == PieceType.NONE;
+            for (Position p : line) {
+                freeLine &= model.getBoard().getCell(p).pieceType == PieceType.NONE;
+            }
 
-            List<Position> blackPositions = PseudoValidMoves.getAllMoves(model.getBoard(), AbsolutePieceType.BLACK);
+            for (Position p: getAllMoves(model.getBoard().cells, AbsolutePieceType.BLACK))
+                freeLine &= !line.contains(p);
 
-            boolean isLineUnderAttack = blackPositions.contains(d1);
-
-            isLineUnderAttack &= blackPositions.contains(c1);
-            isLineUnderAttack &= blackPositions.contains(b1);
-
-            if (isLineFree && !isLineUnderAttack)
-                whiteCastlingPositions.add(c1);
+            if (freeLine)
+                whiteCastlingPositions.add(model.whiteKingPosition.left().left());
         }
 
-        if (!model.whiteRightRookMoved) {
+        if (!model.whiteRightRookMoved && Math.abs(model.whiteRightRookPosition.getWidth() - model.whiteKingPosition.getWidth()) > 2) {
+            Set<Position> line = model.whiteRightRookPosition.horizontal(model.whiteKingPosition);
 
-            Position f1 = new Position("f1");
-            Position g1 = new Position("g1");
+            boolean freeLine = true;
 
-            boolean isLineFree = model.getBoard().getCell(f1).pieceType == PieceType.NONE &&
-                    model.getBoard().getCell(g1).pieceType == PieceType.NONE;
+            for (Position p: line) {
+                freeLine &= model.getBoard().getCell(p).pieceType == PieceType.NONE;
+            }
 
-            List<Position> blackPositions = PseudoValidMoves.getAllMoves(model.getBoard(), AbsolutePieceType.BLACK);
+            for (Position p: getAllMoves(model.getBoard().cells, AbsolutePieceType.BLACK))
+                freeLine &= !line.contains(p);
 
-            boolean isLineUnderAttack = blackPositions.contains(f1) && blackPositions.contains(g1);
-
-            if (isLineFree && !isLineUnderAttack)
-                whiteCastlingPositions.add(g1);
+            if (freeLine)
+                whiteCastlingPositions.add(model.whiteKingPosition.right().right());
         }
 
         return whiteCastlingPositions;
@@ -135,57 +170,66 @@ public interface ValidMoves {
         if (model.blackKingMoved)
             return blackCastlingPositions;
 
-        if (!model.blackLeftRookMoved) {
+        if (!model.blackLeftRookMoved && Math.abs(model.blackLeftRookPosition.getWidth() - model.blackKingPosition.getWidth()) > 2) {
+            Set<Position> line = model.blackLeftRookPosition.horizontal(model.blackKingPosition);
 
-            Position d8 = new Position("d8");
-            Position c8 = new Position("c8");
-            Position b8 = new Position("b8");
+            boolean freeLine = true;
 
-            boolean isLineFree = model.getBoard().getCell(d8).pieceType == PieceType.NONE;
+            for (Position p: line) {
+                freeLine &= model.getBoard().getCell(p).pieceType == PieceType.NONE;
+            }
 
-            isLineFree &= model.getBoard().getCell(c8).pieceType == PieceType.NONE;
-            isLineFree &= model.getBoard().getCell(b8).pieceType == PieceType.NONE;
+            for (Position p: getAllMoves(model.getBoard().cells, AbsolutePieceType.WHITE))
+                freeLine &= !line.contains(p);
 
-            List<Position> whitePositions = PseudoValidMoves.getAllMoves(model.getBoard(), AbsolutePieceType.WHITE);
-
-            boolean isLineUnderAttack = whitePositions.contains(d8);
-
-            isLineUnderAttack &= whitePositions.contains(c8);
-            isLineUnderAttack &= whitePositions.contains(b8);
-
-            if (isLineFree && !isLineUnderAttack)
-                blackCastlingPositions.add(c8);
+            if (freeLine)
+                blackCastlingPositions.add(model.blackKingPosition.left().left());
         }
 
-        if (!model.blackRightRookMoved) {
+        if (!model.blackRightRookMoved && Math.abs(model.blackRightRookPosition.getWidth() - model.blackKingPosition.getWidth()) > 2) {
+            Set<Position> line = model.blackRightRookPosition.horizontal(model.blackKingPosition);
 
-            Position f8 = new Position("f8");
-            Position g8 = new Position("g8");
+            boolean freeLine = true;
 
-            boolean isLineFree = model.getBoard().getCell(f8).pieceType == PieceType.NONE &&
-                    model.getBoard().getCell(g8).pieceType == PieceType.NONE;
+            for (Position p: line) {
+                freeLine &= model.getBoard().getCell(p).pieceType == PieceType.NONE;
+            }
 
-            List<Position> whitePositions = PseudoValidMoves.getAllMoves(model.getBoard(), AbsolutePieceType.WHITE);
+            for (Position p: getAllMoves(model.getBoard().cells, AbsolutePieceType.WHITE))
+                freeLine &= !line.contains(p);
 
-            boolean isLineUnderAttack = whitePositions.contains(f8) && whitePositions.contains(g8);
-
-            if (isLineFree && !isLineUnderAttack)
-                blackCastlingPositions.add(g8);
+            if (freeLine)
+                blackCastlingPositions.add(model.blackKingPosition.right().right());
         }
 
         return blackCastlingPositions;
     }
 
-    private static void movePieceFuture(Board future, Cell cell, Position newPosition) {
-        PieceType thisPieceType = future.getCell(cell.position).pieceType;
+    private static void movePiece(Cell[][] cells, Cell cell, Position newPosition) {
+        PieceType thisPieceType = cell.pieceType;
 
-        future.getCell(cell.position).removePiece();
-        future.getCell(newPosition).setPiece(thisPieceType);
+        cells[cell.position.getHeight()][cell.position.getWidth()].removePiece();
+        cells[newPosition.getHeight()][newPosition.getWidth()].setPiece(thisPieceType);
+    }
+
+    private static List<Position> getAllMoves(Cell[][] cells, AbsolutePieceType absolutePieceType) {
+        List<Position> positions = new ArrayList<>();
+
+        for (Cell[] cellArray : cells)
+            for (Cell cell : cellArray) {
+
+                AbsolutePieceType t = cell.absolutePieceType;
+
+                if (t == absolutePieceType)
+                    positions.addAll(PseudoValidMoves.get(cells, cell));
+            }
+
+        return positions;
     }
 
     private static void copy(Cell[][] target, Cell[][] source) {
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
+        for (int i = 0; i < VERTICAL_BOUND; i++) {
+            for (int j = 0; j < HORIZONTAL_BOUND; j++) {
                 target[i][j].setPiece(source[i][j].pieceType);
             }
         }

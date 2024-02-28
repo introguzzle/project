@@ -1,6 +1,10 @@
 package ru.chess.model;
 
-public interface PresetReader extends PieceSetupReader {
+public final class PresetReader {
+
+    private PresetReader() {
+
+    }
 
     static String read(Model model) {
         StringBuilder preset     = new StringBuilder(readState(model) + " / ");

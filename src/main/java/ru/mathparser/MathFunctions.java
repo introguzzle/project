@@ -21,9 +21,9 @@ public final class MathFunctions {
     private static final double  Y_BOUND_LIMIT = (double) ScopeSlider.DefaultConfiguration.
             SCOPE_DOMAIN_VALUES.getLast() * Grapher.RunConfiguration.DEFAULT_Y / 100.0;
 
-    public static final Map<String, String>            REQUIRED_ARGS = new HashMap<>();
-    public static final Map<String, MathFunction>      FUNCTION_MAP  = new HashMap<>();
-    public static final List<String>                   SORTED_NAMES  = new ArrayList<>();
+    public static final Map<String, String>       REQUIRED_ARGS = new HashMap<>();
+    public static final Map<String, MathFunction> FUNCTION_MAP  = new HashMap<>();
+    public static final List<String>              SORTED_NAMES  = new ArrayList<>();
 
     static {
         REQUIRED_ARGS.put("abs", "1");
@@ -601,7 +601,7 @@ public final class MathFunctions {
         for (double n = 1; n < iterations; n += 1) {
             try {
                 r += Math.pow(Math.log(x), n) / (n * factorial(n));
-            } catch (Exception e) {
+            } catch (StackOverflowError e) {
                 return NAN;
             }
         }
