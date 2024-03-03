@@ -2,14 +2,14 @@ package ru.chess.dialog;
 
 import ru.chess.AbsolutePieceType;
 import ru.chess.Chess;
+import ru.chess.label.Action;
+import ru.chess.label.DynamicLabel;
 import ru.chess.gui.ImageReader;
 import ru.chess.PieceType;
 import ru.chess.gui.GUI;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public final class PawnPromotionDialog extends JDialog {
 
@@ -30,50 +30,44 @@ public final class PawnPromotionDialog extends JDialog {
         this.setIconImage(owner.getIconImage());
     }
 
-    public static final class PawnPromotionPanel extends JPanel {
+    public static final class ChoiceLabel extends DynamicLabel {
 
-        public final Color DEFAULT_COLOR;
+        public final PieceType pieceType;
+        public final PawnPromotionPanel panel;
 
-        private static final class ChoiceLabel extends JLabel {
+        /**
+         * @param pieceType     Piece type of this label
+         * @param pressedAction What to perform when pressed
+         */
+        public ChoiceLabel(PawnPromotionPanel panel,
+                           PieceType pieceType,
+                           Action pressedAction) {
+            super(
+                    new Color(238, 238, 238),
+                    new Color(200, 200, 190),
+                    ImageReader.get(pieceType),
+                    pressedAction);
 
-            public final PieceType pieceType;
-
-            public ChoiceLabel(PawnPromotionPanel panel, PieceType pieceType) {
-                this.pieceType = pieceType;
-                this.setIcon(ImageReader.get(pieceType));
-
-                MouseHandler mouseHandler = new MouseHandler(panel);
-
-                this.setBackground(panel.DEFAULT_COLOR);
-                this.setOpaque(true);
-                this.setBorder(BorderFactory.createEmptyBorder());
-
-                this.addMouseListener(mouseHandler);
-                this.addMouseMotionListener(mouseHandler);
-            }
-
-            @Override
-            public void paint(Graphics g) {
-                Graphics2D g2d = (Graphics2D) g;
-                GUI.setQuality(g2d, 2);
-                super.paint(g2d);
-            }
-
+            this.panel = panel;
+            this.pieceType = pieceType;
         }
+    }
+
+    public static final class PawnPromotionPanel extends JPanel {
 
         public final JFrame owner;
 
         public final AbsolutePieceType pawnPieceType;
-        public final boolean           isPawnWhite;
+        public final boolean           whitePawn;
 
         public       PieceType         chosenPieceType;
 
         public PawnPromotionPanel(JFrame owner, AbsolutePieceType pawnPieceType) {
+            super(true);
             this.owner = owner;
 
             this.pawnPieceType = pawnPieceType;
-            this.isPawnWhite   = pawnPieceType == AbsolutePieceType.WHITE;
-            this.DEFAULT_COLOR = this.getBackground();
+            this.whitePawn     = pawnPieceType == AbsolutePieceType.WHITE;
 
             init();
         }
@@ -81,25 +75,26 @@ public final class PawnPromotionDialog extends JDialog {
         private void init() {
             this.setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 10));
 
-            JLabel knightLabel = new ChoiceLabel(this, isPawnWhite ? PieceType.WHITE_KNIGHT : PieceType.BLACK_KNIGHT);
-            JLabel bishopLabel = new ChoiceLabel(this, isPawnWhite ? PieceType.WHITE_BISHOP : PieceType.BLACK_BISHOP);
-            JLabel rookLabel   = new ChoiceLabel(this, isPawnWhite ? PieceType.WHITE_ROOK   : PieceType.BLACK_ROOK);
-            JLabel queenLabel  = new ChoiceLabel(this, isPawnWhite ? PieceType.WHITE_QUEEN  : PieceType.BLACK_QUEEN);
+            Action chooseAction = e -> {
+                ChoiceLabel label = (ChoiceLabel) e.getSource();
+                label.panel.chosenPieceType = ((ChoiceLabel) e.getSource()).pieceType;
+                JDialog master = (JDialog) SwingUtilities.getWindowAncestor(label.panel);
 
-            if (!((Chess) owner).getModel().isDefaultBoard()) {
-                JLabel clownLabel    = new ChoiceLabel(this, isPawnWhite ? PieceType.WHITE_CLOWN    : PieceType.BLACK_CLOWN);
-                JLabel tamplierLabel = new ChoiceLabel(this, isPawnWhite ? PieceType.WHITE_TAMPLIER : PieceType.BLACK_TAMPLIER);
-                JLabel wizardLabel   = new ChoiceLabel(this, isPawnWhite ? PieceType.WHITE_WIZARD   : PieceType.BLACK_WIZARD);
+                master.setVisible(false);
+            };
 
-                this.add(clownLabel);
-                this.add(tamplierLabel);
-                this.add(wizardLabel);
-            }
+            boolean defaultBoard = ((Chess) owner).getModel().isDefaultBoard();
 
-            this.add(knightLabel);
-            this.add(bishopLabel);
-            this.add(rookLabel);
-            this.add(queenLabel);
+            for (var pieceType: (whitePawn ? PieceType.allWhites() : PieceType.allBlacks()))
+                if (!pieceType.name().contains("KING"))
+                    if (!defaultBoard) {
+                        JLabel choiceLabel = new ChoiceLabel(this, pieceType, chooseAction);
+                        this.add(choiceLabel);
+
+                    } else if (!pieceType.extended) {
+                        JLabel choiceLabel = new ChoiceLabel(this, pieceType, chooseAction);
+                        this.add(choiceLabel);
+                    }
         }
 
         @Override
@@ -107,38 +102,6 @@ public final class PawnPromotionDialog extends JDialog {
             Graphics2D g2d = (Graphics2D) g;
             GUI.setQuality(g2d, 2);
             super.paint(g2d);
-        }
-
-        private static final class MouseHandler extends MouseAdapter {
-
-            private final PawnPromotionPanel pawnPromotionPanel;
-
-            public MouseHandler(PawnPromotionPanel pawnPromotionPanel) {
-                this.pawnPromotionPanel = pawnPromotionPanel;
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                this.pawnPromotionPanel.chosenPieceType = ((ChoiceLabel) e.getSource()).pieceType;
-
-                JDialog master = (JDialog) SwingUtilities.getWindowAncestor(this.pawnPromotionPanel);
-
-                master.setVisible(false);
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                JLabel label = (JLabel) e.getSource();
-
-                label.setBackground(Color.WHITE.darker());
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                JLabel label = (JLabel) e.getSource();
-
-                label.setBackground(pawnPromotionPanel.DEFAULT_COLOR);
-            }
         }
     }
 }

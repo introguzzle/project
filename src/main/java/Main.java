@@ -13,8 +13,7 @@ public class Main {
         f.setLayout(new FlowLayout());
 
         JButton grapher = new JButton("Grapher");
-        grapher.addActionListener((a)
-                -> SwingUtilities.invokeLater(() -> new ru.grapher.Grapher().setVisible(true)));
+        grapher.addActionListener((e) -> ru.grapher.Run.main(args));
         grapher.setPreferredSize(new Dimension(300, 200));
         grapher.setFont(font);
         grapher.setBackground(Color.WHITE);
@@ -25,7 +24,7 @@ public class Main {
         JButton chess = new JButton("Chess");
 
         f.getContentPane().add(chess);
-        chess.addActionListener((e) -> SwingUtilities.invokeLater(() -> new ru.chess.Chess().setVisible(true)));
+        chess.addActionListener((e) -> ru.chess.Run.main(args));
         chess.setPreferredSize(new Dimension(300, 200));
         chess.setFont(font);
         chess.setBackground(Color.WHITE);

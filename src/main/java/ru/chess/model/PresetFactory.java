@@ -38,57 +38,56 @@ public final class PresetFactory {
     }
 
     static String setPawns() {
-        StringBuilder built = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
 
-        for (int i = 0; i < HORIZONTAL_BOUND; i++) {
-            built.
-                    append(" ").append("bp").append(new Position(1, i).getChessPosition()).
-                    append(" ").append("wp").append(new Position(VERTICAL_BOUND - 2, i).getChessPosition());
-        }
+        for (int i = 0; i < HORIZONTAL_BOUND; i++)
+            sb.
+                    append(" ").
+                    append(PieceType.BLACK_PAWN.code).
+                    append(new Position(1, i).getChessPosition()).
 
-        return built.toString();
+                    append(" ").
+                    append(PieceType.WHITE_PAWN.code).
+                    append(new Position(VERTICAL_BOUND - 2, i).getChessPosition());
+
+        return sb.toString();
     }
 
     static String setKingsAndRooks() {
+        StringBuilder sb = new StringBuilder();
+
         Position whiteKingPosition = new Position(VERTICAL_BOUND - 1, randomKingHorizontalStart());
         Position blackKingPosition = new Position(0, whiteKingPosition.getWidth());
 
-        String wK = " wK" + whiteKingPosition.getChessPosition();
-        String bK = " bK" + blackKingPosition.getChessPosition();
+        sb.append(" ").append(PieceType.WHITE_KING.code).append(whiteKingPosition.getChessPosition());
+        sb.append(" ").append(PieceType.BLACK_KING.code).append(blackKingPosition.getChessPosition());
 
         Position whiteLeftRookPosition  = new Position(VERTICAL_BOUND - 1, random(0, whiteKingPosition.getWidth()));
         Position whiteRightRookPosition = new Position(VERTICAL_BOUND - 1, random(whiteKingPosition.getWidth() + 1, HORIZONTAL_BOUND));
 
-        String wLR = " wr" + whiteLeftRookPosition.getChessPosition();
-        String wRR = " wr" + whiteRightRookPosition.getChessPosition();
+        sb.append(" ").append(PieceType.WHITE_ROOK.code).append(whiteLeftRookPosition.getChessPosition());
+        sb.append(" ").append(PieceType.WHITE_ROOK.code).append(whiteRightRookPosition.getChessPosition());
 
         Position blackLeftRookPosition  = new Position(0, whiteLeftRookPosition.getWidth());
         Position blackRightRookPosition = new Position(0, whiteRightRookPosition.getWidth());
 
-        String bLR = " br" + blackLeftRookPosition.getChessPosition();
-        String bRR = " br" + blackRightRookPosition.getChessPosition();
+        sb.append(" ").append(PieceType.BLACK_ROOK.code).append(blackLeftRookPosition.getChessPosition());
+        sb.append(" ").append(PieceType.BLACK_ROOK.code).append(blackRightRookPosition.getChessPosition());
 
-        return wK + bK + wLR + wRR + bLR + bRR;
+        return sb.toString();
     }
 
     static String setOthers() {
         List<String> list = new ArrayList<>();
 
-        final var whites = PieceType.allWhites();
-        final var blacks = PieceType.allBlacks();
+        var whites = PieceType.allWhites();
+        var blacks = PieceType.allBlacks();
 
         for (int i = 0; i < HORIZONTAL_BOUND; i++) {
             int pick = random(0, whites.size() - 1);
 
-            String whitePiece         = whites.get(pick).code;
-            String whitePiecePosition = new Position(VERTICAL_BOUND - 1, i).getChessPosition();
-
-            list.add(" " + whitePiece + whitePiecePosition);
-
-            String blackPiece         = blacks.get(pick).code;
-            String blackPiecePosition = new Position(0, i).getChessPosition();
-
-            list.add(" " + blackPiece + blackPiecePosition);
+            list.add(" " + whites.get(pick).code + new Position(VERTICAL_BOUND - 1, i).getChessPosition());
+            list.add(" " + blacks.get(pick).code + new Position(0, i).getChessPosition());
         }
 
         StringBuilder sb = new StringBuilder();

@@ -1,9 +1,9 @@
 package ru.chess.gui;
 
 import ru.chess.position.Position;
-import ru.chess.cell.BlackCell;
-import ru.chess.cell.Cell;
-import ru.chess.cell.WhiteCell;
+import ru.chess.label.BlackCell;
+import ru.chess.label.Cell;
+import ru.chess.label.WhiteCell;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,20 +14,21 @@ public class Board extends JPanel {
     public static int VERTICAL_BOUND;
 
     public static Dimension DIMENSION_CELL   = null;
-
     public static Dimension DIMENSION_WINDOW = null;
 
     public Cell[][]  cells;
 
     public ImageIcon activePieceImage;
     public Point     point;
-    public boolean   isMouseDragging;
+    public boolean   drawPiece;
 
     public Board(int vertical, int horizontal) {
+        super(true);
+
         VERTICAL_BOUND   = vertical;
         HORIZONTAL_BOUND = horizontal;
 
-        DIMENSION_CELL = GUI.Adapter.getFittingCellDimension();
+        DIMENSION_CELL   = GUI.Adapter.getFittingCellDimension();
 
         DIMENSION_WINDOW = new Dimension(
                 (int) (DIMENSION_CELL.getWidth()  * HORIZONTAL_BOUND),
@@ -36,6 +37,10 @@ public class Board extends JPanel {
         this.cells = new Cell[VERTICAL_BOUND][HORIZONTAL_BOUND];
 
         init();
+    }
+
+    public Cell getCell(String chessPosition) {
+        return getCell(new Position(chessPosition));
     }
 
     public Cell getCell(Position position) {
@@ -74,7 +79,7 @@ public class Board extends JPanel {
         }
     }
 
-    public void paintFontOutline(Graphics2D g2d,
+    public static void paintFontOutline(Graphics2D g2d,
                                  String     string,
                                  int        fx,
                                  int        fy,
@@ -91,7 +96,7 @@ public class Board extends JPanel {
         g2d.setFont(oldFont);
     }
 
-    public void paintFontShadow(Graphics2D g2d,
+    public static void paintFontShadow(Graphics2D g2d,
                                 String     string,
                                 int        fx,
                                 int        fy,
@@ -129,7 +134,7 @@ public class Board extends JPanel {
                     ? GUI.Cell.WHITE_COLOR.darker().darker()
                     : GUI.Cell.BLACK_COLOR.darker().darker();
 
-            this.paintFontShadow(g2d, s, dx, dy, 1, shadowColor);
+            paintFontShadow(g2d, s, dx, dy, 1, shadowColor);
             g2d.drawString(s, dx, dy);
         }
 
@@ -148,7 +153,7 @@ public class Board extends JPanel {
                     ? GUI.Cell.WHITE_COLOR.darker().darker()
                     : GUI.Cell.BLACK_COLOR.darker().darker();
 
-            this.paintFontShadow(g2d, s, dx, dy, 1, shadowColor);
+            paintFontShadow(g2d, s, dx, dy, 1, shadowColor);
             g2d.drawString(p.getChessPosition().substring(0, 1), dx, dy);
         }
     }
@@ -161,7 +166,7 @@ public class Board extends JPanel {
 
         super.paint(g2d);
 
-        if (isMouseDragging) {
+        if (drawPiece) {
             Image pieceImage = activePieceImage.getImage();
 
             int dx = point.x - pieceImage.getHeight(this) / 2;

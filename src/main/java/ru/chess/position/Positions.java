@@ -21,13 +21,13 @@ public class Positions extends ArrayList<Position> {
             return false;
     }
 
-    public void add(Predicate<Position> filter, Position position) {
+    public void add(Predicate<? super Position> filter, Position position) {
         if (position.isValid())
             if (!filter.test(position))
                 this.add(position);
     }
 
-    public void add(Predicate<Position> filter, Position... positions) {
+    public void add(Predicate<? super Position> filter, Position... positions) {
         for (Position p: positions) {
             this.add(filter, p);
         }

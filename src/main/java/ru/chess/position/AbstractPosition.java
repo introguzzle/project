@@ -4,7 +4,14 @@ import java.util.Objects;
 
 public abstract class AbstractPosition {
 
+    /**
+     * Practically final. Must not be changed
+     */
     public static int VERTICAL_BOUND;
+
+    /**
+     * Practically final. Must not be changed
+     */
     public static int HORIZONTAL_BOUND;
 
     protected final String chessPosition;
@@ -12,15 +19,15 @@ public abstract class AbstractPosition {
     protected final int h;
     protected final int w;
 
-    protected static int toArrayWidth(String w) {
+    private static int toArrayWidth(String w) {
         return toArrayWidth(w.charAt(0));
     }
 
-    protected static int toArrayWidth(char w) {
+    private static int toArrayWidth(char w) {
         return ((int) w) - 97;
     }
 
-    protected static String toChessWidth(int w) {
+    private static String toChessWidth(int w) {
         return String.valueOf((char)((char) 97 + w));
     }
 
@@ -45,6 +52,10 @@ public abstract class AbstractPosition {
         this.chessPosition = toChessWidth(position.w) + (VERTICAL_BOUND - position.h);
     }
 
+    public boolean isValid() {
+        return h >= 0 && h < VERTICAL_BOUND && w >= 0 && w < HORIZONTAL_BOUND;
+    }
+
     public int getChessHeight() {
         return Integer.parseInt(this.chessPosition.substring(1));
     }
@@ -57,7 +68,6 @@ public abstract class AbstractPosition {
     public abstract AbstractPosition down();
     public abstract AbstractPosition right();
     public abstract AbstractPosition left();
-
 
     @Override
     public String toString() {

@@ -11,4 +11,9 @@ public class Tree implements Plant {
             case SPRING -> age * 30.0f;
         };
     }
+
+    @Override
+    public void print() {
+        System.out.println("This is tree");
+    }
 }

@@ -11,4 +11,20 @@ public enum AbsolutePieceType {
         else
             return this == WHITE ? BLACK : WHITE;
     }
+
+    public boolean isNotNone() {
+        return this != NONE;
+    }
+
+    public boolean isNone() {
+        return this == NONE;
+    }
+
+    public boolean isWhite() {
+        return this == WHITE;
+    }
+
+    public boolean isBlack() {
+        return this == BLACK;
+    }
 }

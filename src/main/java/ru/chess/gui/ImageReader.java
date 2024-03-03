@@ -41,8 +41,49 @@ public final class ImageReader {
         PATH_MAP.put(PieceType.BLACK_KING,     "BKing.png");
     }
 
+    private static Image read(String fileName) {
+        try {
+            return ImageIO.read(new File(BASE_PATH + fileName));
+        } catch (IOException ignored) {
+            // Should never happen
+            throw new RuntimeException();
+        }
+    }
+
     private static String transformPath(PieceType pieceType) {
         return BASE_PATH + PATH_MAP.get(pieceType);
+    }
+
+    public static ImageIcon getReplayIcon() {
+        return getReplayIcon(80, 80);
+    }
+
+    public static ImageIcon getReplayIcon(int width, int height) {
+        return new ImageIcon(read("Replay.png").getScaledInstance(width, height, Image.SCALE_SMOOTH));
+    }
+
+    public static ImageIcon getExitIcon() {
+        return getExitIcon(80, 80);
+    }
+
+    public static ImageIcon getExitIcon(int width, int height) {
+        return new ImageIcon(read("Exit.png").getScaledInstance(width, height, Image.SCALE_SMOOTH));
+    }
+
+    public static ImageIcon getCopyIcon() {
+        return getCopyIcon(80, 80);
+    }
+
+    public static ImageIcon getCopyIcon(int width, int height) {
+        return new ImageIcon(read("Copy.png").getScaledInstance(width, height, Image.SCALE_SMOOTH));
+    }
+
+    public static ImageIcon getPlayIcon() {
+        return getPlayIcon(80, 80);
+    }
+
+    public static ImageIcon getPlayIcon(int width, int height) {
+        return new ImageIcon(read("Play.png").getScaledInstance(width, height, Image.SCALE_SMOOTH));
     }
 
     public static ImageIcon get(PieceType pieceType) {

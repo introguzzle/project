@@ -8,10 +8,13 @@ public class GUI {
 
     public static class Adapter {
 
-        public static int H = Board.HORIZONTAL_BOUND;
+        public static int VERTICAL_BOUND   = Board.VERTICAL_BOUND;
+        public static int HORIZONTAL_BOUND = Board.HORIZONTAL_BOUND;
+
+        public static final int MAX_DIMENSION = 640;
 
         public static Dimension getFittingCellDimension() {
-            int size = 640 / H;
+            int size = MAX_DIMENSION / Math.max(VERTICAL_BOUND, HORIZONTAL_BOUND);
 
             return size > 80 ? new Dimension(80, 80) : new Dimension(size, size);
         }
@@ -34,13 +37,14 @@ public class GUI {
         public static final Color  BLACK_MOVE_COLOR = BLACK_COLOR.darker();
         public static final Color  BLACK_SELECTED_COLOR = BLACK_COLOR;
 
-        public static final Border SELECTED_BORDER = BorderFactory.createLineBorder(Color.BLACK, 4);
+        public static final Color  SELECTED_BORDER_COLOR = Color.BLACK;
+        public static final Border SELECTED_BORDER = BorderFactory.createLineBorder(SELECTED_BORDER_COLOR, 4);
 
         public static final Color  AVAILABLE_MOVE_COLOR  = new Color(90, 80, 80);
         public static final int    AVAILABLE_MOVE_DIAMETER = 20;
 
-        public static final Color  CHECKMATE_NOTED = Color.RED.darker();
-        public static final Color  STALEMATE_NOTED = Color.BLUE.darker();
+        public static final Color CHECKMATE_NOTED_COLOR = Color.RED.darker();
+        public static final Color STALEMATE_NOTED_COLOR = Color.BLUE.darker();
 
         public static final Font   NOTATION_FONT = new Font("Arial", Font.PLAIN, 22);
 

@@ -3,42 +3,47 @@ package ru.chess.model;
 import java.util.*;
 
 import ru.chess.*;
-import ru.chess.cell.Cell;
+import ru.chess.label.Cell;
 import ru.chess.model.Model.State;
 import ru.chess.position.Position;
 import ru.chess.position.Positions;
 
 public final class ValidMoves {
 
+    /**
+     *
+     */
     private ValidMoves() {
 
     }
 
+    /**
+     *
+     * @param model Model which handles board
+     * @param cell Cell
+     * @return Ordered list of true valid available moves for piece on cell
+     */
     static List<Position> get(Model model, Cell cell) {
         List<Position> result   = new Positions();
         List<Position> toFilter = PseudoValidMoves.get(model.getBoard().cells, cell);
 
-        toFilter.addAll(getCastlingPositions(model, cell));
+        toFilter.addAll(acquirePawnEnPassantPositions(model, cell));
+        toFilter.addAll(acquireCastlingPositions(model, cell));
 
         Cell[][]  future          = model.copyCells();
         PieceType movingPieceType = cell.pieceType;
         var       enemyPieceType  = cell.absolutePieceType.invert();
 
         for (Position candidate: toFilter) {
-            State                    state          = State.ONGOING;
-            Map<Position, PieceType> map            = new HashMap<>();
+            State state = State.ONGOING;
 
             var maybeDestroyed = future[candidate.getHeight()][candidate.getWidth()].pieceType;
 
-            // If destroyed, we add to the map, so we can return it back later
-            if (maybeDestroyed != PieceType.NONE)
-                map.put(candidate, maybeDestroyed);
-
             // Moving this piece to move candidate
-            movePiece(future, movingPieceType, cell.position, candidate);
+            movePiece(future, movingPieceType, cell.getPosition(), candidate);
 
             // Getting all moves of enemy side
-            List<Position> allMoves = getAllMoves(future, enemyPieceType);
+            List<Position> allMoves = acquireAllMoves(future, enemyPieceType);
 
             // If any enemy piece attack king after move candidate,
             // we set state to check, otherwise this side is good
@@ -53,15 +58,55 @@ public final class ValidMoves {
                 result.add(candidate);
 
             // Moving back move candidate to original position
-            movePiece(future, movingPieceType, candidate, cell.position);
+            movePiece(future, movingPieceType, candidate, cell.getPosition());
 
-            // If some enemy pieces were destroyed due to the bug, we return them back,
-            // so nothing break
-            for (var destroyedPosition: map.keySet())
-                future[destroyedPosition.getHeight()][destroyedPosition.getWidth()].setPiece(map.get(destroyedPosition));
+            // If enemy piece was destroyed in the process, we return it back, so nothing breaks
+            if (maybeDestroyed.isNotNone())
+                future[candidate.getHeight()][candidate.getWidth()].setPiece(maybeDestroyed);
         }
 
         return result;
+    }
+
+    private static List<Position> acquirePawnEnPassantPositions(Model model, Cell cell) {
+        Positions positions = new Positions();
+
+        if (cell.pieceType == PieceType.WHITE_PAWN) {
+
+            Position to   = model.lastBlackPawnMove.getTo();
+            Position from = model.lastBlackPawnMove.getFrom();
+
+            boolean startMove  = Math.abs(from.getHeight() - to.getHeight()) == 2;
+            boolean canDestroy = to.getHeight() == cell.getPosition().getHeight() &&
+                    Math.abs(to.getWidth() - cell.getPosition().getWidth()) == 1;
+
+            Position up = to.up();
+
+            if (up.isValid())
+                if (model.getBoard().getCell(up).pieceType.isNone())
+                    if (startMove && canDestroy)
+                        positions.add(up);
+
+        }
+
+        if (cell.pieceType == PieceType.BLACK_PAWN) {
+
+            Position to   = model.lastWhitePawnMove.getTo();
+            Position from = model.lastWhitePawnMove.getFrom();
+
+            boolean startMove  = Math.abs(from.getHeight() - to.getHeight()) == 2;
+            boolean canDestroy = to.getHeight() == cell.getPosition().getHeight() &&
+                    Math.abs(to.getWidth() - cell.getPosition().getWidth()) == 1;
+
+            Position down = to.down();
+
+            if (down.isValid())
+                if (model.getBoard().getCell(down).pieceType.isNone())
+                    if (startMove && canDestroy)
+                        positions.add(down);
+        }
+
+        return positions;
     }
 
     /**
@@ -70,7 +115,7 @@ public final class ValidMoves {
      * @param cell Cell with king on it
      * @return Ordered list of castling positions for black king
      */
-    private static List<Position> getCastlingPositions(Model model, Cell cell) {
+    private static List<Position> acquireCastlingPositions(Model model, Cell cell) {
         boolean whiteCastlingPossible = model.whiteKingPosition != null
                 && model.whiteLeftRookPosition  != null
                 && model.whiteRightRookPosition != null;
@@ -82,24 +127,22 @@ public final class ValidMoves {
         AbsolutePieceType kingType;
 
         // Checking if piece is king
-        if (cell.pieceType == PieceType.WHITE_KING
-                && cell.position.equals(model.whiteKingPosition)) {
+        if (cell.pieceType == PieceType.WHITE_KING) {
             kingType = AbsolutePieceType.WHITE;
 
-        } else if (cell.pieceType == PieceType.BLACK_KING
-                && cell.position.equals(model.blackKingPosition)) {
+        } else if (cell.pieceType == PieceType.BLACK_KING) {
             kingType = AbsolutePieceType.BLACK;
 
         } else {
             return new ArrayList<>();
         }
 
-        // So it's guaranteed it's king, so we evaluate its side
-        if (kingType == AbsolutePieceType.WHITE && whiteCastlingPossible)
-            return getWhiteCastlingPositions(model);
+        // So it's guaranteed it's king, so we call corresponding method
+        if (kingType.isWhite() && whiteCastlingPossible)
+            return acquireWhiteCastlingPositions(model);
 
-        else if (kingType == AbsolutePieceType.BLACK && blackCastlingPossible)
-            return getBlackCastlingPositions(model);
+        else if (kingType.isBlack() && blackCastlingPossible)
+            return acquireBlackCastlingPositions(model);
 
         else
             return new ArrayList<>();
@@ -110,7 +153,7 @@ public final class ValidMoves {
      * @param model Model which handles board
      * @return Ordered list of castling positions for white king
      */
-    private static List<Position> getWhiteCastlingPositions(Model model) {
+    private static List<Position> acquireWhiteCastlingPositions(Model model) {
         List<Position> whiteCastlingPositions = new ArrayList<>();
 
         if (model.whiteKingMoved)
@@ -122,11 +165,13 @@ public final class ValidMoves {
 
             boolean freeLine = true;
 
+            // Checking if line between rook and king is not blocked
             for (Position p : line) {
-                freeLine &= model.getBoard().getCell(p).pieceType == PieceType.NONE;
+                freeLine &= model.getBoard().getCell(p).pieceType.isNone();
             }
 
-            for (Position p: getAllMoves(model.getBoard().cells, AbsolutePieceType.BLACK))
+            // Checking if line between rook and king is not attacked
+            for (Position p: acquireAllMoves(model.getBoard().cells, AbsolutePieceType.BLACK))
                 freeLine &= !line.contains(p);
 
             if (freeLine)
@@ -138,11 +183,13 @@ public final class ValidMoves {
 
             boolean freeLine = true;
 
+            // Checking if line between rook and king is not blocked
             for (Position p: line) {
-                freeLine &= model.getBoard().getCell(p).pieceType == PieceType.NONE;
+                freeLine &= model.getBoard().getCell(p).pieceType.isNone();
             }
 
-            for (Position p: getAllMoves(model.getBoard().cells, AbsolutePieceType.BLACK))
+            // Checking if line between rook and king is not attacked
+            for (Position p: acquireAllMoves(model.getBoard().cells, AbsolutePieceType.BLACK))
                 freeLine &= !line.contains(p);
 
             if (freeLine)
@@ -157,7 +204,7 @@ public final class ValidMoves {
      * @param model Model which handles board
      * @return Ordered list of castling positions for black king
      */
-    private static List<Position> getBlackCastlingPositions(Model model) {
+    private static List<Position> acquireBlackCastlingPositions(Model model) {
         List<Position> blackCastlingPositions = new ArrayList<>();
 
         if (model.blackKingMoved)
@@ -168,11 +215,13 @@ public final class ValidMoves {
 
             boolean freeLine = true;
 
+            // Checking if line between rook and king is not blocked
             for (Position p: line) {
-                freeLine &= model.getBoard().getCell(p).pieceType == PieceType.NONE;
+                freeLine &= model.getBoard().getCell(p).pieceType.isNone();
             }
 
-            for (Position p: getAllMoves(model.getBoard().cells, AbsolutePieceType.WHITE))
+            // Checking if line between rook and king is not attacked
+            for (Position p: acquireAllMoves(model.getBoard().cells, AbsolutePieceType.WHITE))
                 freeLine &= !line.contains(p);
 
             if (freeLine)
@@ -184,11 +233,13 @@ public final class ValidMoves {
 
             boolean freeLine = true;
 
+            // Checking if line between rook and king is not blocked
             for (Position p: line) {
-                freeLine &= model.getBoard().getCell(p).pieceType == PieceType.NONE;
+                freeLine &= model.getBoard().getCell(p).pieceType.isNone();
             }
 
-            for (Position p: getAllMoves(model.getBoard().cells, AbsolutePieceType.WHITE))
+            // Checking if line between rook and king is not attacked
+            for (Position p: acquireAllMoves(model.getBoard().cells, AbsolutePieceType.WHITE))
                 freeLine &= !line.contains(p);
 
             if (freeLine)
@@ -205,7 +256,10 @@ public final class ValidMoves {
      * @param oldPosition From which position
      * @param newPosition To which position
      */
-    private static void movePiece(Cell[][] cells, PieceType movingPieceType, Position oldPosition, Position newPosition) {
+    private static void movePiece(Cell[][] cells,
+                                  PieceType movingPieceType,
+                                  Position oldPosition,
+                                  Position newPosition) {
         cells[oldPosition.getHeight()][oldPosition.getWidth()].removePiece();
         cells[newPosition.getHeight()][newPosition.getWidth()].setPiece(movingPieceType);
     }
@@ -216,7 +270,7 @@ public final class ValidMoves {
      * @param absolutePieceType Absolute piece type (side)
      * @return Ordered list of all moves of all pieces of this side
      */
-    static List<Position> getAllMoves(Cell[][] cells, AbsolutePieceType absolutePieceType) {
+    static List<Position> acquireAllMoves(Cell[][] cells, AbsolutePieceType absolutePieceType) {
         List<Position> positions = new ArrayList<>();
 
         for (Cell[] cellArray : cells)
@@ -239,7 +293,7 @@ public final class ValidMoves {
      * @see AbsolutePieceType
      */
     private static PieceType acquireKing(AbsolutePieceType absolutePieceType) {
-        return absolutePieceType == AbsolutePieceType.WHITE ? PieceType.WHITE_KING : PieceType.BLACK_KING;
+        return PieceType.of("KING", absolutePieceType);
     }
 
     /**
@@ -250,7 +304,7 @@ public final class ValidMoves {
      * @see AbsolutePieceType
      */
     private static State acquireState(AbsolutePieceType absolutePieceType) {
-        return absolutePieceType == AbsolutePieceType.WHITE ? State.CHECK_TO_WHITE : State.CHECK_TO_BLACK;
+        return absolutePieceType.isWhite() ? State.CHECK_TO_WHITE : State.CHECK_TO_BLACK;
     }
 
 }

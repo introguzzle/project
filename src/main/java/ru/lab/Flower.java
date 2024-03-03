@@ -11,4 +11,9 @@ public class Flower implements Plant {
             case SPRING -> age * 3.0f;
         };
     }
+
+    @Override
+    public void print() {
+        System.out.println("This is flower");
+    }
 }

@@ -2,7 +2,7 @@ package ru.chess;
 
 import ru.chess.gui.ImageReader;
 import ru.chess.model.Model;
-import ru.utils.ObjectDump;
+import ru.utils.ObjectPrinter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,24 +12,26 @@ public class Chess extends JFrame {
     private Model model;
 
     public Chess() {
-        init();
+        this(8, 8, null);
     }
 
-    public void reinitialize() {
-        model.clearHistory();
-        model.setInitLoad(true);
-
-        model.loadPreset(model.getInitPreset());
-
-        model.getBoard().repaint();
+    public Chess(int vertical, int horizontal) {
+        this(vertical, horizontal, null);
     }
 
-    private void init() {
+    public Chess(int vertical, int horizontal, String preset) {
+        init(vertical, horizontal, preset);
+    }
+
+    private void init(int vertical, int horizontal, String preset) {
         this.setLayout(new FlowLayout());
 
-        model = new Model(7, 12);
-//        model.loadDefaultPreset();
-        model.loadPreset("OBTTTTTT / bKb1 wrb5 bcb4 wKh7 wqa1");
+        model = new Model(vertical, horizontal);
+
+        if (preset == null || preset.isEmpty())
+            model.loadDefaultPreset();
+        else
+            model.loadPreset(preset);
 
         this.add(model.getBoard());
         this.pack();
@@ -37,7 +39,7 @@ public class Chess extends JFrame {
         this.setTitle("Chess");
         this.setIconImage(ImageReader.get(PieceType.BLACK_KING).getImage());
 
-        //this.setAlwaysOnTop(true);
+        this.setAlwaysOnTop(true);
         this.setResizable(false);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -46,9 +48,5 @@ public class Chess extends JFrame {
 
     public Model getModel() {
         return this.model;
-    }
-
-    public static void main(String... ___) {
-        EventQueue.invokeLater(() -> new Chess().setVisible(true));
     }
 }

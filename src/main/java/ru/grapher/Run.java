@@ -1,11 +1,10 @@
 package ru.grapher;
 
-import ru.utils.ObjectDump;
+import java.awt.*;
 
 public class Run {
     public static void main(String... ___) {
-        Grapher g = new Grapher();
-        System.out.println(ObjectDump.methodsToString(g));
+        EventQueue.invokeLater(() -> new Grapher().setVisible(true));
     }
 }
 

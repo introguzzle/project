@@ -93,12 +93,12 @@ public final class Position extends AbstractPosition {
 
     /**
      *
-     * @return If this position is not NOT_VALID_POSITION and inside the board
+     * @return If this position is not NOT_VALID_POSITION and within the board
      * @see #NOT_VALID_POSITION
      */
 
     public boolean isValid() {
-        return !equals(NOT_VALID_POSITION) && h >= 0 && h < VERTICAL_BOUND && w >= 0 && w < HORIZONTAL_BOUND;
+        return super.isValid() && !equals(NOT_VALID_POSITION);
     }
 
     public List<Position> pawn(Predicate<Position> moveCondition,
@@ -108,17 +108,21 @@ public final class Position extends AbstractPosition {
         Position  first     = white ? this.up()  : this.down();
         Position  second    = white ? first.up() : first.down();
 
+        boolean firstTest = false;
+
         if (first.isValid())
-            if (moveCondition.test(first))
-                positions.add(first);
+            firstTest = moveCondition.test(first);
+
+        if (firstTest)
+            positions.add(first);
 
         if (second.isValid() && white && this.h == VERTICAL_BOUND - 2)
-            if (moveCondition.test(second))
-                positions.add(second);
+            if (firstTest && moveCondition.test(second))
+                    positions.add(second);
 
         if (second.isValid() && !white && this.h == 1)
-            if (moveCondition.test(second))
-                positions.add(second);
+            if (firstTest && moveCondition.test(second))
+                    positions.add(second);
 
         Position left = first.left();
 
@@ -137,9 +141,9 @@ public final class Position extends AbstractPosition {
 
     /**
      *
-     * @param stopCondition If true positions that satisfy this predicate don't include
-     * @param isDirectedUp True if direction is up.
-     *                     <br>False if otherwise
+     * @param stopCondition If true loop terminates
+     * @param removeLastCondition If true last position is removed
+     * @param isDirectedUp True if direction is up
      * @return Ordered list of positions on the same vertical line
      * from this position to end of the board
      * @see #VERTICAL_BOUND
@@ -174,9 +178,9 @@ public final class Position extends AbstractPosition {
 
     /**
      *
-     * @param stopCondition If true positions that satisfy this predicate don't include
-     * @param isDirectedRight True if direction is right.
-     *                        <br>False if otherwise
+     * @param stopCondition If true loop terminates
+     * @param removeLastCondition If true last position is removed
+     * @param isDirectedRight If direction is rightwards
      * @return Ordered list of positions on the same horizontal line
      * from this position to end of the board
      * @see #HORIZONTAL_BOUND
@@ -363,9 +367,6 @@ public final class Position extends AbstractPosition {
      * @return Ordered list of positions around this position
      */
     public List<Position> around(Predicate<Position> filter, int radius) {
-        if (radius >= Math.min(VERTICAL_BOUND - 1, HORIZONTAL_BOUND - 1) || radius < 1)
-            throw new RuntimeException();
-
         Positions positions = new Positions();
 
         for (int i = -radius; i <= radius; i++)

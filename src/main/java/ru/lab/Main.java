@@ -6,13 +6,14 @@ import java.util.List;
 public class Main {
 
     public static void main(String... p) {
-        Flower flower = new Flower();
-        Tree tree = new Tree();
+        List<Plant> list = new ArrayList<>();
 
-        Tree[] trees = new Tree[2];
-        List<Flower> flowers = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            list.add(new Tree());
+            list.add(new Flower());
+        }
 
-        System.out.println(flower.waterAmount(Season.WINTER, 10));
-        System.out.println(tree.waterAmount(Season.AUTUMN, 200));
+        for (var plant: list)
+            System.out.println(plant.waterAmount(Season.WINTER, 10));
     }
 }

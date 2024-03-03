@@ -1,8 +1,8 @@
 package ru.chess.model;
 
 import ru.chess.*;
-import ru.chess.cell.Cell;
-import ru.chess.cell.WhiteCell;
+import ru.chess.label.Cell;
+import ru.chess.label.WhiteCell;
 import ru.chess.position.Position;
 import ru.chess.position.Positions;
 
@@ -52,13 +52,13 @@ public final class PseudoValidMoves {
 
     static List<Position> getForPawn(Cell[][] cells, Cell cell) {
         return cell.getPosition().pawn(
-                p -> cells[p.getHeight()][p.getWidth()].absolutePieceType == AbsolutePieceType.NONE,
+                p -> cells[p.getHeight()][p.getWidth()].absolutePieceType.isNone(),
                 p -> cells[p.getHeight()][p.getWidth()].absolutePieceType == cell.absolutePieceType.invert(),
-                cell.absolutePieceType == AbsolutePieceType.WHITE);
+                cell.absolutePieceType.isWhite());
     }
 
     static List<Position> getForRook(Cell[][] cells, Cell cell) {
-        List<Position> positions = new Positions();
+        Positions positions = new Positions();
 
         positions.addAll(cell.getPosition().vertical(stop(cells), filter(cells, cell), true));
         positions.addAll(cell.getPosition().vertical(stop(cells), filter(cells, cell), false));
@@ -116,6 +116,6 @@ public final class PseudoValidMoves {
     }
 
     static Predicate<Position> stop(Cell[][] cells) {
-        return p -> cells[p.getHeight()][p.getWidth()].absolutePieceType != AbsolutePieceType.NONE;
+        return p -> cells[p.getHeight()][p.getWidth()].absolutePieceType.isNotNone();
     }
 }
