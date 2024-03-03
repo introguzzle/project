@@ -44,6 +44,7 @@ public class Chess extends JFrame {
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        ObjectPrinter.dump(model);
     }
 
     public Model getModel() {

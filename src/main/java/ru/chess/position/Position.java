@@ -250,6 +250,21 @@ public final class Position extends AbstractPosition {
 
     /**
      *
+     * @param height Height of line
+     * @return List of all positions on specific horizontal line
+     */
+
+    public static List<Position> horizontal(int height) {
+        List<Position> positions = new ArrayList<>();
+
+        for (int j = 0; j < HORIZONTAL_BOUND; j++)
+            positions.add(new Position(height, j));
+
+        return positions;
+    }
+
+    /**
+     *
      * @param stopCondition If true positions that satisfy this predicate don't include
      * @param isDirectedUp If direction is up
      * @param isDirectedRight If direction is right

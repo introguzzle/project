@@ -1,19 +1,51 @@
 package ru.chess.model;
 
+import ru.chess.AbsolutePieceType;
 import ru.chess.PieceType;
 import ru.chess.position.Position;
 
 import static ru.chess.model.Model.HORIZONTAL_BOUND;
 import static ru.chess.model.Model.VERTICAL_BOUND;
 
-public final class Utilities {
+public final class PreStartConditions {
+
+    private PreStartConditions() {
+
+    }
+
+    public static void checkPawnPromotion(Model model) {
+        for (Position p: Position.horizontal(0)) {
+            if (model.getBoard().getCell(p).pieceType == PieceType.WHITE_PAWN) {
+                model.initPawnPromotion = true;
+                break;
+            }
+        }
+
+        for (Position p: Position.horizontal(VERTICAL_BOUND - 1)) {
+            if (model.getBoard().getCell(p).pieceType == PieceType.BLACK_PAWN) {
+                model.initPawnPromotion = true;
+                break;
+            }
+        }
+    }
+
+    public static void promotePawns(Model model) {
+        for (Position p: Position.horizontal(0)) {
+            if (model.getBoard().getCell(p).pieceType == PieceType.WHITE_PAWN)
+                MoveHandler.executePawnPromotion(model, p, AbsolutePieceType.WHITE);
+        }
+
+        for (Position p: Position.horizontal(VERTICAL_BOUND - 1)) {
+            if (model.getBoard().getCell(p).pieceType == PieceType.BLACK_PAWN)
+                MoveHandler.executePawnPromotion(model, p, AbsolutePieceType.BLACK);
+        }
+
+        model.initPawnPromotion = false;
+    }
 
     public static void initCastling(Model model) {
-        var downLine = new Position(VERTICAL_BOUND - 1, 0).horizontal(null, null, true);
-        downLine.addFirst(new Position(VERTICAL_BOUND - 1, 0));
-
-        var upLine   = new Position(0, 0).horizontal(null, null, true);
-        upLine.addFirst(new Position(0, 0));
+        var downLine = Position.horizontal(VERTICAL_BOUND - 1);
+        var upLine   = Position.horizontal(0);
 
         for (int i = 0; i < VERTICAL_BOUND; i++)
             for (int j = 0; j < HORIZONTAL_BOUND; j++)

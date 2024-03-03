@@ -33,9 +33,12 @@ public class ConstructorChoicePanel extends JPanel {
     }
 
     public void init() {
-        cells = new ChoiceCell[vertical][allPieces.size()];
-
         this.setLayout(new GridBagLayout());
+        initCells();
+    }
+
+    public void initCells() {
+        cells = new ChoiceCell[vertical][allPieces.size()];
 
         GridBagConstraints constraints = new GridBagConstraints();
 
@@ -49,7 +52,7 @@ public class ConstructorChoicePanel extends JPanel {
                 try {
                     cells[i][j] = new ChoiceCell(allPieces.get(k));
                 } catch (IndexOutOfBoundsException ignored) {
-                    break;
+                    return;
                 }
 
                 this.add(cells[i][j], constraints);

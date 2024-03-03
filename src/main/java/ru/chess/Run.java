@@ -5,7 +5,7 @@ public class Run {
     public static void main(String... ___) {
         //java.awt.EventQueue.invokeLater(() -> new Chess().setVisible(true));
         java.awt.EventQueue.invokeLater(() -> {
-            new Chess(8, 8, "bKa8 bqc7 wrc6 wKc3  ").setVisible(true);
+            new Chess(8, 8, "bKa4 brd4 bpd3 wpa2 wra1 wKd1").setVisible(true);
         });
     }
 }

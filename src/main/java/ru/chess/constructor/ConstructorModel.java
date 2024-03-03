@@ -1,12 +1,10 @@
 package ru.chess.constructor;
 
 import ru.chess.PieceType;
-import ru.chess.label.BlackCell;
 import ru.chess.label.Cell;
 import ru.chess.gui.Board;
 import ru.chess.gui.ImageReader;
 import ru.chess.label.ChoiceCell;
-import ru.chess.label.WhiteCell;
 import ru.chess.model.AbstractModel;
 import ru.chess.model.Presets;
 import ru.chess.model.SoundPlayer;
@@ -102,6 +100,7 @@ public class ConstructorModel extends AbstractModel {
 
         public final int shift;
 
+        public boolean panelInvoked = true;
         public boolean successfulGrab;
 
         private MouseHandler(ConstructorModel model, Board board) {
@@ -118,7 +117,7 @@ public class ConstructorModel extends AbstractModel {
 
         @Override
         public void mousePressed(MouseEvent e) {
-            if (panel.contains(e.getPoint()) && !isMouseEventOnBoard(e)) {
+            if (SwingUtilities.isLeftMouseButton(e) && !isMouseEventOnBoard(e)) {
                 Cell pressedCell;
 
                 if (panel.getComponentAt(e.getPoint()) instanceof ChoiceCell)
@@ -138,10 +137,40 @@ public class ConstructorModel extends AbstractModel {
                     this.grabbedCellPieceType = pressedCell.pieceType;
                     this.grabbedCellPosition  = pressedCell.getPosition();
 
-                    this.mouseDragged(e);
+                    this.panelInvoked = true;
 
                     board.repaint();
                     panel.repaint();
+
+                    this.mouseDragged(e);
+                }
+            } else if (SwingUtilities.isLeftMouseButton(e)) {
+                Cell pressedCell;
+
+                if (board.getComponentAt(e.getPoint()) instanceof Cell)
+                    pressedCell = (Cell) board.getComponentAt(e.getPoint());
+                else
+                    return;
+
+                if (pressedCell.pieceType != PieceType.NONE) {
+                    this.successfulGrab = true;
+
+                    int width  = pressedCell.getWidth();
+                    int height = pressedCell.getHeight();
+
+                    board.activePieceImage = ImageReader.get(pressedCell.pieceType, width, height);
+                    panel.activePieceImage = ImageReader.get(pressedCell.pieceType, width, height);
+
+                    this.grabbedCellPieceType = pressedCell.pieceType;
+                    this.grabbedCellPosition  = pressedCell.getPosition();
+
+                    pressedCell.removePiece();
+
+                    this.panelInvoked = false;
+
+                    board.repaint();
+                    panel.repaint();
+                    this.mouseDragged(e);
                 }
             }
 
@@ -165,11 +194,24 @@ public class ConstructorModel extends AbstractModel {
                     board.drawPiece = false;
                     panel.drawPiece = false;
 
-                    Cell chosenCell = (Cell) board.getComponentAt(new Point(e.getX() + shift, e.getY()));
+                    Cell chosenCell;
+
+                    if (panelInvoked)
+                        chosenCell = (Cell) board.getComponentAt(new Point(e.getX() + shift, e.getY()));
+                    else
+                        chosenCell = (Cell) board.getComponentAt(e.getPoint());
 
                     if (chosenCell != null) {
                         model.highlightSet(chosenCell);
                         board.getCell(chosenCell.getPosition()).setPiece(grabbedCellPieceType);
+                        board.repaint();
+                        panel.repaint();
+
+                        model.textField.setText(Presets.Reader.read(model));
+
+                    } else if (!panelInvoked) {
+                        model.highlightSet(board.getCell(grabbedCellPosition));
+                        board.getCell(grabbedCellPosition).setPiece(grabbedCellPieceType);
                         board.repaint();
                         panel.repaint();
 
@@ -187,8 +229,8 @@ public class ConstructorModel extends AbstractModel {
 
         @Override
         public void mouseDragged(MouseEvent e) {
-            if (SwingUtilities.isLeftMouseButton(e)) {
-                if (successfulGrab) {
+            if (SwingUtilities.isLeftMouseButton(e) && successfulGrab) {
+                if (panelInvoked) {
                     board.point = new Point(e.getX() + shift, e.getY());
                     board.drawPiece = true;
 
@@ -199,6 +241,16 @@ public class ConstructorModel extends AbstractModel {
                     board.repaint();
 
                     panel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                    panel.repaint();
+                } else {
+                    board.point = e.getPoint();
+                    board.drawPiece = true;
+                    board.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                    board.repaint();
+
+                    panel.point = new Point(e.getX() - shift, e.getY());
+                    panel.drawPiece = false;
+
                     panel.repaint();
                 }
             }

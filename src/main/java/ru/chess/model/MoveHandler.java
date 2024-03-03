@@ -10,6 +10,8 @@ import ru.chess.position.Position;
 import ru.chess.model.Model.State;
 
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class MoveHandler {
 
@@ -80,7 +82,7 @@ public final class MoveHandler {
                                             Position pawnPosition,
                                             AbsolutePieceType pawnType) {
 
-        Chess owner = (Chess) SwingUtilities.getWindowAncestor(model.getBoard());
+        Chess owner = (Chess) SwingUtilities.windowForComponent(model.getBoard());
 
         PawnPromotionDialog pawnPromotionDialog = new PawnPromotionDialog(owner, pawnType);
         pawnPromotionDialog.setVisible(true);
@@ -130,6 +132,22 @@ public final class MoveHandler {
                 model.state = State.STALEMATE;
             }
         }
+    }
+
+    public static void checkGuaranteedStalemate(Model model, PieceType movedPieceType) {
+        List<PieceType> pieceTypes = new ArrayList<>();
+
+        for (int i = 0; i < VERTICAL_BOUND; i++)
+            for (int j = 0; j < HORIZONTAL_BOUND; j++) {
+                PieceType pieceType = model.getBoard().cells[i][j].pieceType;
+
+                if (pieceType.isNotNone())
+                    pieceTypes.add(pieceType);
+            }
+
+        if (pieceTypes.size() == 2)
+            model.state = State.STALEMATE;
+
     }
 
     public static void notifyEnPassant(Model     model,

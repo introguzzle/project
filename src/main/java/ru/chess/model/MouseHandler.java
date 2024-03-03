@@ -33,6 +33,12 @@ public class MouseHandler extends MouseAdapter {
     public void mousePressed(MouseEvent e) {
         Cell pressedCell = getCell(e);
 
+        // Avoid static init
+        if (model.initPawnPromotion) {
+            PreStartConditions.promotePawns(model);
+            return;
+        }
+
         if (pressedCell.pieceType != PieceType.NONE && model.turn(pressedCell.absolutePieceType)) {
             this.successfulGrab = true;
 

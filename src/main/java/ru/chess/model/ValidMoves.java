@@ -154,47 +154,57 @@ public final class ValidMoves {
      * @return Ordered list of castling positions for white king
      */
     private static List<Position> acquireWhiteCastlingPositions(Model model) {
-        List<Position> whiteCastlingPositions = new ArrayList<>();
+        Positions whiteCastlingPositions = new Positions();
+
+        boolean onlyOneRook = model.whiteLeftRookPosition.equals(model.whiteRightRookPosition);
 
         if (model.whiteKingMoved)
             return whiteCastlingPositions;
 
-        if (!model.whiteLeftRookMoved && Math.abs(model.whiteLeftRookPosition.getWidth() - model.whiteKingPosition.getWidth()) > 2) {
+        if (model.whiteLeftRookPosition.getWidth() < model.whiteKingPosition.getWidth())
+            if (!model.whiteLeftRookMoved && Math.abs(model.whiteLeftRookPosition.getWidth() - model.whiteKingPosition.getWidth()) > 2) {
 
-            Set<Position> line = model.whiteLeftRookPosition.horizontal(model.whiteKingPosition);
+                Set<Position> line = model.whiteLeftRookPosition.horizontal(model.whiteKingPosition);
 
-            boolean freeLine = true;
+                boolean freeLine = true;
 
-            // Checking if line between rook and king is not blocked
-            for (Position p : line) {
-                freeLine &= model.getBoard().getCell(p).pieceType.isNone();
+                // Checking if line between rook and king is not blocked
+                for (Position p : line) {
+                    freeLine &= model.getBoard().getCell(p).pieceType.isNone();
+                }
+
+                // Checking if line between rook and king is not attacked
+                for (Position p: acquireAllMoves(model.getBoard().cells, AbsolutePieceType.BLACK))
+                    freeLine &= !line.contains(p);
+
+                if (freeLine)
+                    whiteCastlingPositions.add(model.whiteKingPosition.left().left());
+
+                if (onlyOneRook)
+                    return whiteCastlingPositions;
             }
 
-            // Checking if line between rook and king is not attacked
-            for (Position p: acquireAllMoves(model.getBoard().cells, AbsolutePieceType.BLACK))
-                freeLine &= !line.contains(p);
+        if (model.whiteRightRookPosition.getWidth() > model.whiteKingPosition.getWidth())
+            if (!model.whiteRightRookMoved && Math.abs(model.whiteRightRookPosition.getWidth() - model.whiteKingPosition.getWidth()) > 2) {
+                Set<Position> line = model.whiteRightRookPosition.horizontal(model.whiteKingPosition);
 
-            if (freeLine)
-                whiteCastlingPositions.add(model.whiteKingPosition.left().left());
-        }
+                boolean freeLine = true;
 
-        if (!model.whiteRightRookMoved && Math.abs(model.whiteRightRookPosition.getWidth() - model.whiteKingPosition.getWidth()) > 2) {
-            Set<Position> line = model.whiteRightRookPosition.horizontal(model.whiteKingPosition);
+                // Checking if line between rook and king is not blocked
+                for (Position p: line) {
+                    freeLine &= model.getBoard().getCell(p).pieceType.isNone();
+                }
 
-            boolean freeLine = true;
+                // Checking if line between rook and king is not attacked
+                for (Position p: acquireAllMoves(model.getBoard().cells, AbsolutePieceType.BLACK))
+                    freeLine &= !line.contains(p);
 
-            // Checking if line between rook and king is not blocked
-            for (Position p: line) {
-                freeLine &= model.getBoard().getCell(p).pieceType.isNone();
+                if (freeLine)
+                    whiteCastlingPositions.add(model.whiteKingPosition.right().right());
+
+                if (onlyOneRook)
+                    return whiteCastlingPositions;
             }
-
-            // Checking if line between rook and king is not attacked
-            for (Position p: acquireAllMoves(model.getBoard().cells, AbsolutePieceType.BLACK))
-                freeLine &= !line.contains(p);
-
-            if (freeLine)
-                whiteCastlingPositions.add(model.whiteKingPosition.right().right());
-        }
 
         return whiteCastlingPositions;
     }
@@ -205,46 +215,56 @@ public final class ValidMoves {
      * @return Ordered list of castling positions for black king
      */
     private static List<Position> acquireBlackCastlingPositions(Model model) {
-        List<Position> blackCastlingPositions = new ArrayList<>();
+        Positions blackCastlingPositions = new Positions();
 
         if (model.blackKingMoved)
             return blackCastlingPositions;
 
-        if (!model.blackLeftRookMoved && Math.abs(model.blackLeftRookPosition.getWidth() - model.blackKingPosition.getWidth()) > 2) {
-            Set<Position> line = model.blackLeftRookPosition.horizontal(model.blackKingPosition);
+        boolean onlyOneRook = model.blackLeftRookPosition.equals(model.blackRightRookPosition);
 
-            boolean freeLine = true;
+        if (model.blackLeftRookPosition.getWidth() < model.blackKingPosition.getWidth())
+            if (!model.blackLeftRookMoved && Math.abs(model.blackLeftRookPosition.getWidth() - model.blackKingPosition.getWidth()) > 2) {
+                Set<Position> line = model.blackLeftRookPosition.horizontal(model.blackKingPosition);
 
-            // Checking if line between rook and king is not blocked
-            for (Position p: line) {
-                freeLine &= model.getBoard().getCell(p).pieceType.isNone();
+                boolean freeLine = true;
+
+                // Checking if line between rook and king is not blocked
+                for (Position p: line) {
+                    freeLine &= model.getBoard().getCell(p).pieceType.isNone();
+                }
+
+                // Checking if line between rook and king is not attacked
+                for (Position p: acquireAllMoves(model.getBoard().cells, AbsolutePieceType.WHITE))
+                    freeLine &= !line.contains(p);
+
+                if (freeLine)
+                    blackCastlingPositions.add(model.blackKingPosition.left().left());
+
+                if (onlyOneRook)
+                    return blackCastlingPositions;
             }
 
-            // Checking if line between rook and king is not attacked
-            for (Position p: acquireAllMoves(model.getBoard().cells, AbsolutePieceType.WHITE))
-                freeLine &= !line.contains(p);
+        if (model.blackRightRookPosition.getWidth() > model.blackKingPosition.getWidth())
+            if (!model.blackRightRookMoved && Math.abs(model.blackRightRookPosition.getWidth() - model.blackKingPosition.getWidth()) > 2) {
+                Set<Position> line = model.blackRightRookPosition.horizontal(model.blackKingPosition);
 
-            if (freeLine)
-                blackCastlingPositions.add(model.blackKingPosition.left().left());
-        }
+                boolean freeLine = true;
 
-        if (!model.blackRightRookMoved && Math.abs(model.blackRightRookPosition.getWidth() - model.blackKingPosition.getWidth()) > 2) {
-            Set<Position> line = model.blackRightRookPosition.horizontal(model.blackKingPosition);
+                // Checking if line between rook and king is not blocked
+                for (Position p: line) {
+                    freeLine &= model.getBoard().getCell(p).pieceType.isNone();
+                }
 
-            boolean freeLine = true;
+                // Checking if line between rook and king is not attacked
+                for (Position p: acquireAllMoves(model.getBoard().cells, AbsolutePieceType.WHITE))
+                    freeLine &= !line.contains(p);
 
-            // Checking if line between rook and king is not blocked
-            for (Position p: line) {
-                freeLine &= model.getBoard().getCell(p).pieceType.isNone();
+                if (freeLine)
+                    blackCastlingPositions.add(model.blackKingPosition.right().right());
+
+                if (onlyOneRook)
+                    return blackCastlingPositions;
             }
-
-            // Checking if line between rook and king is not attacked
-            for (Position p: acquireAllMoves(model.getBoard().cells, AbsolutePieceType.WHITE))
-                freeLine &= !line.contains(p);
-
-            if (freeLine)
-                blackCastlingPositions.add(model.blackKingPosition.right().right());
-        }
 
         return blackCastlingPositions;
     }

@@ -56,6 +56,8 @@ public class Model extends AbstractModel {
     public Move lastWhitePawnMove = new Move();
     public Move lastBlackPawnMove = new Move();
 
+    public boolean initPawnPromotion = false;
+
     //
 
     public Model(int vertical, int horizontal) {
@@ -89,7 +91,8 @@ public class Model extends AbstractModel {
             loadPreset(PresetFactory.create());
         }
 
-        Utilities.initCastling(this);
+        PreStartConditions.initCastling(this);
+        PreStartConditions.checkPawnPromotion(this);
     }
 
     public boolean isDefaultBoard() {
@@ -110,7 +113,8 @@ public class Model extends AbstractModel {
             Presets.Loader.load(this, preset);
         }
 
-        Utilities.initCastling(this);
+        PreStartConditions.initCastling(this);
+        PreStartConditions.checkPawnPromotion(this);
     }
 
     public void showMoves(Cell cell) {
@@ -137,7 +141,9 @@ public class Model extends AbstractModel {
             if (Math.abs(oldPosition.getWidth() - newPosition.getWidth()) == 2)
                 MoveHandler.executeCastling(this, newPosition, movedPieceType.absolute());
 
+        MoveHandler.checkGuaranteedStalemate(this, movedPieceType);
         MoveHandler.handleState(this, movedPieceType.absolute().invert());
+
         MoveHandler.notifyLastMoved(this, movedPieceType);
 
         turn = !turn;

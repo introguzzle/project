@@ -67,7 +67,7 @@ public final class PawnPromotionDialog extends JDialog {
             this.owner = owner;
 
             this.pawnPieceType = pawnPieceType;
-            this.whitePawn     = pawnPieceType == AbsolutePieceType.WHITE;
+            this.whitePawn     = pawnPieceType.isWhite();
 
             init();
         }
