@@ -2,7 +2,6 @@ package ru.chess.model;
 
 import ru.chess.PieceType;
 import ru.chess.position.Position;
-import ru.chess.model.Model.State;
 
 public class Presets {
 

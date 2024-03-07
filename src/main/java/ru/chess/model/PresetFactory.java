@@ -16,6 +16,14 @@ public final class PresetFactory {
     static int VERTICAL_BOUND   = Position.VERTICAL_BOUND;
     static int HORIZONTAL_BOUND = Position.HORIZONTAL_BOUND;
 
+    public static String createDefaultPieceSetup() {
+        return Presets.DEFAULT.substring(11);
+    }
+
+    public static String createPieceSetup() {
+        return create(true, true).substring(12);
+    }
+
     public static String create() {
         return create(true, true);
     }
@@ -25,7 +33,10 @@ public final class PresetFactory {
     }
 
     public static String create(boolean turn, boolean castlingPossible) {
-         return "O" + (turn ? "W" : "B") + (castlingPossible ? "FFFFFF" : "TTTTTT") + " /"
+         return "O" + (turn ? "W" : "B") + (castlingPossible ? "FFFFFF" : "TTTTTT")
+                 // This indicates this is start and not reinitialized
+                 + "F"
+                 + " /"
                  + setPawns() + setOthers() + setKingsAndRooks();
     }
 

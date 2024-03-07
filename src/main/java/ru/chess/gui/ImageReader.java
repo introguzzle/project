@@ -4,9 +4,12 @@ import ru.chess.PieceType;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+
 import java.awt.*;
+
 import java.io.File;
 import java.io.IOException;
+
 import java.util.HashMap;
 
 public final class ImageReader {
@@ -18,6 +21,7 @@ public final class ImageReader {
     private static final String BASE_PATH = ".\\src\\main\\java\\ru\\chess\\images\\";
 
     private static final HashMap<PieceType, String> PATH_MAP = new HashMap<>();
+    private static final HashMap<String,    String> BUTTONS_MAP = new HashMap<>();
 
     static {
         PATH_MAP.put(PieceType.WHITE_PAWN,     "WPawn.png");
@@ -41,6 +45,16 @@ public final class ImageReader {
         PATH_MAP.put(PieceType.BLACK_KING,     "BKing.png");
     }
 
+    static {
+        BUTTONS_MAP.put("Play",       "Play.png");
+        BUTTONS_MAP.put("Reset",      "Reset.png");
+        BUTTONS_MAP.put("Replay",     "Reset.png");
+        BUTTONS_MAP.put("Exit",       "Exit.png");
+        BUTTONS_MAP.put("OtherPlay",  "OtherPlay.png");
+        BUTTONS_MAP.put("SetDefault", "SetDefault.png");
+        BUTTONS_MAP.put("Copy",       "Copy.png");
+    }
+
     private static Image read(String fileName) {
         try {
             return ImageIO.read(new File(BASE_PATH + fileName));
@@ -50,40 +64,12 @@ public final class ImageReader {
         }
     }
 
-    private static String transformPath(PieceType pieceType) {
-        return BASE_PATH + PATH_MAP.get(pieceType);
+    public static ImageIcon get(String name) {
+        return get(name, 80, 80);
     }
 
-    public static ImageIcon getReplayIcon() {
-        return getReplayIcon(80, 80);
-    }
-
-    public static ImageIcon getReplayIcon(int width, int height) {
-        return new ImageIcon(read("Replay.png").getScaledInstance(width, height, Image.SCALE_SMOOTH));
-    }
-
-    public static ImageIcon getExitIcon() {
-        return getExitIcon(80, 80);
-    }
-
-    public static ImageIcon getExitIcon(int width, int height) {
-        return new ImageIcon(read("Exit.png").getScaledInstance(width, height, Image.SCALE_SMOOTH));
-    }
-
-    public static ImageIcon getCopyIcon() {
-        return getCopyIcon(80, 80);
-    }
-
-    public static ImageIcon getCopyIcon(int width, int height) {
-        return new ImageIcon(read("Copy.png").getScaledInstance(width, height, Image.SCALE_SMOOTH));
-    }
-
-    public static ImageIcon getPlayIcon() {
-        return getPlayIcon(80, 80);
-    }
-
-    public static ImageIcon getPlayIcon(int width, int height) {
-        return new ImageIcon(read("Play.png").getScaledInstance(width, height, Image.SCALE_SMOOTH));
+    public static ImageIcon get(String name, int width, int height) {
+        return new ImageIcon(read(BUTTONS_MAP.get(name)).getScaledInstance(width, height, Image.SCALE_SMOOTH));
     }
 
     public static ImageIcon get(PieceType pieceType) {
@@ -94,16 +80,6 @@ public final class ImageReader {
         if (pieceType == PieceType.NONE)
             return new ImageIcon();
 
-        Image image;
-
-        try {
-            image = ImageIO.read(new File(transformPath(pieceType)));
-            image = image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return new ImageIcon(image);
+        return new ImageIcon(read(PATH_MAP.get(pieceType)).getScaledInstance(width, height, Image.SCALE_SMOOTH));
     }
 }

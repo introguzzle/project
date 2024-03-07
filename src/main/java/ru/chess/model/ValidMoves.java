@@ -23,7 +23,7 @@ public final class ValidMoves {
      * @param cell Cell
      * @return Ordered list of true valid available moves for piece on cell
      */
-    static List<Position> get(Model model, Cell cell) {
+    public static List<Position> get(Model model, Cell cell) {
         List<Position> result   = new Positions();
         List<Position> toFilter = PseudoValidMoves.get(model.getBoard().cells, cell);
 
@@ -73,8 +73,8 @@ public final class ValidMoves {
 
         if (cell.pieceType == PieceType.WHITE_PAWN) {
 
-            Position to   = model.lastBlackPawnMove.getTo();
-            Position from = model.lastBlackPawnMove.getFrom();
+            Position to   = model.lastBlackPawnMove.to();
+            Position from = model.lastBlackPawnMove.from();
 
             boolean startMove  = Math.abs(from.getHeight() - to.getHeight()) == 2;
             boolean canDestroy = to.getHeight() == cell.getPosition().getHeight() &&
@@ -91,8 +91,8 @@ public final class ValidMoves {
 
         if (cell.pieceType == PieceType.BLACK_PAWN) {
 
-            Position to   = model.lastWhitePawnMove.getTo();
-            Position from = model.lastWhitePawnMove.getFrom();
+            Position to   = model.lastWhitePawnMove.to();
+            Position from = model.lastWhitePawnMove.from();
 
             boolean startMove  = Math.abs(from.getHeight() - to.getHeight()) == 2;
             boolean canDestroy = to.getHeight() == cell.getPosition().getHeight() &&
@@ -276,21 +276,28 @@ public final class ValidMoves {
      * @param oldPosition From which position
      * @param newPosition To which position
      */
-    private static void movePiece(Cell[][] cells,
-                                  PieceType movingPieceType,
-                                  Position oldPosition,
-                                  Position newPosition) {
+    public static void movePiece(Cell[][] cells,
+                                 PieceType movingPieceType,
+                                 Position oldPosition,
+                                 Position newPosition) {
         cells[oldPosition.getHeight()][oldPosition.getWidth()].removePiece();
         cells[newPosition.getHeight()][newPosition.getWidth()].setPiece(movingPieceType);
     }
+
+    public static void movePiece(Cell[][] cells,
+                                 Move move) {
+        cells[move.from().getHeight()][move.from().getWidth()].removePiece();
+        cells[move.to().getHeight()][move.to().getWidth()].setPiece(move.moved());
+    }
+
 
     /**
      *
      * @param cells Cells of the current board
      * @param absolutePieceType Absolute piece type (side)
-     * @return Ordered list of all moves of all pieces of this side
+     * @return Ordered list of all destination positions of all pieces of this side
      */
-    static List<Position> acquireAllMoves(Cell[][] cells, AbsolutePieceType absolutePieceType) {
+    public static List<Position> acquireAllMoves(Cell[][] cells, AbsolutePieceType absolutePieceType) {
         List<Position> positions = new ArrayList<>();
 
         for (Cell[] cellArray : cells)
@@ -303,6 +310,30 @@ public final class ValidMoves {
             }
 
         return positions;
+    }
+
+    /**
+     * Advanced version of method acquireAllMoves that returns list of positions
+     * @param model Model which handles the board
+     * @param absolutePieceType Absolute piece type (side)
+     * @return Ordered list of all moves of all pieces of this side
+     * @see Move
+     */
+    public static List<Move> acquireAllValidMoves(Model model, AbsolutePieceType absolutePieceType) {
+        List<Move> moves = new ArrayList<>();
+        Cell[][] cells = model.getBoard().cells;
+
+        for (Cell[] cellArray : cells)
+            for (Cell cell : cellArray) {
+
+                if (cell.absolutePieceType == absolutePieceType)
+                    for (Position p: ValidMoves.get(model, cell))
+                        moves.add(new Move(cell.getPosition(), p, cell.pieceType));
+            }
+
+        return moves.stream().sorted(Comparator.comparing((m) ->
+                    model.getBoard().getCell(m.to()).pieceType.value
+                , Comparator.reverseOrder())).toList();
     }
 
     /**

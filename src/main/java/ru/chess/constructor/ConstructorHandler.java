@@ -4,6 +4,7 @@ import ru.chess.Chess;
 import ru.chess.gui.Board;
 import ru.chess.label.DynamicLabel;
 import ru.chess.gui.ImageReader;
+import ru.chess.model.PresetFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,22 +24,35 @@ public class ConstructorHandler extends JPanel {
         DynamicLabel play = new DynamicLabel(
                 this.getBackground(),
                 Color.GREEN.darker(),
-                ImageReader.getPlayIcon(Board.DIMENSION_CELL.width, Board.DIMENSION_CELL.height),
+                ImageReader.get("Play", Board.DIMENSION_CELL.width, Board.DIMENSION_CELL.height),
                 e -> play()
         );
 
         this.add(play);
 
+        DynamicLabel playAI = new DynamicLabel(
+                this.getBackground(),
+                Color.GREEN.darker(),
+                ImageReader.get("OtherPlay", Board.DIMENSION_CELL.width, Board.DIMENSION_CELL.height),
+                e -> playWithBot()
+        );
+
+        this.add(playAI);
+
+        DynamicLabel setDefault = new DynamicLabel(
+                this.getBackground(),
+                Color.BLUE.darker(),
+                ImageReader.get("SetDefault", Board.DIMENSION_CELL.width, Board.DIMENSION_CELL.height),
+                e -> setDefault()
+        );
+
+        this.add(setDefault);
+
         DynamicLabel copy = new DynamicLabel(
                 this.getBackground(),
                 Color.BLUE.darker(),
-                ImageReader.getCopyIcon(Board.DIMENSION_CELL.width, Board.DIMENSION_CELL.height),
-                e -> Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
-                        new StringSelection(model.getTextField().getText()),
-                        (clipboard, contents) -> {
-
-                        }
-                )
+                ImageReader.get("Copy", Board.DIMENSION_CELL.width, Board.DIMENSION_CELL.height),
+                e -> copyToClipboard(model)
         );
 
         this.add(copy);
@@ -46,8 +60,8 @@ public class ConstructorHandler extends JPanel {
         DynamicLabel reset = new DynamicLabel(
                 this.getBackground(),
                 Color.YELLOW,
-                ImageReader.getReplayIcon(Board.DIMENSION_CELL.width, Board.DIMENSION_CELL.height),
-                e -> model.reset()
+                ImageReader.get("Reset", Board.DIMENSION_CELL.width, Board.DIMENSION_CELL.height),
+                e -> reset()
         );
 
         this.add(reset);
@@ -55,7 +69,7 @@ public class ConstructorHandler extends JPanel {
         DynamicLabel exit = new DynamicLabel(
                 this.getBackground(),
                 Color.RED,
-                ImageReader.getExitIcon(Board.DIMENSION_CELL.width, Board.DIMENSION_CELL.height),
+                ImageReader.get("Exit", Board.DIMENSION_CELL.width, Board.DIMENSION_CELL.height),
                 e -> SwingUtilities.getWindowAncestor((Component) e.getSource()).dispose()
         );
 
@@ -64,10 +78,57 @@ public class ConstructorHandler extends JPanel {
 
     }
 
+    private void copyToClipboard(ConstructorModel model) {
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
+                new StringSelection(model.getTextField().getText()),
+                (clipboard, contents) -> {
+
+                }
+        );
+    }
+
     private void play() {
-        Chess chess = new Chess(model.vertical, model.horizontal, model.getTextField().getText());
+        Chess chess = new Chess(
+                model.vertical,
+                model.horizontal,
+                "OWFFFFFF / " + model.getTextField().getText(),
+                -1,
+                -1
+        );
 
         chess.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         chess.setVisible(true);
+    }
+
+    private void playWithBot() {
+        ConstructorSettingsDialog dialog = new ConstructorSettingsDialog((JFrame) SwingUtilities.getWindowAncestor(this));
+        dialog.setVisible(true);
+
+        if (dialog.valid) {
+            Chess chess = new Chess(
+                    model.vertical,
+                    model.horizontal,
+                    "OWFFFFFF / " + model.getTextField().getText(),
+                    dialog.difficulty,
+                    dialog.timeToMove
+            );
+
+            chess.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            chess.setVisible(true);
+        }
+    }
+
+    private void setDefault() {
+        String pieceSetup = PresetFactory.createDefaultPieceSetup();
+
+        System.out.println(pieceSetup);
+
+        model.loadPreset(pieceSetup);
+        model.getTextField().setText(pieceSetup);
+    }
+
+    private void reset() {
+        model.reset();
+        model.getTextField().setText("");
     }
 }

@@ -24,7 +24,7 @@ public class Main {
         JButton chess = new JButton("Chess");
 
         f.getContentPane().add(chess);
-        chess.addActionListener((e) -> ru.chess.Run.main(args));
+        chess.addActionListener((e) -> ru.chess.constructor.Run.main(args));
         chess.setPreferredSize(new Dimension(300, 200));
         chess.setFont(font);
         chess.setBackground(Color.WHITE);

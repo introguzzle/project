@@ -1,11 +1,14 @@
-package ru.chess;;
+package ru.chess;
 
-public class Run {
+import java.io.*;
 
-    public static void main(String... ___) {
-        //java.awt.EventQueue.invokeLater(() -> new Chess().setVisible(true));
+;
+
+public final class Run {
+
+    public static void main(String... ___) throws IOException {
         java.awt.EventQueue.invokeLater(() -> {
-            new Chess(8, 8, "bKa4 brd4 bpd3 wpa2 wra1 wKd1").setVisible(true);
+            new Chess(8, 8).setVisible(true);
         });
     }
 }

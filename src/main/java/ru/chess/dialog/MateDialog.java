@@ -73,14 +73,14 @@ public class MateDialog extends JDialog {
             JLabel replayButton = new DynamicLabel(
                     new Color(238, 238, 238),
                     Color.GREEN.darker(),
-                    ImageReader.getReplayIcon(),
+                    ImageReader.get("Replay"),
                     e -> replay()
             );
 
             JLabel exitButton = new DynamicLabel(
                     new Color(238, 238, 238),
                     Color.RED.darker(),
-                    ImageReader.getExitIcon(),
+                    ImageReader.get("Exit"),
                     e -> exit()
             );
 

@@ -2,10 +2,12 @@ package ru.chess.constructor;
 
 import ru.chess.PieceType;
 import ru.chess.gui.ImageReader;
-import ru.chess.position.AbstractPosition;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 public class Constructor extends JFrame {
 
@@ -50,6 +52,8 @@ public class Constructor extends JFrame {
             nextLayer.add(this.getModel().getTextField());
         }
 
+        this.addWindowListener(createWindowListener());
+
         this.add(new ConstructorHandler(model));
         this.add(nextLayer);
 
@@ -65,8 +69,16 @@ public class Constructor extends JFrame {
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        System.out.println(AbstractPosition.VERTICAL_BOUND);
-        System.out.println(AbstractPosition.HORIZONTAL_BOUND);
+        IO.load(model);
+    }
+
+    private WindowListener createWindowListener() {
+        return new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                IO.write(model);
+            }
+        };
     }
 
     public ConstructorModel getModel() {

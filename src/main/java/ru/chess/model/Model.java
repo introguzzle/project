@@ -1,11 +1,14 @@
 package ru.chess.model;
 
 import ru.chess.*;
+import ru.chess.bot.*;
 import ru.chess.label.Cell;
 import ru.chess.position.Position;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Stack;
 
 public class Model extends AbstractModel {
@@ -18,6 +21,9 @@ public class Model extends AbstractModel {
         CHECKMATE_TO_WHITE,
         CHECKMATE_TO_BLACK
     }
+
+    public final Bot bot;
+    public final boolean enabledBot;
 
     protected boolean initLoad  = true;
     protected String  initPreset;
@@ -53,15 +59,26 @@ public class Model extends AbstractModel {
 
     public boolean lastMoveDestroyed = false;
 
-    public Move lastWhitePawnMove = new Move();
-    public Move lastBlackPawnMove = new Move();
+    public Move lastWhitePawnMove = new Move(new Position(0, 0), new Position(0, 0), PieceType.NONE);
+    public Move lastBlackPawnMove = new Move(new Position(0, 0), new Position(0, 0), PieceType.NONE);
 
     public boolean initPawnPromotion = false;
 
     //
 
+    public int fiftyRuleCounter = 0;
+
     public Model(int vertical, int horizontal) {
         super(vertical, horizontal);
+        this.bot = null;
+        this.enabledBot = false;
+        init();
+    }
+
+    public Model(int vertical, int horizontal, int difficulty, int timeForMove) {
+        super(vertical, horizontal);
+        this.bot = new StockfishBot(this, difficulty, timeForMove);
+        this.enabledBot = true;
         init();
     }
 
@@ -109,12 +126,12 @@ public class Model extends AbstractModel {
             initPreset = preset;
             initLoad   = false;
 
+            PreStartConditions.initCastling(this);
+            PreStartConditions.checkPawnPromotion(this);
+
         } else {
             Presets.Loader.load(this, preset);
         }
-
-        PreStartConditions.initCastling(this);
-        PreStartConditions.checkPawnPromotion(this);
     }
 
     public void showMoves(Cell cell) {
@@ -123,14 +140,13 @@ public class Model extends AbstractModel {
         }
     }
 
-    public void handleMove(Position  oldPosition,
-                           Position  newPosition,
-                           PieceType movedPieceType) {
-
+    synchronized public void handleMove(Position  oldPosition,
+                                        Position  newPosition,
+                                        PieceType movedPieceType) {
         SoundPlayer.playMoveSound();
 
         if (movedPieceType == PieceType.WHITE_PAWN || movedPieceType == PieceType.BLACK_PAWN) {
-            if (newPosition.getChessHeight() == (movedPieceType.absolute() == AbsolutePieceType.WHITE ? VERTICAL_BOUND : 1))
+            if (newPosition.getChessHeight() == (movedPieceType.absolute().isWhite() ? VERTICAL_BOUND : 1))
                 MoveHandler.executePawnPromotion(this, newPosition, movedPieceType.absolute());
 
             MoveHandler.executeEnPassant(this, oldPosition, newPosition, movedPieceType);
@@ -142,6 +158,8 @@ public class Model extends AbstractModel {
                 MoveHandler.executeCastling(this, newPosition, movedPieceType.absolute());
 
         MoveHandler.checkGuaranteedStalemate(this, movedPieceType);
+        MoveHandler.checkFiftyMoveRule(this, movedPieceType);
+
         MoveHandler.handleState(this, movedPieceType.absolute().invert());
 
         MoveHandler.notifyLastMoved(this, movedPieceType);
@@ -153,9 +171,25 @@ public class Model extends AbstractModel {
         if (needWhiteCastlingNotify || needBlackCastlingNotify)
             MoveHandler.notifyCastling(this, newPosition);
 
-        if (state == State.CHECKMATE_TO_WHITE || state == State.CHECKMATE_TO_BLACK || state == State.STALEMATE) {
+        if (isOver()) {
             MoveHandler.callMateDialog(this, movedPieceType);
         }
+
+        if (enabledBot && !turn && state == State.ONGOING) {
+            Move bestMove = bot.get();
+
+            lastMoveDestroyed = board.getCell(bestMove.to()).pieceType.isNotNone();
+
+            movePiece(bestMove);
+
+            handleMove(bestMove.from(), bestMove.to(), bestMove.moved());
+        }
+    }
+
+    public boolean isOver() {
+        return this.state == State.STALEMATE
+                || this.state == State.CHECKMATE_TO_WHITE
+                || this.state == State.CHECKMATE_TO_BLACK;
     }
 
     private void undoMove() {

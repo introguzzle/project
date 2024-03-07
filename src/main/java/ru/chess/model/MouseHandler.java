@@ -32,6 +32,7 @@ public class MouseHandler extends MouseAdapter {
     @Override
     public void mousePressed(MouseEvent e) {
         Cell pressedCell = getCell(e);
+        System.out.println("11111111111111111111");
 
         // Avoid static init
         if (model.initPawnPromotion) {

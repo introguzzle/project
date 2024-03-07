@@ -1,5 +1,7 @@
 package ru.chess.gui;
 
+import ru.chess.PieceType;
+import ru.chess.model.Move;
 import ru.chess.position.Position;
 import ru.chess.label.BlackCell;
 import ru.chess.label.Cell;
@@ -161,9 +163,7 @@ public class Board extends JPanel {
     @Override
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-
         GUI.setQuality(g2d, 2);
-
         super.paint(g2d);
 
         if (drawPiece) {

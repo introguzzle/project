@@ -69,33 +69,39 @@ public final class MoveHandler {
 
         if (pawnType == PieceType.WHITE_PAWN)
             if (!model.lastMoveDestroyed && oldPosition.getWidth() != newPosition.getWidth()) {
-                model.removePiece(model.lastBlackPawnMove.getTo());
+                model.removePiece(model.lastBlackPawnMove.to());
             }
 
         if (pawnType == PieceType.BLACK_PAWN)
             if (!model.lastMoveDestroyed && oldPosition.getWidth() != newPosition.getWidth())
-                model.removePiece(model.lastWhitePawnMove.getTo());
+                model.removePiece(model.lastWhitePawnMove.to());
 
     }
 
     public static void executePawnPromotion(Model model,
                                             Position pawnPosition,
                                             AbsolutePieceType pawnType) {
+        if (!model.enabledBot) {
+            Chess owner = (Chess) SwingUtilities.windowForComponent(model.getBoard());
 
-        Chess owner = (Chess) SwingUtilities.windowForComponent(model.getBoard());
+            PawnPromotionDialog pawnPromotionDialog = new PawnPromotionDialog(owner, pawnType);
+            pawnPromotionDialog.setVisible(true);
 
-        PawnPromotionDialog pawnPromotionDialog = new PawnPromotionDialog(owner, pawnType);
-        pawnPromotionDialog.setVisible(true);
+            PieceType chosenPieceType = pawnPromotionDialog.pawnPromotionPanel.chosenPieceType;
 
-        PieceType chosenPieceType = pawnPromotionDialog.pawnPromotionPanel.chosenPieceType;
+            if (chosenPieceType != null)
+                model.setPiece(pawnPosition, chosenPieceType);
+            else
+                executePawnPromotion(model, pawnPosition, pawnType);
+        } else if (pawnType.isWhite()) {
+            model.setPiece(pawnPosition, PieceType.WHITE_QUEEN);
 
-        if (chosenPieceType != null)
-            model.setPiece(pawnPosition, chosenPieceType);
-        else
-            executePawnPromotion(model, pawnPosition, pawnType);
+        } else if (pawnType.isBlack()) {
+            model.setPiece(pawnPosition, PieceType.BLACK_QUEEN);
+        }
     }
 
-    public static void handleState(Model model, AbsolutePieceType absolutePieceType) {
+    synchronized public static void handleState(Model model, AbsolutePieceType absolutePieceType) {
         class Checker {
             static boolean isEmptyForAll(Model model, AbsolutePieceType absolutePieceType) {
                 for (int i = 0; i < VERTICAL_BOUND; i++)
@@ -131,7 +137,11 @@ public final class MoveHandler {
             } else {
                 model.state = State.STALEMATE;
             }
+
+            return;
         }
+
+        model.state = State.ONGOING;
     }
 
     public static void checkGuaranteedStalemate(Model model, PieceType movedPieceType) {
@@ -155,10 +165,10 @@ public final class MoveHandler {
                                        Position  newPosition,
                                        PieceType movedPieceType) {
         if (movedPieceType == PieceType.WHITE_PAWN)
-            model.lastWhitePawnMove = new Move(oldPosition, newPosition);
+            model.lastWhitePawnMove = new Move(oldPosition, newPosition, PieceType.WHITE_PAWN);
 
         if (movedPieceType == PieceType.BLACK_PAWN)
-            model.lastBlackPawnMove = new Move(oldPosition, newPosition);
+            model.lastBlackPawnMove = new Move(oldPosition, newPosition, PieceType.BLACK_PAWN);
     }
 
     public static void notifyLastMoved(Model model, PieceType movedPieceType) {
@@ -247,5 +257,19 @@ public final class MoveHandler {
         if (position.equals(model.blackRightRookPosition)) {
             model.blackRightRookMoved = true;
         }
+    }
+
+    // TODO
+    public static void checkFiftyMoveRule(Model model, PieceType movedPieceType) {
+        if (!model.lastMoveDestroyed
+                && movedPieceType != PieceType.WHITE_PAWN
+                && movedPieceType != PieceType.BLACK_PAWN)
+
+            model.fiftyRuleCounter++;
+        else
+            model.fiftyRuleCounter = 0;
+
+        if (model.fiftyRuleCounter >= 50)
+            model.state = State.STALEMATE;
     }
 }
