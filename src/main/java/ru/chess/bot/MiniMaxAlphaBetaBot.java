@@ -47,7 +47,7 @@ public class MiniMaxAlphaBetaBot extends AbstractBot {
 
     private int minimax(Model model, int depth, int alpha, int beta, boolean isMaximising) {
         if (depth == 0 || model.isOver()) {
-            return evaluator.evaluate();
+            return (int) evaluator.evaluate();
         }
 
         if (isMaximising) {

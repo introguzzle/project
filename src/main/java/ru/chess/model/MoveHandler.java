@@ -27,22 +27,66 @@ public final class MoveHandler {
 
     }
 
+    public static void updateCastling(Model model) {
+        for (int i = 0; i < VERTICAL_BOUND; i++)
+            for (int j = 0; j < HORIZONTAL_BOUND; j++) {
+                Cell cell = model.getBoard().cells[i][j];
+
+                if (cell.pieceType == PieceType.WHITE_KING) {
+                    List<Position> whiteKingPositions = ValidMoves.get(model, cell);
+
+                    for (Position p: whiteKingPositions) {
+                        if (p.getWidth() - cell.getPosition().getWidth() == -2
+                                && p.getHeight() == Model.VERTICAL_BOUND - 1)
+                            if (!model.castling.contains("Q"))
+                                model.castling = model.castling + "Q";
+
+                        if (p.getWidth() - cell.getPosition().getWidth() == 2
+                                && p.getHeight() == Model.VERTICAL_BOUND - 1)
+                            if (!model.castling.contains("K"))
+                                model.castling = model.castling + "K";
+                    }
+                }
+
+                if (cell.pieceType == PieceType.BLACK_KING) {
+                    List<Position> blackKingPositions = ValidMoves.get(model, cell);
+
+                    for (Position p: blackKingPositions) {
+                        if (p.getWidth() - cell.getPosition().getWidth() == -2
+                                && p.getHeight() == 0)
+
+                            if (!model.castling.contains("q"))
+                                model.castling = model.castling + "q";
+
+                        if (p.getWidth() - cell.getPosition().getWidth() == 2
+                                && p.getHeight() == 0)
+
+                            if (!model.castling.contains("k"))
+                                model.castling = model.castling + "k";
+                    }
+                }
+            }
+    }
+
     public static void executeCastling(Model model,
                                        Position newKingPosition,
                                        AbsolutePieceType kingType) {
         if (kingType.isWhite()) {
             if (newKingPosition.equals(model.whiteKingPosition.right().right())) {
-
                 model.removePiece(model.whiteRightRookPosition);
                 model.setPiece(newKingPosition.left(), PieceType.WHITE_ROOK);
-                model.needWhiteCastlingNotify = false;
+
+                model.castling = model.castling.replace("K", "");
+                model.whiteKingMoved = true;
             }
 
             if (newKingPosition.equals(model.whiteKingPosition.left().left())) {
 
                 model.removePiece(model.whiteLeftRookPosition);
                 model.setPiece(newKingPosition.right(), PieceType.WHITE_ROOK);
-                model.needWhiteCastlingNotify = false;
+
+                model.castling = model.castling.replace("Q", "");
+                model.whiteKingMoved = true;
             }
         } else if (kingType.isBlack()) {
 
@@ -50,14 +94,18 @@ public final class MoveHandler {
 
                 model.removePiece(model.blackRightRookPosition);
                 model.setPiece(newKingPosition.left(), PieceType.BLACK_ROOK);
-                model.needBlackCastlingNotify = false;
+
+                model.castling = model.castling.replace("k", "");
+                model.blackKingMoved = true;
             }
 
             if (newKingPosition.equals(model.blackKingPosition.left().left())) {
 
                 model.removePiece(model.blackLeftRookPosition);
                 model.setPiece(newKingPosition.right(), PieceType.BLACK_ROOK);
-                model.needBlackCastlingNotify = false;
+
+                model.castling = model.castling.replace("q", "");
+                model.blackKingMoved = true;
             }
         }
     }
@@ -101,7 +149,7 @@ public final class MoveHandler {
         }
     }
 
-    synchronized public static void handleState(Model model, AbsolutePieceType absolutePieceType) {
+    public static void handleState(Model model, AbsolutePieceType absolutePieceType) {
         class Checker {
             static boolean isEmptyForAll(Model model, AbsolutePieceType absolutePieceType) {
                 for (int i = 0; i < VERTICAL_BOUND; i++)
@@ -128,6 +176,9 @@ public final class MoveHandler {
                 return false;
             }
         }
+
+        if (model.isOver())
+            return;
 
         if (Checker.isEmptyForAll(model, absolutePieceType)) {
             if (Checker.isKingUnderAttack(model, absolutePieceType)) {
@@ -189,8 +240,11 @@ public final class MoveHandler {
         model.getBoard().revalidate();
         model.getBoard().repaint();
 
-        MateDialog mateDialog = new MateDialog(owner, model.state);
-        mateDialog.setVisible(true);
+        new MateDialog(owner, model.state).setVisible(true);
+
+        model.restoreAll();
+        model.getBoard().revalidate();
+        model.getBoard().repaint();
     }
 
     private static void highlightLoseCause(Model model, PieceType pieceType, State state) {
@@ -229,34 +283,34 @@ public final class MoveHandler {
     public static void notifyCastling(Model model, Position position) {
         if (position.equals(model.whiteKingPosition)) {
             model.whiteKingMoved = true;
-            model.needWhiteCastlingNotify = false;
-            return;
+            model.castling = model.castling.replace("K", "").replace("Q", "");
         }
 
         if (position.equals(model.blackKingPosition)) {
             model.blackKingMoved = true;
-            model.needBlackCastlingNotify = false;
-            return;
+            model.castling = model.castling.replace("k", "").replace("q", "");
         }
 
         if (position.equals(model.whiteLeftRookPosition)) {
             model.whiteLeftRookMoved = true;
-            return;
+            model.castling = model.castling.replace("Q", "");
         }
 
         if (position.equals(model.whiteRightRookPosition)) {
             model.whiteRightRookMoved = true;
-            return;
+            model.castling = model.castling.replace("K", "");
         }
 
         if (position.equals(model.blackLeftRookPosition)) {
             model.blackLeftRookMoved = true;
-            return;
+            model.castling = model.castling.replace("q", "");
         }
 
         if (position.equals(model.blackRightRookPosition)) {
             model.blackRightRookMoved = true;
+            model.castling = model.castling.replace("k", "");
         }
+
     }
 
     // TODO

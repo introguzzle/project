@@ -6,6 +6,9 @@ import ru.chess.model.Move;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Queue;
 import javax.swing.Timer;
 
 public class LinearAnimator extends Animator {
@@ -29,26 +32,17 @@ public class LinearAnimator extends Animator {
     protected void animate() {
         board.activePieceImage = ImageReader.get(move.moved());
         board.drawPiece        = true;
-        board.point            = board.getCell(move.from()).getLocation();
 
-        final Point point = new Point(
-                board.point.x + board.activePieceImage.getIconWidth() / 2,
-                board.point.y + board.activePieceImage.getIconHeight() / 2
-        );
+        board.point = getStart();
 
-        Point endPoint = board.getCell(move.to()).getLocation();
-
-        Point centerEndPoint = new Point(
-                endPoint.x + board.activePieceImage.getIconWidth() / 2,
-                endPoint.y + board.activePieceImage.getIconHeight() / 2
-        );
-
-        Timer timer = getTimer(point, centerEndPoint);
+        Timer timer = getTimer(getStart(), getEnd());
 
         timer.start();
     }
 
     private Timer getTimer(Point start, Point end) {
+        int delay = 0;
+
         final int[] fromX = {start.x};
         final int[] fromY = {start.y};
 
@@ -58,27 +52,28 @@ public class LinearAnimator extends Animator {
         final int[] dx = {fromX[0]};
         final int[] dy = {fromY[0]};
 
-        final int[] step = {0};
+        double[] distances = {0, 0};
 
-        return new Timer(0, (event) -> {
+        return new Timer(delay, (event) -> {
             dx[0] = dx[0] + xDelta;
             dy[0] = dy[0] + yDelta;
 
+            distances[0] = board.point.distance(end);
+
             board.point = new Point(dx[0], dy[0]);
 
-            step[0]++;
+            distances[1] = board.point.distance(end);
 
-            if (step[0] == steps) {
+            if (board.point.distance(end) <= Math.max(xDelta, yDelta)) {
+                stop(event);
+            }
+
+            // In case distance inverts sign, e.g. jumped behind needed cell
+            if (distances[1] > distances[0]) {
                 stop(event);
             }
 
             board.repaint();
         });
-    }
-
-    private void stop(ActionEvent event) {
-        ((Timer) event.getSource()).stop();
-        board.drawPiece = false;
-        action.run();
     }
 }

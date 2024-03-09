@@ -6,7 +6,7 @@ import java.util.List;
 
 public class StockfishProcessor {
 
-    private static final String STOCKFISH_PATH = ".\\src\\main\\java\\ru\\chess\\engine\\stockfish.exe";
+    private static final String EXECUTABLE_PATH = ".\\src\\main\\java\\ru\\chess\\engine\\stockfish.exe";
 
     private final Process process;
 
@@ -15,7 +15,7 @@ public class StockfishProcessor {
 
     public StockfishProcessor() {
         try {
-            process = Runtime.getRuntime().exec(STOCKFISH_PATH);
+            process = Runtime.getRuntime().exec(EXECUTABLE_PATH);
             input = new BufferedReader(new InputStreamReader(process.getInputStream()));
             output = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
 
@@ -71,11 +71,22 @@ public class StockfishProcessor {
         }
     }
 
+    public String evaluate(String fen) {
+        waitForReady();
+        sendCommand("position fen " + fen);
+
+        sendCommand("eval");
+
+        return readResponse("Total Evaluation").getLast();
+    }
+
     private List<String> readResponse(String expected) {
         try {
             List<String> lines = new ArrayList<>();
+
             while (true) {
                 String line = input.readLine();
+
                 lines.add(line);
 
                 if (line.startsWith(expected))
@@ -83,6 +94,7 @@ public class StockfishProcessor {
             }
 
             return lines;
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

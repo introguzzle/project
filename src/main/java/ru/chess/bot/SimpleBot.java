@@ -26,7 +26,7 @@ public class SimpleBot extends AbstractBot {
 
         Cell[][] cells = model.copyCells();
 
-        int startValue = evaluator.evaluate();
+        int startValue = (int) evaluator.evaluate();
 
         List<Move> moves = ValidMoves.acquireAllValidMoves(model, AbsolutePieceType.BLACK);
 
@@ -36,7 +36,7 @@ public class SimpleBot extends AbstractBot {
             ValidMoves.movePiece(cells, m);
 
             // Assuming bot always plays as blacks
-            int evaluatedBoard = evaluator.evaluate();
+            int evaluatedBoard = (int) evaluator.evaluate();
 
             if (evaluatedBoard > maxValue) {
                 maxValue = evaluatedBoard;

@@ -11,5 +11,5 @@ public abstract class AbstractEvaluator implements Evaluator {
     }
 
     @Override
-    public abstract int evaluate();
+    public abstract double evaluate();
 }

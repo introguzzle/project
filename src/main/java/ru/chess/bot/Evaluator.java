@@ -4,5 +4,5 @@ import ru.chess.AbsolutePieceType;
 
 public interface Evaluator {
 
-    int evaluate();
+    double evaluate();
 }

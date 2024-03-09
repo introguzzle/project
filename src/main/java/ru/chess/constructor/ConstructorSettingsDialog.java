@@ -31,7 +31,8 @@ public class ConstructorSettingsDialog extends JDialog {
         label = new DynamicLabel(
                 this.getBackground(),
                 Color.GREEN.darker(),
-                ImageReader.get("Play", Board.DIMENSION_CELL.width, Board.DIMENSION_CELL.height),
+                ImageReader.get("Play", Board.DIMENSION_CELL),
+                "",
                 e -> proceed()
         );
 

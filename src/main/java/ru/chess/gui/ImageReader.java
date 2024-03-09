@@ -53,6 +53,18 @@ public final class ImageReader {
         BUTTONS_MAP.put("OtherPlay",  "OtherPlay.png");
         BUTTONS_MAP.put("SetDefault", "SetDefault.png");
         BUTTONS_MAP.put("Copy",       "Copy.png");
+        BUTTONS_MAP.put("SetRandom",  "SetRandom.png");
+        BUTTONS_MAP.put("Back",       "Back.png");
+
+        BUTTONS_MAP.put("PlayToolTip",       "PlayToolTip.png");
+        BUTTONS_MAP.put("ResetToolTip",      "ResetToolTip.png");
+        BUTTONS_MAP.put("ReplayToolTip",     "ResetToolTip.png");
+        BUTTONS_MAP.put("ExitToolTip",       "ExitToolTip.png");
+        BUTTONS_MAP.put("OtherPlayToolTip",  "OtherPlayToolTip.png");
+        BUTTONS_MAP.put("SetDefaultToolTip", "SetDefaultToolTip.png");
+        BUTTONS_MAP.put("CopyToolTip",       "CopyToolTip.png");
+        BUTTONS_MAP.put("SetRandomToolTip",  "SetRandomToolTip.png");
+        BUTTONS_MAP.put("BackToolTip",       "BackToolTip.png");
     }
 
     private static Image read(String fileName) {
@@ -70,6 +82,10 @@ public final class ImageReader {
 
     public static ImageIcon get(String name, int width, int height) {
         return new ImageIcon(read(BUTTONS_MAP.get(name)).getScaledInstance(width, height, Image.SCALE_SMOOTH));
+    }
+
+    public static ImageIcon get(String name, Dimension dimension) {
+        return get(name, dimension.width, dimension.height);
     }
 
     public static ImageIcon get(PieceType pieceType) {

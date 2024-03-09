@@ -47,9 +47,13 @@ public class Constructor extends JFrame {
             nextLayer.add(topLayer, BorderLayout.NORTH);
 
             this.getModel().getTextField().setPreferredSize(new Dimension(0, 60));
-            this.getModel().getTextField().setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 6));
+            this.getModel().getFenTextField().setPreferredSize(new Dimension(0, 60));
 
-            nextLayer.add(this.getModel().getTextField());
+            this.getModel().getTextField().setCaretPosition(0);
+            this.getModel().getFenTextField().setCaretPosition(0);
+
+            nextLayer.add(this.getModel().getTextField(),    BorderLayout.CENTER);
+            nextLayer.add(this.getModel().getFenTextField(), BorderLayout.SOUTH);
         }
 
         this.addWindowListener(createWindowListener());

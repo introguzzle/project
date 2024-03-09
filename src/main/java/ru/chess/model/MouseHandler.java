@@ -6,6 +6,7 @@ import ru.chess.gui.Board;
 import ru.chess.gui.ImageReader;
 import ru.chess.position.Position;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -32,7 +33,6 @@ public class MouseHandler extends MouseAdapter {
     @Override
     public void mousePressed(MouseEvent e) {
         Cell pressedCell = getCell(e);
-        System.out.println("11111111111111111111");
 
         // Avoid static init
         if (model.initPawnPromotion) {
@@ -78,7 +78,15 @@ public class MouseHandler extends MouseAdapter {
                 model.setPiece(chosenCell.getPosition(), grabbedCellPieceType);
                 board.repaint();
 
-                model.handleMove(grabbedCellPosition, chosenCell.getPosition(), grabbedCellPieceType);
+                SwingWorker<Void, Void> handler = new SwingWorker<>() {
+                    @Override
+                    protected Void doInBackground() {
+                        model.handleMove(grabbedCellPosition, chosenCell.getPosition(), grabbedCellPieceType);
+                        return null;
+                    }
+                };
+
+                handler.execute();
 
             } else {
                 // Invalid move, so we're getting back

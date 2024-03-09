@@ -5,6 +5,8 @@ import ru.chess.model.AbstractModel;
 import ru.chess.model.Move;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
 
 public abstract class Animator extends SwingWorker<Void, Void> {
 
@@ -20,6 +22,35 @@ public abstract class Animator extends SwingWorker<Void, Void> {
         this.action = action;
 
         this.board = model.getBoard();
+    }
+
+    // Need to ensure board.activePieceImage is not null and set to
+    // some icon
+
+    protected Point getStart() {
+        Point start = board.getCell(move.from()).getLocation();
+
+        return new Point(
+                start.x + board.activePieceImage.getIconWidth() / 2,
+                start.y + board.activePieceImage.getIconHeight() / 2
+        );
+    }
+
+    protected Point getEnd() {
+        Point endPoint = board.getCell(move.to()).getLocation();
+
+        return new Point(
+                endPoint.x + board.activePieceImage.getIconWidth() / 2,
+                endPoint.y + board.activePieceImage.getIconHeight() / 2
+        );
+    }
+
+    protected void stop(ActionEvent event) {
+        ((Timer) event.getSource()).stop();
+        board.drawPiece = false;
+
+        model.setPiece(move.to(), move.moved());
+        action.run();
     }
 
     @Override

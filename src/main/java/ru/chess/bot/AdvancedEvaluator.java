@@ -122,7 +122,7 @@ public class AdvancedEvaluator extends AbstractEvaluator {
     }
 
     @Override
-    public int evaluate() {
+    public double evaluate() {
         int boardValue = 0;
         int mobility   = 0;
 

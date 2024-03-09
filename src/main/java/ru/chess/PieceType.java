@@ -8,23 +8,23 @@ public enum PieceType {
 
     WHITE_PAWN    ("wp", "P", 100,    false),
     WHITE_ROOK    ("wr", "R", 525,    false),
-    WHITE_KNIGHT  ("wk", "N", 350,    false),
+    WHITE_KNIGHT  ("wn", "N", 350,    false),
     WHITE_BISHOP  ("wb", "B", 350,    false),
     WHITE_QUEEN   ("wq", "Q", 900,    false),
     WHITE_CLOWN   ("wc", "C", 0,      true),
     WHITE_WIZARD  ("ww", "W", 0,      true),
     WHITE_TAMPLIER("wt", "T", 0,      true),
-    WHITE_KING    ("wK", "K", 10000,  false),
+    WHITE_KING    ("wk", "K", 10000,  false),
 
     BLACK_PAWN    ("bp", "p", -100,   false),
     BLACK_ROOK    ("br", "r", -525,   false),
-    BLACK_KNIGHT  ("bk", "n", -350,   false),
+    BLACK_KNIGHT  ("bn", "n", -350,   false),
     BLACK_BISHOP  ("bb", "b", -350,   false),
     BLACK_QUEEN   ("bq", "q", -900,   false),
     BLACK_CLOWN   ("bc", "c", 0,      true),
     BLACK_WIZARD  ("bw", "w", 0,      true),
     BLACK_TAMPLIER("bt", "t", 0,      true),
-    BLACK_KING    ("bK", "k", 10000,  false);
+    BLACK_KING    ("bk", "k", 10000,  false);
 
     public final String  code;
     public final String  fenCode;
@@ -37,9 +37,11 @@ public enum PieceType {
      * @param code Short code of this piece,
      *             first letter represents absolute type
      *             and second represents the class
+     * @param fenCode Short fen code of this piece
      * @param value    Power of this piece
      * @param extended If it's not default piece
      */
+
     PieceType(String code, String fenCode, int value, boolean extended) {
         this.code = code;
         this.fenCode = fenCode;

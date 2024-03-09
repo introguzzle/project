@@ -99,11 +99,11 @@ public class Board extends JPanel {
     }
 
     public static void paintFontShadow(Graphics2D g2d,
-                                String     string,
-                                int        fx,
-                                int        fy,
-                                int        shadowWidth,
-                                Color      shadowColor) {
+                                       String     string,
+                                       int        fx,
+                                       int        fy,
+                                       int        shadowWidth,
+                                       Color      shadowColor) {
         Color old = g2d.getColor();
 
         g2d.setColor(shadowColor);

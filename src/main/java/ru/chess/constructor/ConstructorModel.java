@@ -1,5 +1,6 @@
 package ru.chess.constructor;
 
+import ru.chess.Fen;
 import ru.chess.PieceType;
 import ru.chess.label.Cell;
 import ru.chess.gui.Board;
@@ -20,8 +21,9 @@ public class ConstructorModel extends AbstractModel {
     public final int vertical;
     public final int horizontal;
 
-    public ConstructorChoicePanel panel;
-    public JTextField             textField;
+    private final ConstructorChoicePanel panel;
+    private final JTextField textField;
+    private final JTextField fenTextField;
 
     public ConstructorModel(int vertical, int horizontal) {
         super(vertical, horizontal);
@@ -44,10 +46,16 @@ public class ConstructorModel extends AbstractModel {
         this.textField.setFont(new Font("Arial", Font.PLAIN, 20));
         this.textField.setEditable(false);
         this.textField.setCaretColor(this.textField.getBackground());
-        this.textField.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        this.textField.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 4));
+
+        this.fenTextField = new JTextField();
+        this.fenTextField.setFont(new Font("Arial", Font.PLAIN, 20));
+        this.fenTextField.setEditable(false);
+        this.fenTextField.setCaretColor(this.fenTextField.getBackground());
+        this.fenTextField.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 4));
     }
 
-    public void highlightSet(Cell cell) {
+    public void feedbackSet(Cell cell) {
         cell.setBackground(cell.getBackground().brighter());
 
         Timer timer = new Timer(50, (e) -> {
@@ -61,7 +69,7 @@ public class ConstructorModel extends AbstractModel {
         SoundPlayer.playMoveSound();
     }
 
-    public void highlightRemove(Cell cell) {
+    public void feedbackRemove(Cell cell) {
         cell.noteLose();
 
         Timer timer = new Timer(50, (e) -> {
@@ -75,12 +83,25 @@ public class ConstructorModel extends AbstractModel {
         SoundPlayer.playMoveSound();
     }
 
+
+    private void updateTextFields() {
+        textField.setText(Presets.Reader.read(this));
+        textField.setCaretPosition(0);
+
+        fenTextField.setText(Fen.toFen(this, true));
+        fenTextField.setCaretPosition(0);
+    }
+
     public ConstructorChoicePanel getPanel() {
         return this.panel;
     }
 
     public JTextField getTextField() {
         return textField;
+    }
+
+    public JTextField getFenTextField() {
+        return fenTextField;
     }
 
     @Override
@@ -178,9 +199,10 @@ public class ConstructorModel extends AbstractModel {
                 Cell pressedCell = (Cell) board.getComponentAt(e.getPoint());
 
                 if (pressedCell.pieceType != PieceType.NONE) {
-                    model.highlightRemove(pressedCell);
+                    model.feedbackRemove(pressedCell);
                     pressedCell.removePiece();
-                    model.textField.setText(Presets.Reader.read(model));
+
+                    model.updateTextFields();
                 }
             }
         }
@@ -202,20 +224,20 @@ public class ConstructorModel extends AbstractModel {
                         chosenCell = (Cell) board.getComponentAt(e.getPoint());
 
                     if (chosenCell != null) {
-                        model.highlightSet(chosenCell);
+                        model.feedbackSet(chosenCell);
                         board.getCell(chosenCell.getPosition()).setPiece(grabbedCellPieceType);
                         board.repaint();
                         panel.repaint();
 
-                        model.textField.setText(Presets.Reader.read(model));
+                        model.updateTextFields();
 
                     } else if (!panelInvoked) {
-                        model.highlightSet(board.getCell(grabbedCellPosition));
+                        model.feedbackSet(board.getCell(grabbedCellPosition));
                         board.getCell(grabbedCellPosition).setPiece(grabbedCellPieceType);
                         board.repaint();
                         panel.repaint();
 
-                        model.textField.setText(Presets.Reader.read(model));
+                        model.updateTextFields();
                     }
 
                     board.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -255,5 +277,7 @@ public class ConstructorModel extends AbstractModel {
                 }
             }
         }
+
+
     }
 }

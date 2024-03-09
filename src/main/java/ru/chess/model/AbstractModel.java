@@ -4,6 +4,8 @@ import ru.chess.PieceType;
 import ru.chess.gui.ImageReader;
 import ru.chess.label.Cell;
 import ru.chess.gui.Board;
+import ru.chess.model.animator.AcceleratingAnimator;
+import ru.chess.model.animator.LinearAnimator;
 import ru.chess.position.AbstractPosition;
 import ru.chess.position.Position;
 
@@ -130,88 +132,10 @@ public abstract class AbstractModel {
         }
     }
 
-    private static final class LinearAnimator extends SwingWorker<Void, Void> {
-        private final int steps;
-
-        interface DoneAction {
-            void actionPerformed();
-        }
-
-        private final Move move;
-        private final Board board;
-        private final DoneAction action;
-
-        public LinearAnimator(AbstractModel model, Move move, int steps, DoneAction action) {
-            this.move = move;
-
-            this.steps = steps;
-            this.board = model.getBoard();
-            this.action = action;
-        }
-
-        @Override
-        protected Void doInBackground() {
-            board.activePieceImage = ImageReader.get(move.moved());
-            board.drawPiece = true;
-            board.point  = board.getCell(move.from()).getLocation();
-
-            final Point point0 = new Point(board.point.x + board.activePieceImage.getIconWidth() / 2,
-                    board.point.y + board.activePieceImage.getIconHeight() / 2);
-
-            Point endPoint0 = board.getCell(move.to()).getLocation();
-
-            Point endPoint = new Point(
-                    endPoint0.x + board.activePieceImage.getIconWidth() / 2,
-                    endPoint0.y + board.activePieceImage.getIconHeight() / 2
-            );
-
-            final int[] fromX = {point0.x};
-            final int[] fromY = {point0.y};
-
-            int endX = endPoint.x;
-            int endY = endPoint.y;
-
-            int xDelta = (endX - fromX[0]) / steps;
-            int yDelta = (endY - fromY[0]) / steps;
-
-            final int[] dx = {fromX[0]};
-            final int[] dy = {fromY[0]};
-
-            final int[] step = {0};
-            final boolean[] done = {false};
-
-            while (!done[0]) {
-                dx[0] = dx[0] + xDelta;
-                dy[0] = dy[0] + yDelta;
-
-                board.point = new Point(dx[0], dy[0]);
-
-                step[0]++;
-
-                if (step[0] == steps) {
-                    done[0] = true;
-                }
-
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-
-                board.repaint();
-            }
-
-            board.drawPiece = false;
-            action.actionPerformed();
-
-            return null;
-        }
-    }
-
-    synchronized public void movePiece(Move move) {
+    public void movePiece(Move move, Runnable callback) {
         this.removePiece(move.from());
 
-        new ru.chess.model.animator.LinearAnimator(this, move, 25, () -> setPiece(move.to(), move.moved())).execute();
+        new AcceleratingAnimator(this, move, callback).execute();
     }
 
     public Cell[][] copyCells() {

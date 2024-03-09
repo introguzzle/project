@@ -2,13 +2,9 @@ package ru.chess;
 
 import ru.chess.gui.ImageReader;
 import ru.chess.model.Model;
-import ru.chess.model.Move;
-import ru.chess.position.Position;
-import ru.utils.ObjectPrinter;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 
 public class Chess extends JFrame {
 
@@ -39,6 +35,7 @@ public class Chess extends JFrame {
                       String preset,
                       int difficulty,
                       int timeForMove) {
+
         this.setLayout(new FlowLayout());
 
         if (difficulty >= 0 && difficulty <= 20 && vertical == 8 && horizontal == 8)
@@ -51,18 +48,8 @@ public class Chess extends JFrame {
         else
             model.loadPreset(preset);
 
+        this.add(model.getEvaluationBar());
         this.add(model.getBoard());
-        this.add(new JButton(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                model.movePiece(new Move(
-                                new Position(0, 0),
-                                new Position(5, 7),
-                                PieceType.BLACK_ROOK
-                        )
-                );
-            }
-        }));
 
         this.pack();
 

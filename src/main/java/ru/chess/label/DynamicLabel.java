@@ -2,6 +2,7 @@ package ru.chess.label;
 
 import ru.chess.gui.Board;
 import ru.chess.gui.GUI;
+import ru.utils.ColorUtilities;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,8 +14,11 @@ import java.awt.event.MouseEvent;
  */
 public class DynamicLabel extends JLabel {
 
-    private final Color defaultColor;
-    private final Color movedColor;
+    private final Color  defaultColor;
+    private final Color  movedColor;
+    private final String movedText;
+
+    private boolean paintMovedText;
 
     /**
      *
@@ -23,9 +27,15 @@ public class DynamicLabel extends JLabel {
      * @param icon Icon of this label
      * @param pressedAction What to perform when pressed
      */
-    public DynamicLabel(Color defaultColor, Color movedColor, Icon icon, Action pressedAction) {
+    public DynamicLabel(Color defaultColor,
+                        Color movedColor,
+                        Icon icon,
+                        String movedText,
+                        Action pressedAction) {
         this.defaultColor = defaultColor;
         this.movedColor   = movedColor;
+
+        this.movedText    = movedText;
 
         this.setOpaque(true);
         this.setPreferredSize(Board.DIMENSION_CELL);
@@ -44,6 +54,25 @@ public class DynamicLabel extends JLabel {
         Graphics2D g2d = (Graphics2D) g;
         GUI.setQuality(g2d, 2);
         super.paint(g2d);
+
+        if (this.paintMovedText) {
+            Font oldFont = g2d.getFont();
+            Color oldColor = g2d.getColor();
+
+            int fontSize = 20;
+
+            g2d.setFont(new Font("Arial", Font.PLAIN, fontSize));
+            g2d.setColor(ColorUtilities.getContrasting(this.getBackground()));
+
+            g2d.drawString(
+                    this.movedText,
+                    fontSize / 4,
+                    this.getHeight() - fontSize / 4
+            );
+
+            g2d.setFont(oldFont);
+            g2d.setColor(oldColor);
+        }
     }
 
     public static class MouseHandler extends MouseAdapter {
@@ -64,22 +93,26 @@ public class DynamicLabel extends JLabel {
 
         @Override
         public void mouseReleased(MouseEvent e) {
-            this.mouseEntered(e);
-
-            if (this.onLabel)
+            if (this.onLabel) {
                 this.pressedAction.actionPerformed(e);
+
+                this.label.setBackground(this.label.movedColor);
+                this.label.paintMovedText = true;
+            }
         }
 
         @Override
         public void mouseEntered(MouseEvent e) {
             this.onLabel = true;
             this.label.setBackground(this.label.movedColor);
+            this.label.paintMovedText = true;
         }
 
         @Override
         public void mouseExited(MouseEvent e) {
             this.onLabel = false;
             this.label.setBackground(this.label.defaultColor);
+            this.label.paintMovedText = false;
         }
     }
 }

@@ -46,6 +46,7 @@ public final class PawnPromotionDialog extends JDialog {
                     new Color(238, 238, 238),
                     new Color(200, 200, 190),
                     ImageReader.get(pieceType),
+                    "",
                     pressedAction);
 
             this.panel = panel;

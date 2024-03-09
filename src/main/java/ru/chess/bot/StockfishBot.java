@@ -1,5 +1,6 @@
 package ru.chess.bot;
 
+import ru.chess.Fen;
 import ru.chess.PieceType;
 import ru.chess.model.Model;
 import ru.chess.model.Move;
@@ -9,8 +10,8 @@ public class StockfishBot extends AbstractBot {
 
     private final StockfishProcessor stockfishProcessor = new StockfishProcessor();
 
-    private final int difficulty;
-    private final int time;
+    protected int difficulty;
+    protected int time;
 
     public StockfishBot(Model model,
                         int difficulty,
@@ -26,14 +27,13 @@ public class StockfishBot extends AbstractBot {
     }
 
     public Move getBestMove() {
-        String fen      = Fen.toFen(model.getBoard().cells);
+        String fen      = Fen.toFen(model, false, model.castling);
+
         String bestMove = stockfishProcessor.getBestMove(fen, difficulty, time);
 
         Position from       = new Position(bestMove.substring(0, 2));
         Position to         = new Position(bestMove.substring(2, 4));
         PieceType pieceType = model.getBoard().getCell(from).pieceType;
-
-        System.out.println(bestMove);
 
         return new Move(from, to, pieceType);
     }

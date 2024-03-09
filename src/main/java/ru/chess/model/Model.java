@@ -6,9 +6,9 @@ import ru.chess.label.Cell;
 import ru.chess.position.Position;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.*;
-import java.lang.reflect.InvocationTargetException;
+
+import java.util.List;
 import java.util.Stack;
 
 public class Model extends AbstractModel {
@@ -34,9 +34,6 @@ public class Model extends AbstractModel {
     protected boolean turn  = true;
 
     // Purpose of all of these variables is Castling and En Passant rules
-
-    protected boolean needWhiteCastlingNotify = true;
-    protected boolean needBlackCastlingNotify = true;
 
     public boolean  whiteKingMoved        = false;
     public boolean  whiteLeftRookMoved    = false;
@@ -66,6 +63,8 @@ public class Model extends AbstractModel {
 
     //
 
+    public String castling = "";
+    private JPanel evaluationBar;
     public int fiftyRuleCounter = 0;
 
     public Model(int vertical, int horizontal) {
@@ -77,12 +76,14 @@ public class Model extends AbstractModel {
 
     public Model(int vertical, int horizontal, int difficulty, int timeForMove) {
         super(vertical, horizontal);
-        this.bot = new StockfishBot(this, difficulty, timeForMove);
+        this.bot = new FairStockfishBot(this, difficulty, timeForMove);
         this.enabledBot = true;
         init();
     }
 
     private void init() {
+        this.evaluationBar = new EvaluationBar();
+
         MouseHandler mouseHandler = new MouseHandler(this);
 
         board.addMouseListener(mouseHandler);
@@ -110,6 +111,14 @@ public class Model extends AbstractModel {
 
         PreStartConditions.initCastling(this);
         PreStartConditions.checkPawnPromotion(this);
+    }
+
+    public List<Position> generateMoves(Position position) {
+        return generateMoves(board.getCell(position));
+    }
+
+    public List<Position> generateMoves(Cell cell) {
+        return ValidMoves.get(this, cell);
     }
 
     public boolean isDefaultBoard() {
@@ -140,10 +149,12 @@ public class Model extends AbstractModel {
         }
     }
 
-    synchronized public void handleMove(Position  oldPosition,
-                                        Position  newPosition,
-                                        PieceType movedPieceType) {
+    public void handleMove(Position  oldPosition,
+                           Position  newPosition,
+                           PieceType movedPieceType) {
         SoundPlayer.playMoveSound();
+
+        MoveHandler.updateCastling(this);
 
         if (movedPieceType == PieceType.WHITE_PAWN || movedPieceType == PieceType.BLACK_PAWN) {
             if (newPosition.getChessHeight() == (movedPieceType.absolute().isWhite() ? VERTICAL_BOUND : 1))
@@ -164,12 +175,15 @@ public class Model extends AbstractModel {
 
         MoveHandler.notifyLastMoved(this, movedPieceType);
 
+        double evaluated = new StockfishEvaluator(Fen.toFen(this), turn).evaluate();
+
+        System.out.println(evaluated);
+
         turn = !turn;
 
         history.push(Presets.Reader.read(this));
 
-        if (needWhiteCastlingNotify || needBlackCastlingNotify)
-            MoveHandler.notifyCastling(this, newPosition);
+        MoveHandler.notifyCastling(this, newPosition);
 
         if (isOver()) {
             MoveHandler.callMateDialog(this, movedPieceType);
@@ -180,9 +194,7 @@ public class Model extends AbstractModel {
 
             lastMoveDestroyed = board.getCell(bestMove.to()).pieceType.isNotNone();
 
-            movePiece(bestMove);
-
-            handleMove(bestMove.from(), bestMove.to(), bestMove.moved());
+            movePiece(bestMove, () -> handleMove(bestMove.from(), bestMove.to(), bestMove.moved()));
         }
     }
 
@@ -203,7 +215,14 @@ public class Model extends AbstractModel {
     }
 
     public boolean turn(AbsolutePieceType absolutePieceType) {
-        return turn == (absolutePieceType == AbsolutePieceType.WHITE);
+        if (!enabledBot)
+            return turn == (absolutePieceType == AbsolutePieceType.WHITE);
+        else
+            return turn && absolutePieceType == AbsolutePieceType.WHITE;
+    }
+
+    public JPanel getEvaluationBar() {
+        return evaluationBar;
     }
 
     private static class LeftArrowKeyHandleAction extends AbstractAction {

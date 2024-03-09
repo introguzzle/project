@@ -13,7 +13,7 @@ public class SimpleEvaluator extends AbstractEvaluator {
 
     // We assume Positive value is good for Black
     @Override
-    public int evaluate() {
+    public double evaluate() {
         int boardValue = 0;
 
         for (int i = 0; i < Model.VERTICAL_BOUND; i++)

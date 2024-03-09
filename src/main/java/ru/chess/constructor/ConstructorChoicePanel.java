@@ -34,6 +34,7 @@ public class ConstructorChoicePanel extends JPanel {
 
     public void init() {
         this.setLayout(new GridBagLayout());
+
         initCells();
     }
 
