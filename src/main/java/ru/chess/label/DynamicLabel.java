@@ -62,7 +62,7 @@ public class DynamicLabel extends JLabel {
             int fontSize = 20;
 
             g2d.setFont(new Font("Arial", Font.PLAIN, fontSize));
-            g2d.setColor(ColorUtilities.getContrasting(this.getBackground()));
+            g2d.setColor(ColorUtilities.constrastingOf(this.getBackground()));
 
             g2d.drawString(
                     this.movedText,
@@ -94,7 +94,7 @@ public class DynamicLabel extends JLabel {
         @Override
         public void mouseReleased(MouseEvent e) {
             if (this.onLabel) {
-                this.pressedAction.actionPerformed(e);
+                this.pressedAction.accept(e);
 
                 this.label.setBackground(this.label.movedColor);
                 this.label.paintMovedText = true;

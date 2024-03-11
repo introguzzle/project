@@ -1,11 +1,10 @@
 package ru.chess.gui;
 
-import ru.chess.PieceType;
-import ru.chess.model.Move;
 import ru.chess.position.Position;
 import ru.chess.label.BlackCell;
 import ru.chess.label.Cell;
 import ru.chess.label.WhiteCell;
+import ru.utils.ColorUtilities;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,9 +19,9 @@ public class Board extends JPanel {
 
     public Cell[][]  cells;
 
-    public ImageIcon activePieceImage;
-    public Point     point;
-    public boolean   drawPiece;
+    private ImageIcon activePieceImage;
+    private Point     drawingPoint;
+    private boolean   drawPiece;
 
     public Board(int vertical, int horizontal) {
         super(true);
@@ -39,10 +38,6 @@ public class Board extends JPanel {
         this.cells = new Cell[VERTICAL_BOUND][HORIZONTAL_BOUND];
 
         init();
-    }
-
-    public Cell getCell(String chessPosition) {
-        return getCell(new Position(chessPosition));
     }
 
     public Cell getCell(Position position) {
@@ -118,23 +113,28 @@ public class Board extends JPanel {
     public void paintNotation(Graphics2D g2d) {
         GUI.setQuality(g2d, 2);
 
-        Font font = GUI.Adapter.getFittingFont();
+        Font font = GUI.Adapter.getFittingFont(
+                cells[0][0],
+                g2d,
+                GUI.Cell.NOTATION_FONT,
+                "a1",
+                40);
 
         g2d.setFont(font);
 
         for (int i = 0; i < VERTICAL_BOUND; i++) {
-            Position p = new Position(i, 0);
-            Cell cell = this.getCell(p);
+            Position pos  = new Position(i, 0);
+            Cell     cell = this.getCell(pos);
 
             int dx = cell.getLocation().x + 2;
             int dy = cell.getLocation().y + DIMENSION_CELL.height / 3;
 
-            String s = p.getChessPosition().substring(1);
+            String s = pos.getChessPosition().substring(1);
 
             g2d.setColor(cell instanceof WhiteCell ? GUI.Cell.BLACK_COLOR : GUI.Cell.WHITE_COLOR);
             Color shadowColor = cell instanceof WhiteCell
-                    ? GUI.Cell.WHITE_COLOR.darker().darker()
-                    : GUI.Cell.BLACK_COLOR.darker().darker();
+                    ? ColorUtilities.darken(GUI.Cell.WHITE_COLOR, 0.5)
+                    : ColorUtilities.darken(GUI.Cell.BLACK_COLOR, 0.5);
 
             paintFontShadow(g2d, s, dx, dy, 1, shadowColor);
             g2d.drawString(s, dx, dy);
@@ -142,21 +142,21 @@ public class Board extends JPanel {
 
 
         for (int i = 0; i < HORIZONTAL_BOUND; i++) {
-            Position p = new Position(VERTICAL_BOUND - 1, i);
-            Cell cell = this.getCell(p);
+            Position pos  = new Position(VERTICAL_BOUND - 1, i);
+            Cell     cell = this.getCell(pos);
 
             int dx = cell.getLocation().x + DIMENSION_CELL.width * 3 / 4;
             int dy = cell.getLocation().y + DIMENSION_CELL.height * 12 / 13;
 
-            String s = p.getChessPosition().substring(0, 1);
+            String s = pos.getChessPosition().substring(0, 1);
 
             g2d.setColor(cell instanceof WhiteCell ? GUI.Cell.BLACK_COLOR : GUI.Cell.WHITE_COLOR);
             Color shadowColor = cell instanceof WhiteCell
-                    ? GUI.Cell.WHITE_COLOR.darker().darker()
-                    : GUI.Cell.BLACK_COLOR.darker().darker();
+                    ? ColorUtilities.darken(GUI.Cell.WHITE_COLOR, 0.5)
+                    : ColorUtilities.darken(GUI.Cell.BLACK_COLOR, 0.5);
 
             paintFontShadow(g2d, s, dx, dy, 1, shadowColor);
-            g2d.drawString(p.getChessPosition().substring(0, 1), dx, dy);
+            g2d.drawString(pos.getChessPosition().substring(0, 1), dx, dy);
         }
     }
 
@@ -164,17 +164,38 @@ public class Board extends JPanel {
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         GUI.setQuality(g2d, 2);
+
         super.paint(g2d);
 
         if (drawPiece) {
             Image pieceImage = activePieceImage.getImage();
 
-            int dx = point.x - pieceImage.getHeight(this) / 2;
-            int dy = point.y - pieceImage.getWidth(this) / 2;
+            int dx = drawingPoint.x - pieceImage.getHeight(this) / 2;
+            int dy = drawingPoint.y - pieceImage.getWidth(this) / 2;
 
             g2d.drawImage(pieceImage, dx, dy, this);
         }
 
         this.paintNotation(g2d);
+    }
+
+    public ImageIcon getActivePieceImage() {
+        return activePieceImage;
+    }
+
+    public void setActivePieceImage(ImageIcon activePieceImage) {
+        this.activePieceImage = activePieceImage;
+    }
+
+    public Point getDrawingPoint() {
+        return drawingPoint;
+    }
+
+    public void setDrawingPoint(Point drawingPoint) {
+        this.drawingPoint = drawingPoint;
+    }
+
+    public void setDrawPiece(boolean drawPiece) {
+        this.drawPiece = drawPiece;
     }
 }

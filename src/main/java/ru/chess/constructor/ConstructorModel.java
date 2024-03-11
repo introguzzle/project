@@ -152,7 +152,7 @@ public class ConstructorModel extends AbstractModel {
                     int width  = pressedCell.getWidth();
                     int height = pressedCell.getHeight();
 
-                    board.activePieceImage = ImageReader.get(pressedCell.pieceType, width, height);
+                    board.setActivePieceImage(ImageReader.get(pressedCell.pieceType, width, height));
                     panel.activePieceImage = ImageReader.get(pressedCell.pieceType, width, height);
 
                     this.grabbedCellPieceType = pressedCell.pieceType;
@@ -179,7 +179,7 @@ public class ConstructorModel extends AbstractModel {
                     int width  = pressedCell.getWidth();
                     int height = pressedCell.getHeight();
 
-                    board.activePieceImage = ImageReader.get(pressedCell.pieceType, width, height);
+                    board.setActivePieceImage(ImageReader.get(pressedCell.pieceType, width, height));
                     panel.activePieceImage = ImageReader.get(pressedCell.pieceType, width, height);
 
                     this.grabbedCellPieceType = pressedCell.pieceType;
@@ -213,7 +213,7 @@ public class ConstructorModel extends AbstractModel {
                 if (successfulGrab) {
                     this.successfulGrab = false;
 
-                    board.drawPiece = false;
+                    board.setDrawPiece(false);
                     panel.drawPiece = false;
 
                     Cell chosenCell;
@@ -253,8 +253,8 @@ public class ConstructorModel extends AbstractModel {
         public void mouseDragged(MouseEvent e) {
             if (SwingUtilities.isLeftMouseButton(e) && successfulGrab) {
                 if (panelInvoked) {
-                    board.point = new Point(e.getX() + shift, e.getY());
-                    board.drawPiece = true;
+                    board.setDrawingPoint(new Point(e.getX() + shift, e.getY()));
+                    board.setDrawPiece(true);
 
                     panel.point = e.getPoint();
                     panel.drawPiece = true;
@@ -265,8 +265,8 @@ public class ConstructorModel extends AbstractModel {
                     panel.setCursor(new Cursor(Cursor.HAND_CURSOR));
                     panel.repaint();
                 } else {
-                    board.point = e.getPoint();
-                    board.drawPiece = true;
+                    board.setDrawingPoint(e.getPoint());
+                    board.setDrawPiece(true);
                     board.setCursor(new Cursor(Cursor.HAND_CURSOR));
                     board.repaint();
 

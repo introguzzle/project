@@ -1,7 +1,6 @@
 package ru.chess.gui;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 
 public class GUI {
@@ -19,12 +18,32 @@ public class GUI {
             return size > 80 ? new Dimension(80, 80) : new Dimension(size, size);
         }
 
-        public static Font getFittingFont() {
-            Font font = Cell.NOTATION_FONT;
+        public static Font getFittingFont(JComponent component,
+                                          Graphics2D g2d,
+                                          Font font,
+                                          String string,
+                                          int usagePercent) {
+            Font oldFont = g2d.getFont();
 
-            return new Font(font.getFontName(), font.getStyle(), getFittingCellDimension().height / (35 / 10));
+            int w = component.getWidth();
+            int h = component.getHeight();
+
+            int size = 1;
+
+            int wS = (int) (w * ((double) usagePercent / 100));
+            int hS = (int) (h * ((double) usagePercent / 100));
+
+            while (g2d.getFontMetrics().getHeight() < hS
+                    && g2d.getFontMetrics().stringWidth(string) < wS) {
+                g2d.setFont(new Font(font.getFontName(), font.getStyle(), size));
+
+                size++;
+            }
+
+            g2d.setFont(oldFont);
+
+            return new Font(font.getFontName(), font.getStyle(), size);
         }
-
     }
 
     public static class Cell {
@@ -49,21 +68,36 @@ public class GUI {
     public static void setQuality(Graphics2D g2d, int quality) {
 
         if (quality == 0) {
-            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,  RenderingHints.VALUE_ANTIALIAS_OFF);
-            g2d.setRenderingHint(RenderingHints.KEY_RENDERING,     RenderingHints.VALUE_RENDER_SPEED);
-            g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_OFF);
+
+            g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
+                    RenderingHints.VALUE_RENDER_SPEED);
+
+            g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                    RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
         }
 
         if (quality == 1) {
-            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,  RenderingHints.VALUE_ANTIALIAS_ON);
-            g2d.setRenderingHint(RenderingHints.KEY_RENDERING,     RenderingHints.VALUE_RENDER_SPEED);
-            g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON);
+
+            g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
+                    RenderingHints.VALUE_RENDER_SPEED);
+
+            g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                    RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         }
 
         if (quality == 2) {
-            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,  RenderingHints.VALUE_ANTIALIAS_ON);
-            g2d.setRenderingHint(RenderingHints.KEY_RENDERING,     RenderingHints.VALUE_RENDER_QUALITY);
-            g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON);
+
+            g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
+                    RenderingHints.VALUE_RENDER_QUALITY);
+
+            g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                    RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         }
     }
 

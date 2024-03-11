@@ -63,9 +63,11 @@ public class Model extends AbstractModel {
 
     //
 
-    public String castling = "";
-    private JPanel evaluationBar;
-    public int fiftyRuleCounter = 0;
+    public  String castling         = "";
+    public  int    fiftyRuleCounter = 0;
+
+    private EvaluationBar evaluationBar;
+    public  Double        evaluated;
 
     public Model(int vertical, int horizontal) {
         super(vertical, horizontal);
@@ -82,8 +84,6 @@ public class Model extends AbstractModel {
     }
 
     private void init() {
-        this.evaluationBar = new EvaluationBar();
-
         MouseHandler mouseHandler = new MouseHandler(this);
 
         board.addMouseListener(mouseHandler);
@@ -91,6 +91,8 @@ public class Model extends AbstractModel {
 
         board.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "Left");
         board.getActionMap().put("Left", new LeftArrowKeyHandleAction("Left", this));
+
+        this.evaluationBar = new EvaluationBar(0);
     }
 
     public void reinitialize() {
@@ -111,6 +113,8 @@ public class Model extends AbstractModel {
 
         PreStartConditions.initCastling(this);
         PreStartConditions.checkPawnPromotion(this);
+
+        evaluationBar.setValue(evaluate());
     }
 
     public List<Position> generateMoves(Position position) {
@@ -119,6 +123,10 @@ public class Model extends AbstractModel {
 
     public List<Position> generateMoves(Cell cell) {
         return ValidMoves.get(this, cell);
+    }
+
+    public double evaluate() {
+        return new StockfishEvaluator(Fen.toFen(this, turn, castling), turn).evaluate();
     }
 
     public boolean isDefaultBoard() {
@@ -141,10 +149,12 @@ public class Model extends AbstractModel {
         } else {
             Presets.Loader.load(this, preset);
         }
+
+        evaluationBar.setValue(evaluate());
     }
 
     public void showMoves(Cell cell) {
-        for (Position position: ValidMoves.get(this, cell)) {
+        for (Position position: generateMoves(cell)) {
             board.getCell(position).highlight();
         }
     }
@@ -168,16 +178,13 @@ public class Model extends AbstractModel {
             if (Math.abs(oldPosition.getWidth() - newPosition.getWidth()) == 2)
                 MoveHandler.executeCastling(this, newPosition, movedPieceType.absolute());
 
-        MoveHandler.checkGuaranteedStalemate(this, movedPieceType);
+        MoveHandler.checkGuaranteedStalemate(this);
         MoveHandler.checkFiftyMoveRule(this, movedPieceType);
-
         MoveHandler.handleState(this, movedPieceType.absolute().invert());
-
         MoveHandler.notifyLastMoved(this, movedPieceType);
 
-        double evaluated = new StockfishEvaluator(Fen.toFen(this), turn).evaluate();
-
-        System.out.println(evaluated);
+        evaluated = evaluate();
+        evaluationBar.setValue(evaluated);
 
         turn = !turn;
 
@@ -185,9 +192,8 @@ public class Model extends AbstractModel {
 
         MoveHandler.notifyCastling(this, newPosition);
 
-        if (isOver()) {
+        if (isOver())
             MoveHandler.callMateDialog(this, movedPieceType);
-        }
 
         if (enabledBot && !turn && state == State.ONGOING) {
             Move bestMove = bot.get();

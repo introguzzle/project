@@ -46,7 +46,7 @@ public class MouseHandler extends MouseAdapter {
             int width  = pressedCell.getWidth();
             int height = pressedCell.getHeight();
 
-            board.activePieceImage = ImageReader.get(pressedCell.pieceType, width, height);
+            board.setActivePieceImage(ImageReader.get(pressedCell.pieceType, width, height));
 
             this.grabbedCellPieceType = pressedCell.pieceType;
             this.grabbedCellPosition  = pressedCell.getPosition();
@@ -67,7 +67,7 @@ public class MouseHandler extends MouseAdapter {
         if (successfulGrab) {
             this.successfulGrab = false;
 
-            board.drawPiece = false;
+            board.setDrawPiece(false);
 
             Cell chosenCell = getCell(e);
 
@@ -104,8 +104,8 @@ public class MouseHandler extends MouseAdapter {
     public void mouseDragged(MouseEvent e) {
         if (successfulGrab) {
             // Look at paint() method in Board class
-            board.point     = e.getPoint();
-            board.drawPiece = true;
+            board.setDrawingPoint(e.getPoint());
+            board.setDrawPiece(true);
 
             board.setCursor(new Cursor(Cursor.HAND_CURSOR));
             board.repaint();

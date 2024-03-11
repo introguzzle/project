@@ -33,7 +33,7 @@ public final class MoveHandler {
                 Cell cell = model.getBoard().cells[i][j];
 
                 if (cell.pieceType == PieceType.WHITE_KING) {
-                    List<Position> whiteKingPositions = ValidMoves.get(model, cell);
+                    List<Position> whiteKingPositions = model.generateMoves(cell);
 
                     for (Position p: whiteKingPositions) {
                         if (p.getWidth() - cell.getPosition().getWidth() == -2
@@ -49,7 +49,7 @@ public final class MoveHandler {
                 }
 
                 if (cell.pieceType == PieceType.BLACK_KING) {
-                    List<Position> blackKingPositions = ValidMoves.get(model, cell);
+                    List<Position> blackKingPositions = model.generateMoves(cell);
 
                     for (Position p: blackKingPositions) {
                         if (p.getWidth() - cell.getPosition().getWidth() == -2
@@ -73,17 +73,20 @@ public final class MoveHandler {
                                        AbsolutePieceType kingType) {
         if (kingType.isWhite()) {
             if (newKingPosition.equals(model.whiteKingPosition.right().right())) {
-                model.removePiece(model.whiteRightRookPosition);
-                model.setPiece(newKingPosition.left(), PieceType.WHITE_ROOK);
+                Move rookMove = new Move(model.whiteRightRookPosition, newKingPosition.left(), PieceType.WHITE_ROOK);
+
+                model.getBoard().getCell(newKingPosition.left()).pieceType = PieceType.WHITE_ROOK;
+                model.movePiece(rookMove, SoundPlayer::playMoveSound);
 
                 model.castling = model.castling.replace("K", "");
                 model.whiteKingMoved = true;
             }
 
             if (newKingPosition.equals(model.whiteKingPosition.left().left())) {
+                Move rookMove = new Move(model.whiteLeftRookPosition, newKingPosition.right(), PieceType.WHITE_ROOK);
 
-                model.removePiece(model.whiteLeftRookPosition);
-                model.setPiece(newKingPosition.right(), PieceType.WHITE_ROOK);
+                model.getBoard().getCell(newKingPosition.right()).pieceType = PieceType.WHITE_ROOK;
+                model.movePiece(rookMove, SoundPlayer::playMoveSound);
 
                 model.castling = model.castling.replace("Q", "");
                 model.whiteKingMoved = true;
@@ -92,8 +95,10 @@ public final class MoveHandler {
 
             if (newKingPosition.equals(model.blackKingPosition.right().right())) {
 
-                model.removePiece(model.blackRightRookPosition);
-                model.setPiece(newKingPosition.left(), PieceType.BLACK_ROOK);
+                Move rookMove = new Move(model.blackRightRookPosition, newKingPosition.left(), PieceType.BLACK_ROOK);
+
+                model.getBoard().getCell(newKingPosition.left()).pieceType = PieceType.BLACK_ROOK;
+                model.movePiece(rookMove, SoundPlayer::playMoveSound);
 
                 model.castling = model.castling.replace("k", "");
                 model.blackKingMoved = true;
@@ -101,12 +106,22 @@ public final class MoveHandler {
 
             if (newKingPosition.equals(model.blackKingPosition.left().left())) {
 
-                model.removePiece(model.blackLeftRookPosition);
-                model.setPiece(newKingPosition.right(), PieceType.BLACK_ROOK);
+                Move rookMove = new Move(model.blackLeftRookPosition, newKingPosition.right(), PieceType.BLACK_ROOK);
+
+                model.getBoard().getCell(newKingPosition.right()).pieceType = PieceType.BLACK_ROOK;
+                model.movePiece(rookMove, SoundPlayer::playMoveSound);
 
                 model.castling = model.castling.replace("q", "");
                 model.blackKingMoved = true;
             }
+        }
+
+        // Waiting for castling to be done
+
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -137,10 +152,12 @@ public final class MoveHandler {
 
             PieceType chosenPieceType = pawnPromotionDialog.pawnPromotionPanel.chosenPieceType;
 
-            if (chosenPieceType != null)
+            if (chosenPieceType != null) {
                 model.setPiece(pawnPosition, chosenPieceType);
-            else
+            } else {
                 executePawnPromotion(model, pawnPosition, pawnType);
+            }
+
         } else if (pawnType.isWhite()) {
             model.setPiece(pawnPosition, PieceType.WHITE_QUEEN);
 
@@ -156,7 +173,7 @@ public final class MoveHandler {
                     for (int j = 0; j < HORIZONTAL_BOUND; j++) {
 
                         if (model.getBoard().cells[i][j].absolutePieceType == absolutePieceType)
-                            if (!ValidMoves.get(model, model.getBoard().cells[i][j]).isEmpty())
+                            if (!model.generateMoves(model.getBoard().cells[i][j]).isEmpty())
                                 return false;
                     }
 
@@ -195,7 +212,7 @@ public final class MoveHandler {
         model.state = State.ONGOING;
     }
 
-    public static void checkGuaranteedStalemate(Model model, PieceType movedPieceType) {
+    public static void checkGuaranteedStalemate(Model model) {
         List<PieceType> pieceTypes = new ArrayList<>();
 
         for (int i = 0; i < VERTICAL_BOUND; i++)

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.special.Gamma;
@@ -630,23 +631,19 @@ public final class MathFunctions {
         return result;
     }
 
-    public interface F {
-        double execute(double x);
-    }
-
     private static double simpson(final double start,
                           final double end,
-                          F function) {
-        double fa = function.execute(start);
-        double fb = function.execute(end);
+                          Function<Double, Double> function) {
+        double fa = function.apply(start);
+        double fb = function.apply(end);
 
-        double fmid = function.execute((start + end) / 2);
+        double fmid = function.apply((start + end) / 2);
 
         return ((end - start) / 6.0) * (fa + 4 * fmid + fb);
     }
 
     private static double ei(final double x,
-                     final double iterations) {
+                             final double iterations) {
         return li(Math.exp(x), iterations);
     }
 

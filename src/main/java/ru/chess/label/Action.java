@@ -1,8 +1,9 @@
 package ru.chess.label;
 
 import java.awt.event.MouseEvent;
+import java.util.function.Consumer;
 
 @FunctionalInterface
-public interface Action {
-    void actionPerformed(MouseEvent e);
+public interface Action extends Consumer<MouseEvent> {
+
 }

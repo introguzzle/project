@@ -1,14 +1,9 @@
 package ru.chess.model.animator;
 
-import ru.chess.gui.ImageReader;
 import ru.chess.model.AbstractModel;
 import ru.chess.model.Move;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
 import javax.swing.Timer;
 
 public class LinearAnimator extends Animator {
@@ -22,25 +17,7 @@ public class LinearAnimator extends Animator {
     }
 
     @Override
-    protected Void doInBackground() {
-        animate();
-
-        return null;
-    }
-
-    @Override
-    protected void animate() {
-        board.activePieceImage = ImageReader.get(move.moved());
-        board.drawPiece        = true;
-
-        board.point = getStart();
-
-        Timer timer = getTimer(getStart(), getEnd());
-
-        timer.start();
-    }
-
-    private Timer getTimer(Point start, Point end) {
+    protected Timer timer() {
         int delay = 0;
 
         final int[] fromX = {start.x};
@@ -58,13 +35,13 @@ public class LinearAnimator extends Animator {
             dx[0] = dx[0] + xDelta;
             dy[0] = dy[0] + yDelta;
 
-            distances[0] = board.point.distance(end);
+            distances[0] = board.getDrawingPoint().distance(end);
 
-            board.point = new Point(dx[0], dy[0]);
+            board.setDrawingPoint(new Point(dx[0], dy[0]));
 
-            distances[1] = board.point.distance(end);
+            distances[1] = board.getDrawingPoint().distance(end);
 
-            if (board.point.distance(end) <= Math.max(xDelta, yDelta)) {
+            if (board.getDrawingPoint().distance(end) <= Math.max(xDelta, yDelta)) {
                 stop(event);
             }
 

@@ -717,7 +717,7 @@ public class Grapher extends JFrame {
 
                     Color style1 = new Color(r, g, b);
 
-                    Color style2 = ColorUtilities.getContrasting(style1);
+                    Color style2 = ColorUtilities.constrastingOf(style1);
 
                     chartPanel.setBackground(style1);
                     chartPanel.setForeground(style2);

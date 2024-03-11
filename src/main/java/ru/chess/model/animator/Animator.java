@@ -1,6 +1,7 @@
 package ru.chess.model.animator;
 
 import ru.chess.gui.Board;
+import ru.chess.gui.ImageReader;
 import ru.chess.model.AbstractModel;
 import ru.chess.model.Move;
 
@@ -8,6 +9,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
+
+/**
+ * Class that animates move on board
+ */
 public abstract class Animator extends SwingWorker<Void, Void> {
 
     public final AbstractModel model;
@@ -16,45 +21,68 @@ public abstract class Animator extends SwingWorker<Void, Void> {
 
     public final Board board;
 
+    public final Point start;
+    public final Point end;
+
     public Animator(AbstractModel model, Move move, Runnable action) {
-        this.model = model;
-        this.move = move;
+        this.model  = model;
+        this.move   = move;
         this.action = action;
 
-        this.board = model.getBoard();
+        this.board  = model.getBoard();
+
+        this.start  = getStart();
+        this.end    = getEnd();
     }
 
     // Need to ensure board.activePieceImage is not null and set to
     // some icon
 
-    protected Point getStart() {
+    private Point getStart() {
         Point start = board.getCell(move.from()).getLocation();
 
         return new Point(
-                start.x + board.activePieceImage.getIconWidth() / 2,
-                start.y + board.activePieceImage.getIconHeight() / 2
+                start.x + board.getActivePieceImage().getIconWidth() / 2,
+                start.y + board.getActivePieceImage().getIconHeight() / 2
         );
     }
 
-    protected Point getEnd() {
-        Point endPoint = board.getCell(move.to()).getLocation();
+    private Point getEnd() {
+        Point end = board.getCell(move.to()).getLocation();
 
         return new Point(
-                endPoint.x + board.activePieceImage.getIconWidth() / 2,
-                endPoint.y + board.activePieceImage.getIconHeight() / 2
+                end.x + board.getActivePieceImage().getIconWidth() / 2,
+                end.y + board.getActivePieceImage().getIconHeight() / 2
         );
     }
 
     protected void stop(ActionEvent event) {
         ((Timer) event.getSource()).stop();
-        board.drawPiece = false;
-
+        board.setDrawPiece(false);
+        board.repaint();
         model.setPiece(move.to(), move.moved());
-        action.run();
+
+        if (action != null)
+            action.run();
     }
 
     @Override
-    protected abstract Void doInBackground();
+    protected Void doInBackground() {
+        board.setActivePieceImage(ImageReader.get(move.moved()));
+        board.setDrawPiece(true);
 
-    protected abstract void animate();
+        board.setDrawingPoint(getStart());
+
+        Timer timer = timer();
+
+        timer.start();
+
+        return null;
+    }
+
+    /**
+     * Implementation of this method in subclasses controls animation
+     * @return Animating timer
+     */
+    protected abstract Timer timer();
 }

@@ -124,8 +124,8 @@ public class LookTest {
                 label.setFont(new Font("Arial", Font.PLAIN, 27));
                 label.setOpaque(true);
                 label.setBackground(color);
-                label.setForeground(ColorUtilities.getContrasting(color));
-                label.setBorder(BorderFactory.createLineBorder(ColorUtilities.invert(color)));
+                label.setForeground(ColorUtilities.constrastingOf(color));
+                label.setBorder(BorderFactory.createLineBorder(ColorUtilities.invertOf(color)));
 
                 f.add(label);
             }

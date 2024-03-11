@@ -23,6 +23,7 @@ public final class Fen {
 
         for (int i = 0; i < 8; i++) {
             int emptyCount = 0;
+
             for (int j = 0; j < 8; j++) {
                 if (cells[i][j].pieceType == PieceType.NONE) {
                     emptyCount++;
@@ -37,13 +38,11 @@ public final class Fen {
                 }
             }
 
-            if (emptyCount > 0) {
+            if (emptyCount > 0)
                 fen.append(emptyCount);
-            }
 
-            if (i < 7) {
+            if (i < 7)
                 fen.append('/');
-            }
         }
 
         fen.append(" ").append(turn ? "w" : "b");

@@ -22,7 +22,7 @@ public class ColorUtilities {
         return rgb;
     }
 
-    public static double getRelativeLuminosity(Color color) {
+    public static double relativeLuminosityOf(Color color) {
         double[] rgb = tosRGB(color);
 
         double R = rgb[0] <= 0.03928 ? rgb[0] / 12.92 : Math.pow(((rgb[0] + 0.055 ) / 1.055), 2.4);
@@ -32,11 +32,11 @@ public class ColorUtilities {
         return 0.2126 * R + 0.7152 * G + 0.0722 * B;
     }
 
-    public static Color getContrasting(Color color) {
-        return getRelativeLuminosity(color) > 0.179 ? Color.BLACK : Color.WHITE;
+    public static Color constrastingOf(Color color) {
+        return relativeLuminosityOf(color) > 0.179 ? Color.BLACK : Color.WHITE;
     }
 
-    public static Color invert(Color color) {
+    public static Color invertOf(Color color) {
         double[] rgb = tosRGB(color);
 
         rgb[0] = 1.0 - rgb[0];
@@ -44,5 +44,37 @@ public class ColorUtilities {
         rgb[2] = 1.0 - rgb[2];
 
         return new Color((float) rgb[0], (float) rgb[1], (float) rgb[2]);
+    }
+
+    public static Color darken(Color color, double factor) {
+        int r = color.getRed();
+        int g = color.getGreen();
+        int b = color.getBlue();
+
+        int mr = (int) (r * factor);
+        int mg = (int) (g * factor);
+        int mb = (int) (b * factor);
+
+        mr = Math.min(255, Math.max(mr, 0));
+        mg = Math.min(255, Math.max(mg, 0));
+        mb = Math.min(255, Math.max(mb, 0));
+
+        return new Color(mr, mg, mb, color.getAlpha());
+    }
+
+    public static Color brighten(Color color, double factor) {
+        int r = color.getRed();
+        int g = color.getGreen();
+        int b = color.getBlue();
+
+        int mr = (int) (r + (255 - r) * factor);
+        int mg = (int) (g + (255 - g) * factor);
+        int mb = (int) (b * (255 - b) * factor);
+
+        mr = Math.min(255, Math.max(mr, 0));
+        mg = Math.min(255, Math.max(mg, 0));
+        mb = Math.min(255, Math.max(mb, 0));
+
+        return new Color(mr, mg, mb, color.getAlpha());
     }
 }

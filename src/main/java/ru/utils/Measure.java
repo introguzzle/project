@@ -4,17 +4,13 @@ public class Measure {
 
     private static final long NANOS_TO_MILLIS = 1_000_000L;
 
-    public interface Method {
-        void execute();
-    }
-
     private Measure() throws InstantiationException {
         throw new InstantiationException();
     }
 
-    public static long measure(Method method) {
+    public static long measure(Runnable runnable) {
         long start    = System.nanoTime();
-        method.execute();
+        runnable.run();
         long end      = System.nanoTime();
 
         long duration;
@@ -30,12 +26,12 @@ public class Measure {
         return duration;
     }
 
-    public static long[] measure(final Method... methods) {
-        long[] durations = new long[methods.length];
+    public static long[] measure(final Runnable... runnables) {
+        long[] durations = new long[runnables.length];
 
-        for (int i = 0; i < methods.length; i++) {
+        for (int i = 0; i < runnables.length; i++) {
             long start = System.nanoTime();
-            methods[i].execute();
+            runnables[i].run();
             long end = System.nanoTime();
 
             try {
@@ -51,11 +47,11 @@ public class Measure {
     }
 
     public static long measure(final long repeat,
-                               final Method method) {
+                               final Runnable runnable) {
         long start = System.nanoTime();
 
         for (long i = 0; i < repeat; i++) {
-            method.execute();
+            runnable.run();
         }
 
         long end = System.nanoTime();
@@ -73,14 +69,14 @@ public class Measure {
     }
 
     public static long[] measure(final long repeat,
-                                 final Method... methods) {
-        long[] durations = new long[methods.length];
+                                 final Runnable... runnables) {
+        long[] durations = new long[runnables.length];
 
-        for (int i = 0; i < methods.length; i++) {
+        for (int i = 0; i < runnables.length; i++) {
             long start = System.nanoTime();
 
             for (long l = 0; l < repeat; l++) {
-                methods[i].execute();
+                runnables[i].run();
             }
 
             long end = System.nanoTime();

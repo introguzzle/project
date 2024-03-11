@@ -27,7 +27,7 @@ public class RandomBot extends AbstractBot {
 
         return new Move(
                 chosen.getPosition(),
-                getRandom(ValidMoves.get(model, chosen)),
+                getRandom(model.generateMoves(chosen)),
                 chosen.pieceType
         );
     }
@@ -38,7 +38,7 @@ public class RandomBot extends AbstractBot {
 
         while (true) {
             cell = getRandom(all);
-            var moves = ValidMoves.get(model, cell);
+            var moves = model.generateMoves(cell);
 
             if (!moves.isEmpty())
                 return cell;

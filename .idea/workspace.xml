@@ -5,117 +5,63 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="912ac5a4-e8a8-42a8-a147-180b456244bb" name="Changes" comment="XD">
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/chess/bot/FairStockfishBot.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/chess/bot/StockfishEvaluator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/chess/constructor/out/fen.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/chess/images/Back.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/chess/images/BackToolTip.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/chess/images/CopyToolTip.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/chess/images/ExitToolTip.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/chess/images/OtherPlayToolTip.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/chess/images/PlayToolTip.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/chess/images/ResetToolTip.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/chess/images/SetDefaultToolTip.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/chess/images/SetRandom.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/chess/images/SetRandomToolTip.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/EvaluationBar.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/animator/AcceleratingAnimator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/utils/Test.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/AnimationExample.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/Chess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/Chess.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/PieceType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/PieceType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/bot/AbstractBot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/bot/AbstractBot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/bot/AbstractEvaluator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/bot/AbstractEvaluator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/bot/AdvancedEvaluator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/bot/AdvancedEvaluator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/bot/Bot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/bot/Bot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/bot/Evaluator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/bot/Evaluator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/bot/Fen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/Fen.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/bot/MiniMaxAlphaBetaBot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/bot/MiniMaxAlphaBetaBot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/bot/MiniMaxBot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/bot/MiniMaxBot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/Fen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/Fen.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/bot/RandomBot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/bot/RandomBot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/bot/SimpleBot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/bot/SimpleBot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/bot/SimpleEvaluator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/bot/SimpleEvaluator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/bot/StockfishBot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/bot/StockfishBot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/bot/StockfishProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/bot/StockfishProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/constructor/Constructor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/constructor/Constructor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/constructor/ConstructorChoicePanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/constructor/ConstructorChoicePanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/constructor/ConstructorHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/constructor/ConstructorHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/constructor/ConstructorModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/constructor/ConstructorModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/constructor/ConstructorSettingsDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/constructor/ConstructorSettingsDialog.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/constructor/IO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/constructor/IO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/constructor/Run.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/constructor/Run.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/constructor/out/fen.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/constructor/out/fen.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/constructor/out/saved.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/constructor/out/saved.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/dialog/MateDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/dialog/MateDialog.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/dialog/PawnPromotionDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/dialog/PawnPromotionDialog.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/gui/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/gui/Board.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/gui/GUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/gui/GUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/gui/ImageReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/gui/ImageReader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/images/Reset.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/images/Reset.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/label/Action.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/label/Action.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/label/CellColorModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/label/CellColorModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/label/CellType.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/label/ChoiceCell.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/label/ChoiceCell.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/label/DynamicLabel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/label/DynamicLabel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/model/AbstractModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/AbstractModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/model/EvaluationBar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/EvaluationBar.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/model/Model.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/Model.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/model/MouseHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/MouseHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/model/Move.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/Move.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/model/MoveHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/MoveHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/model/PreStartConditions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/PreStartConditions.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/model/PresetFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/PresetFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/model/Presets.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/Presets.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/model/SoundPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/SoundPlayer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/model/animator/AcceleratingAnimator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/animator/AcceleratingAnimator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/model/animator/Animator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/animator/Animator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/model/animator/LinearAnimator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/animator/LinearAnimator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/main/java/ru/chess/images/Reset.png" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/main/java/ru/chess/images/Reset.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/AnimationExample$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/AnimationExample$AnimationWorker.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/AnimationExample.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/Chess$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/Chess.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/Chess.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/PieceType.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/PieceType.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/bot/AbstractEvaluator.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/bot/AbstractEvaluator.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/bot/AdvancedEvaluator.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/bot/AdvancedEvaluator.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/bot/Evaluator.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/bot/Evaluator.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/bot/Fen.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/bot/MiniMaxAlphaBetaBot.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/bot/MiniMaxAlphaBetaBot.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/bot/MiniMaxBot.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/bot/MiniMaxBot.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/bot/SimpleBot.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/bot/SimpleBot.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/bot/SimpleEvaluator.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/bot/SimpleEvaluator.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/bot/StockfishBot.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/bot/StockfishBot.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/bot/StockfishProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/bot/StockfishProcessor.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/constructor/Constructor$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/constructor/Constructor$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/constructor/Constructor.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/constructor/Constructor.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/constructor/ConstructorChoicePanel.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/constructor/ConstructorChoicePanel.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/Grapher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/Grapher.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mathparser/MathFunctions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/mathparser/MathFunctions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/utils/ColorUtilities.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/utils/ColorUtilities.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/utils/LookTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/utils/LookTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/utils/Measure.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/utils/Measure.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/Fen.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/Fen.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/bot/RandomBot.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/bot/RandomBot.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/constructor/ConstructorHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/constructor/ConstructorHandler.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/constructor/ConstructorModel$MouseHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/constructor/ConstructorModel$MouseHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/constructor/ConstructorModel.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/constructor/ConstructorModel.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/constructor/ConstructorSettingsDialog$ConstructorSettingsDescriptionPanel.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/constructor/ConstructorSettingsDialog$ConstructorSettingsDescriptionPanel.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/constructor/ConstructorSettingsDialog$ConstructorSettingsPanel.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/constructor/ConstructorSettingsDialog$ConstructorSettingsPanel.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/constructor/ConstructorSettingsDialog.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/constructor/ConstructorSettingsDialog.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/constructor/IO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/constructor/IO.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/dialog/MateDialog$MatePanel.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/dialog/MateDialog$MatePanel.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/dialog/PawnPromotionDialog$ChoiceLabel.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/dialog/PawnPromotionDialog$ChoiceLabel.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/dialog/PawnPromotionDialog$PawnPromotionPanel.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/dialog/PawnPromotionDialog$PawnPromotionPanel.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/gui/Board.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/gui/Board.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/gui/GUI$Adapter.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/gui/GUI$Adapter.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/gui/GUI$Cell.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/gui/GUI$Cell.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/gui/GUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/gui/GUI.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/gui/ImageReader.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/gui/ImageReader.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/label/CellType.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/label/Action.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/label/Action.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/label/DynamicLabel$MouseHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/label/DynamicLabel$MouseHandler.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/label/DynamicLabel.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/label/DynamicLabel.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/AbstractModel$LinearAnimator$DoneAction.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/AbstractModel$LinearAnimator.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/AbstractModel$NonLinearAnimator.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/AbstractModel$NonLinearAnimator.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/AbstractModel$NonLinearAnimator.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/AbstractModel.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/AbstractModel.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/EvaluationBar.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/EvaluationBar.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/Model$LeftArrowKeyHandleAction.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/Model$LeftArrowKeyHandleAction.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/Model.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/Model.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/MouseHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/MouseHandler.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/MoveHandler$1Checker.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/MoveHandler$1Checker.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/MoveHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/MoveHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/PresetFactory.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/PresetFactory.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/Presets.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/Presets.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/animator/AcceleratingAnimator.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/animator/AcceleratingAnimator.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/animator/Animator.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/animator/Animator.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/animator/LinearAnimator.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/animator/LinearAnimator.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Grapher$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/Grapher$5.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/mathparser/MathFunctions$CiSi.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/mathparser/MathFunctions$CiSi.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/mathparser/MathFunctions$F.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/mathparser/MathFunctions.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/mathparser/MathFunctions.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/utils/ColorUtilities.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/utils/ColorUtilities.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/utils/LookTest$Look.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/utils/LookTest$Look.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/utils/Measure$Method.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/utils/Measure.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/utils/Measure.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -183,8 +129,10 @@
     &quot;Application.C.executor&quot;: &quot;Debug&quot;,
     &quot;Application.Calculator.executor&quot;: &quot;Run&quot;,
     &quot;Application.Chess.executor&quot;: &quot;Run&quot;,
+    &quot;Application.ColorUtilities.executor&quot;: &quot;Run&quot;,
     &quot;Application.Constructor.executor&quot;: &quot;Run&quot;,
     &quot;Application.ConstructorHandler.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Demo.executor&quot;: &quot;Run&quot;,
     &quot;Application.ExitPanel.executor&quot;: &quot;Run&quot;,
     &quot;Application.FunctionPanel.executor&quot;: &quot;Run&quot;,
     &quot;Application.Graph.executor&quot;: &quot;Run&quot;,
@@ -207,6 +155,7 @@
     &quot;Application.StockfishBot.executor&quot;: &quot;Run&quot;,
     &quot;Application.StockfishProcessor.executor&quot;: &quot;Run&quot;,
     &quot;Application.Styles.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Test.executor&quot;: &quot;Run&quot;,
     &quot;Application.TestButton.executor&quot;: &quot;Run&quot;,
     &quot;Application.TestLabel.executor&quot;: &quot;Run&quot;,
     &quot;Application.chess.executor&quot;: &quot;Run&quot;,
@@ -271,20 +220,7 @@
       <recent name="ru.grapher" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.chess">
-    <configuration name="AnimationExample" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="ru.chess.AnimationExample" />
-      <module name="Project1" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="ru.chess.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager">
     <configuration name="chess" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="ru.chess.constructor.Run" />
       <module name="Project1" />
@@ -292,15 +228,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <list>
-      <item itemvalue="Application.chess" />
-      <item itemvalue="Application.AnimationExample" />
-    </list>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Application.AnimationExample" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
