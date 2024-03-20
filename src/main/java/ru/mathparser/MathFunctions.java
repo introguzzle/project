@@ -4,12 +4,9 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.special.Gamma;
-import ru.grapher.Grapher;
-import ru.grapher.ScopeSlider;
 
 public final class MathFunctions {
 
@@ -17,14 +14,57 @@ public final class MathFunctions {
         throw new InstantiationException();
     }
 
-    private static final Double  NAN           = Double.NaN;
-    private static final boolean BOUND         = true;
-    private static final double  Y_BOUND_LIMIT = (double) ScopeSlider.DefaultConfiguration.
-            SCOPE_DOMAIN_VALUES.getLast() * Grapher.RunConfiguration.DEFAULT_Y / 100.0;
+    private static final Double  NAN       = Double.NaN;
+    private static final boolean CONSTRAIN = true;
+    private static final double  MAX_VALUE = 80.0;
 
     public static final Map<String, String>       REQUIRED_ARGS = new HashMap<>();
     public static final Map<String, MathFunction> FUNCTION_MAP  = new HashMap<>();
     public static final List<String>              SORTED_NAMES  = new ArrayList<>();
+
+    private static String message(int given, int excepted, String function) {
+        StringBuilder sb = new StringBuilder();
+
+        String givenArgs = given == 1 ? "argument" : "arguments";
+        String exceptedArgs = excepted == 1 || excepted == -1 ? "argument" : "arguments";
+
+        String args = "";
+
+        if (excepted == -1)
+            args = "(args...)";
+        if (excepted == 0)
+            args = "()";
+        if (excepted == 1)
+            args = "(arg)";
+        if (excepted == 2)
+            args = "(arg, arg)";
+
+        sb
+                .append("Found ")
+                .append(given)
+                .append(" ")
+                .append(givenArgs)
+
+                .append(", excepted ")
+                .append(excepted == -1 ? "at least 1" : excepted)
+                .append(" ")
+                .append(exceptedArgs)
+                .append(" in function ")
+                .append(function)
+                .append(args);
+
+        return sb.toString();
+    }
+
+    private static IllegalArgumentException ex(int given, String function) {
+        String rq = REQUIRED_ARGS.get(function);
+
+        return new IllegalArgumentException(message(
+                given,
+                rq.charAt(0) == '+' ? -1 : Integer.parseInt(rq),
+                function
+        ));
+    }
 
     static {
         REQUIRED_ARGS.put("abs", "1");
@@ -86,225 +126,160 @@ public final class MathFunctions {
         REQUIRED_ARGS.put("erfinv", "1");
     }
 
+
+
     static {
         FUNCTION_MAP.put("abs", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function abs(arg)");
-            else {
-                return bounded(Math.abs(args.getFirst()));
-            }
+            if (args.size() != 1) throw ex(args.size(), "abs");
+            return bounded(Math.abs(args.getFirst()));
         });
 
         FUNCTION_MAP.put("pow", args -> {
-            if (args.size() != 2)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 2 arguments in function pow(arg, arg)");
-            else {
-                return bounded(pow(args.get(0), args.get(1)));
-            }
+            if (args.size() != 2) throw ex(args.size(), "pow");
+            return bounded(pow(args.get(0), args.get(1)));
         });
 
         FUNCTION_MAP.put("cyclepow", args -> {
-            if (args.size() < 2)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted at least 2 arguments in function cyclepow(args...)");
+            if (args.size() < 2) throw ex(args.size(), "cyclepow");
 
-            else {
-                double value = args.getLast();
+            double value = args.getLast();
 
-                for (int i = args.size() - 2; i >= 0; i--) {
-                    value = Math.pow(args.get(i), value);
-                }
-
-                return value;
+            for (int i = args.size() - 2; i >= 0; i--) {
+                value = Math.pow(args.get(i), value);
             }
+
+            return value;
         });
 
         FUNCTION_MAP.put("sin", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function sin(arg)");
-            else {
-                return bounded(Math.sin(args.getFirst()));
-            }
+            if (args.size() != 1) throw ex(args.size(), "sin");
+            return bounded(Math.sin(args.getFirst()));
         });
 
         FUNCTION_MAP.put("cos", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function cos(arg)");
-            else {
-                return bounded(Math.cos(args.getFirst()));
-            }
+            if (args.size() != 1) throw ex(args.size(), "cos");
+            return bounded(Math.cos(args.getFirst()));
+
         });
 
         FUNCTION_MAP.put("tg", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted at least 1 argument in function sqrt(arg)");
-            else {
-                return bounded(Math.tan(args.getFirst()));
-            }
+            if (args.size() != 1) throw ex(args.size(), "tg");
+            return bounded(Math.tan(args.getFirst()));
+
         });
 
         FUNCTION_MAP.put("ctg", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function ctg(arg)");
-            else {
-                return bounded(1.0 / Math.tan(args.getFirst()));
-            }
+            if (args.size() != 1) throw ex(args.size(), "ctg");
+            return bounded(1.0 / Math.tan(args.getFirst()));
         });
 
         FUNCTION_MAP.put("sh", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function sh(arg)");
-            else {
-                final double x = args.getFirst();
+            if (args.size() != 1) throw ex(args.size(), "sh");
 
-                return bounded((Math.sinh(x)));
-            }
+            final double x = args.getFirst();
+            return bounded((Math.sinh(x)));
         });
 
         FUNCTION_MAP.put("ch", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function ch(arg)");
-            else {
-                final double x = args.getFirst();
+            if (args.size() != 1) throw ex(args.size(), "ch");
 
-                return bounded(Math.cosh(x));
-            }
+            final double x = args.getFirst();
+
+            return bounded(Math.cosh(x));
+
         });
 
         FUNCTION_MAP.put("th", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function th(arg)");
-            else {
-                return bounded(Math.tanh(args.getFirst()));
-            }
+            if (args.size() != 1) throw ex(args.size(), "th");
+            return bounded(Math.tanh(args.getFirst()));
         });
 
         FUNCTION_MAP.put("cth", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function cth(arg)");
-            else {
-                return bounded(1.0 / Math.tanh(args.getFirst()));
-            }
+            if (args.size() != 1) throw ex(args.size(), "cth");
+            return bounded(1.0 / Math.tanh(args.getFirst()));
         });
 
         FUNCTION_MAP.put("sch", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function sch(arg)");
-            else {
-                return bounded(1.0 / FUNCTION_MAP.get("sh").apply(args));
-            }
+            if (args.size() != 1) throw ex(args.size(), "sch");
+            return bounded(1.0 / FUNCTION_MAP.get("sh").apply(args));
         });
 
         FUNCTION_MAP.put("csch", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function csch(arg)");
-            else {
-                return bounded(1.0 / FUNCTION_MAP.get("ch").apply(args));
-            }
+            if (args.size() != 1) throw ex(args.size(), "csch");
+            return bounded(1.0 / FUNCTION_MAP.get("ch").apply(args));
         });
 
         FUNCTION_MAP.put("arsh", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function arsh(arg)");
-            else {
-                final double x = args.getFirst();
+            if (args.size() != 1) throw ex(args.size(), "arsh");
+            final double x = args.getFirst();
 
-                return bounded(Math.log(x + Math.sqrt(x * x + 1)));
-            }
+            return bounded(Math.log(x + Math.sqrt(x * x + 1)));
         });
 
         FUNCTION_MAP.put("arch", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function arch(arg)");
-            else {
-                final double x = args.getFirst();
+            if (args.size() != 1) throw ex(args.size(), "arch");
+            final double x = args.getFirst();
 
-                return bounded(Math.log(x + Math.sqrt(x * x - 1)));
-            }
+            return bounded(Math.log(x + Math.sqrt(x * x - 1)));
         });
 
         FUNCTION_MAP.put("arth", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function arth(arg)");
-            else {
-                final double x = args.getFirst();
+            if (args.size() != 1) throw ex(args.size(), "arth");
+            final double x = args.getFirst();
 
-                return bounded(0.5 * Math.log((1.0 + x) / (1.0 - x)));
-            }
+            return bounded(0.5 * Math.log((1.0 + x) / (1.0 - x)));
         });
 
         FUNCTION_MAP.put("arcth", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function arcth(arg)");
-            else {
-                final double x = args.getFirst();
+            if (args.size() != 1) throw ex(args.size(), "arcth");
+            final double x = args.getFirst();
 
-                return bounded(0.5 * Math.log((x + 1.0) / (x - 1.0)));
-            }
+            return bounded(0.5 * Math.log((x + 1.0) / (x - 1.0)));
+
         });
 
         FUNCTION_MAP.put("arsch", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function arsch(arg)");
-            else {
-                final double x = args.getFirst();
+            if (args.size() != 1) throw ex(args.size(), "arsch");
+            final double x = args.getFirst();
 
-                return bounded(Math.log(1.0 / x + Math.sqrt(1 / (x * x) - 1)));
-            }
+            return bounded(Math.log(1.0 / x + Math.sqrt(1 / (x * x) - 1)));
+
         });
 
         FUNCTION_MAP.put("arcsch", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function arcsch(arg)");
-            else {
-                final double x = args.getFirst();
+            if (args.size() != 1) throw ex(args.size(), "arcsch");
+            final double x = args.getFirst();
 
-                return bounded(Math.log(1.0 / x + Math.sqrt(1 / (x * x) + 1)));
-            }
+            return bounded(Math.log(1.0 / x + Math.sqrt(1 / (x * x) + 1)));
         });
 
         FUNCTION_MAP.put("log", args -> {
-            if (args.size() != 2)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 2 arguments in function log(arg, arg)");
-            else {
-                return bounded(Math.log(args.getLast()) / Math.log(args.getFirst()));
-            }
+            if (args.size() != 2) throw ex(args.size(), "log");
+            return bounded(Math.log(args.getLast()) / Math.log(args.getFirst()));
         });
 
         FUNCTION_MAP.put("ln", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function ln(arg)");
-            else {
-                return bounded(Math.log(args.getFirst()));
-            }
+            if (args.size() != 1) throw ex(args.size(), "ln");
+            return bounded(Math.log(args.getFirst()));
         });
 
         FUNCTION_MAP.put("cbrt", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function cbrt(arg)");
-            else {
-                return bounded(Math.cbrt(args.getFirst()));
-            }
+            if (args.size() != 1) throw ex(args.size(), "cbrt");
+            return bounded(Math.cbrt(args.getFirst()));
         });
 
         FUNCTION_MAP.put("sqrt", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function sqrt(arg)");
-            else {
-                return bounded(Math.sqrt(args.getFirst()));
-            }
+            if (args.size() != 1) throw ex(args.size(), "sqrt");
+            return bounded(Math.sqrt(args.getFirst()));
         });
 
         FUNCTION_MAP.put("nroot", args -> {
-            if (args.size() != 2)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 2 arguments in function nroot(arg, inverse_power)");
-            else {
-                return bounded(nroot(args.get(0), args.get(1)));
-            }
+            if (args.size() != 2) throw ex(args.size(), "nroot");
+            return bounded(nroot(args.get(0), args.get(1)));
         });
 
         FUNCTION_MAP.put("min", args -> {
-            if (args.isEmpty())
-                throw new IllegalArgumentException("Found 0 arguments, excepted at least 1 argument in function min(args...)");
+            if (args.isEmpty()) throw ex(0, "min");
             if (args.size() == 1)
                 return args.getFirst();
 
@@ -318,8 +293,7 @@ public final class MathFunctions {
         });
 
         FUNCTION_MAP.put("max", args -> {
-            if (args.isEmpty())
-                throw new IllegalArgumentException("Found 0 arguments, excepted at least 1 argument in function max(args...)");
+            if (args.isEmpty()) throw ex(0, "max");
             if (args.size() == 1)
                 return args.getFirst();
 
@@ -333,39 +307,33 @@ public final class MathFunctions {
         });
 
         FUNCTION_MAP.put("sq", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function sq(arg)");
+            if (args.size() != 1) throw ex(args.size(), "sq");
             return bounded(args.getFirst() * args.getFirst());
         });
 
         FUNCTION_MAP.put("cb", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function cb(arg)");
+            if (args.size() != 1) throw ex(args.size(), "cb");
             return bounded(args.getFirst() * args.getFirst() * args.getFirst());
         });
 
         FUNCTION_MAP.put("arcsin", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function arcsin(arg)");
+            if (args.size() != 1) throw ex(args.size(), "arcsin");
             return bounded(asin(args.getFirst()));
         });
 
         FUNCTION_MAP.put("arccos", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function arccos(arg)");
+            if (args.size() != 1) throw ex(args.size(), "arccos");
             return bounded(Math.acos(args.getFirst()));
         });
 
         FUNCTION_MAP.put("arctg", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function arctg(arg)");
+            if (args.size() != 1) throw ex(args.size(), "arctg");
             return bounded(Math.atan(args.getFirst()));
         });
 
         FUNCTION_MAP.put("productlog", args -> {
             // https://www.desy.de/~t00fri/qcdins/texhtml/lambertw/
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function productlog(arg1)");
+            if (args.size() != 1) throw ex(args.size(), "productlog");
 
             final double x = args.getFirst();
             final double m1 = 0.665;
@@ -378,8 +346,7 @@ public final class MathFunctions {
         });
 
         FUNCTION_MAP.put("arcctg", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function arcctg(arg)");
+            if (args.size() != 1) throw ex(args.size(), "arcctg");
 
             final double arg = args.getFirst();
 
@@ -387,8 +354,7 @@ public final class MathFunctions {
         });
 
         FUNCTION_MAP.put("randr", args -> {
-            if (args.size() != 2)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 2 arguments in function randr(min, max)");
+            if (args.size() != 2) throw ex(args.size(), "randr");
 
             final double left = args.get(0);
             final double right = args.get(1);
@@ -397,8 +363,7 @@ public final class MathFunctions {
         });
 
         FUNCTION_MAP.put("rand", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function rand(max)");
+            if (args.size() != 1) throw ex(args.size(), "rand");
 
             final double left = 0;
             final double right = args.getFirst();
@@ -407,25 +372,19 @@ public final class MathFunctions {
         });
 
         FUNCTION_MAP.put("gaussdensity", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function gaussdensity(arg)");
-
+            if (args.size() != 1) throw ex(args.size(), "gaussdensity");
             return bounded(normal(args.getFirst(), 0.0, 1.0));
         });
 
         FUNCTION_MAP.put("gaussdensityp", args -> {
-            if (args.size() != 3)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 3 arguments in function gaussdensityp(arg, mean, dev)");
-
+            if (args.size() != 3) throw ex(args.size(), "gaussdensityp");
             return bounded(normal(args.get(0), args.get(1), args.get(2)));
         });
 
         FUNCTION_MAP.put("gaussrand", args -> {
-            if (args.size() != 2)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 2 arguments in function gaussrand(mean, sd)");
-
-            double mean = args.getFirst();
-            double sd   = args.getLast();
+            if (args.size() != 2) throw ex(args.size(), "gaussrand");
+            double mean = Math.abs(args.getFirst());
+            double sd   = Math.abs(args.getLast() + 0.01);
 
             NormalDistribution distribution = new NormalDistribution(mean, sd);
 
@@ -434,103 +393,60 @@ public final class MathFunctions {
 
 
         FUNCTION_MAP.put("gamma", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function gamma(arg)");
-
+            if (args.size() != 1) throw ex(args.size(), "gamma");
             return bounded(Gamma.gamma(args.getFirst()));
         });
 
         FUNCTION_MAP.put("digamma", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function digamma(arg)");
-
+            if (args.size() != 1) throw ex(args.size(), "digamma");
             return bounded(Gamma.digamma(args.getFirst()));
         });
 
         FUNCTION_MAP.put("trigamma", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function trigamma(arg)");
-
+            if (args.size() != 1) throw ex(args.size(), "trigamma");
             return bounded(Gamma.trigamma(args.getFirst()));
         });
 
         FUNCTION_MAP.put("erf", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function erf(arg)");
-
+            if (args.size() != 1) throw ex(args.size(), "erf");
             return bounded(org.apache.commons.math3.special.Erf.erf(args.getFirst()));
         });
 
         FUNCTION_MAP.put("erfinv", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function erfinv(arg)");
-
+            if (args.size() != 1) throw ex(args.size(), "erfinv");
             return bounded(org.apache.commons.math3.special.Erf.erfInv(args.getFirst()));
         });
 
         FUNCTION_MAP.put("si", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function si(arg)");
-
+            if (args.size() != 1) throw ex(args.size(), "si");
             return bounded(si(args.getFirst()));
         });
 
         FUNCTION_MAP.put("ci", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function si(arg)");
-
+            if (args.size() != 1) throw ex(args.size(), "ci");
             return bounded(ci(args.getFirst()));
         });
 
         FUNCTION_MAP.put("li", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function li(arg)");
-
-            return bounded(li(args.getFirst(), 50));
+            if (args.size() != 1) throw ex(args.size(), "li");
+            return bounded(li(args.getFirst()));
         });
 
         FUNCTION_MAP.put("ei", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function ei(arg)");
-
-            return bounded(ei(args.getFirst(), 50));
+            if (args.size() != 1) throw ex(args.size(), "ei");
+            return bounded(ei(args.getFirst()));
         });
 
         FUNCTION_MAP.put("digits", args -> {
-            if (args.size() != 1)
-                throw new IllegalArgumentException("Found " + args.size() + " arguments, excepted 1 argument in function digits(arg)");
-
+            if (args.size() != 1) throw ex(args.size(), "digits");
             return bounded(digits(args.getFirst()));
         });
-
     }
 
     static {
         SORTED_NAMES.addAll(FUNCTION_MAP.keySet());
 
         SORTED_NAMES.sort((o1, o2) -> Integer.compare(o2.length(), o1.length()));
-    }
-
-    private static double sqrt(final double a,
-                               final double s) {
-        if (a < 0)
-            return Double.NaN;
-
-        if (a == 0.0)
-            return 0.0;
-
-        if (a == 1.0)
-            return 1.0;
-
-        double x0 = a < 1 ? 0.99 : 1.01;
-        double x1 = 0;
-
-        for (int i = 0; i < s; i++) {
-            x1 = x0 - (x0 * x0 - a) / (2.0 * x0);
-            x0 = x1;
-        }
-
-        return x1;
     }
 
     private static double digits(final double x) {
@@ -543,11 +459,7 @@ public final class MathFunctions {
             dgs += dg == '.' ? 0 : Double.parseDouble(String.valueOf(dg));
         }
 
-        return (double)dgs;
-    }
-
-    private static double exp(final double x) {
-        return Math.exp(x);
+        return dgs;
     }
 
     private static double pow(final double x,
@@ -577,22 +489,8 @@ public final class MathFunctions {
         return ((int)Math.floor(n)) % 2 == 0 ? Math.pow(x, 1.0 / n) : (x >= 0 ? Math.pow(x, 1.0 / n) : -Math.pow(-x, 1.0 / n));
     }
 
-    private static double nroot2(final double x,
-                                 final double n) {
-        final double  invpower  = 1.0 / n;
-        final boolean even      = ((int)Math.floor(n)) % 2 == 0;
-
-        if (!even) {
-            if (x >= 0.0)
-                return Math.pow(x, invpower);
-            else
-                return -Math.pow(-x, invpower);
-        } else {
-            return Math.pow(x, invpower);
-        }
-    }
-
-    private static double li(double x, double iterations) {
+    private static double li(double x) {
+        double iterations = 50;
 
         final double em = 0.577215664901532;
         final double dl = Math.log(Math.abs(Math.log(x)));
@@ -617,34 +515,12 @@ public final class MathFunctions {
             try {
                 return x * factorial(x - 1);
             } catch (StackOverflowError e) {
-                return Double.NaN;
+                return Double.MAX_VALUE;
             }
     }
 
-    private static double factorialIterative(double x) {
-        double result = 1;
-
-        for (double n = 1; n <= x; n++) {
-            result *= n;
-        }
-
-        return result;
-    }
-
-    private static double simpson(final double start,
-                          final double end,
-                          Function<Double, Double> function) {
-        double fa = function.apply(start);
-        double fb = function.apply(end);
-
-        double fmid = function.apply((start + end) / 2);
-
-        return ((end - start) / 6.0) * (fa + 4 * fmid + fb);
-    }
-
-    private static double ei(final double x,
-                             final double iterations) {
-        return li(Math.exp(x), iterations);
+    private static double ei(final double x) {
+        return li(Math.exp(x));
     }
 
     private static double si(final double x) {
@@ -654,8 +530,6 @@ public final class MathFunctions {
     private static double ci(final double x) {
         return CiSi.ci(x);
     }
-
-
 
     private static class CiSi {
 
@@ -835,34 +709,7 @@ public final class MathFunctions {
 
     }
 
-    private static double eulerGamma(final double x,
-                                     final double limit) {
-        double result = 1.0;
-
-        for (double k = 1.0; k <= limit; k += 1.0) {
-            double U = Math.pow(1.0 + 1.0 / k, x);
-            double L = 1.0 + x / k;
-            result *= U / L;
-        }
-
-        return result / x;
-    }
-
-    private static double weierstrassGamma(final double x,
-                                           final double limit) {
-        double result = 1.0;
-
-        final double euler_mascheroni = 0.5772156649;
-        final double m = Math.exp(-x * euler_mascheroni) / x;
-
-        for (double k = 1.0; k <= limit; k += 1.0) {
-            result *= 1.0 / (1.0 + x / k) * Math.exp(x / k);
-        }
-
-        return result * m;
-    }
-
     private static double bounded(final double value) {
-        return value > Y_BOUND_LIMIT && BOUND ? NAN : value;
+        return value > MAX_VALUE && CONSTRAIN ? NAN : value;
     }
 }

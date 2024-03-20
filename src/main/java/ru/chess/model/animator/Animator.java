@@ -24,6 +24,9 @@ public abstract class Animator extends SwingWorker<Void, Void> {
     public final Point start;
     public final Point end;
 
+    public static final int CELL_WIDTH = Board.DIMENSION_CELL.width;
+    public static final int CELL_HEIGHT = Board.DIMENSION_CELL.height;
+
     public Animator(AbstractModel model, Move move, Runnable action) {
         this.model  = model;
         this.move   = move;
@@ -60,15 +63,17 @@ public abstract class Animator extends SwingWorker<Void, Void> {
         ((Timer) event.getSource()).stop();
         board.setDrawPiece(false);
         board.repaint();
-        model.setPiece(move.to(), move.moved());
+        model.setPiece(move.to(), move.type());
 
         if (action != null)
             action.run();
+
+        model.botMoveOngoing = false;
     }
 
     @Override
     protected Void doInBackground() {
-        board.setActivePieceImage(ImageReader.get(move.moved()));
+        board.setActivePieceImage(ImageReader.get(move.type()));
         board.setDrawPiece(true);
 
         board.setDrawingPoint(getStart());

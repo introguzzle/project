@@ -10,6 +10,8 @@ import ru.chess.position.Position;
 
 public abstract class AbstractModel {
 
+    public boolean botMoveOngoing;
+
     protected Board board;
 
     public static int VERTICAL_BOUND;
@@ -50,14 +52,14 @@ public abstract class AbstractModel {
 
     public void movePiece(Move move) {
         this.removePiece(move.from());
-        this.board.getCell(move.to()).pieceType = move.moved();
+        this.board.getCell(move.to()).pieceType = move.type();
 
         new AcceleratingAnimator(this, move, null).execute();
     }
 
     public void movePiece(Move move, Runnable callback) {
         this.removePiece(move.from());
-        this.board.getCell(move.to()).pieceType = move.moved();
+        this.board.getCell(move.to()).pieceType = move.type();
 
         new AcceleratingAnimator(this, move, callback).execute();
     }

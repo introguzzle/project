@@ -8,7 +8,7 @@ import ru.chess.position.Position;
 
 public class StockfishBot extends AbstractBot {
 
-    private final StockfishProcessor stockfishProcessor = new StockfishProcessor();
+    private final StockfishProcessor stockfishProcessor = StockfishProcessor.getInstance();
 
     protected int difficulty;
     protected int time;

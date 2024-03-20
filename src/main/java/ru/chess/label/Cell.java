@@ -40,6 +40,14 @@ public abstract class Cell extends JLabel {
         init();
     }
 
+    public void darken() {
+        this.setBackground(this.getBackground().darker());
+    }
+
+    public void brighten() {
+        this.setBackground(this.getBackground().brighter());
+    }
+
     public void select() {
         this.state = State.SELECTED;
 

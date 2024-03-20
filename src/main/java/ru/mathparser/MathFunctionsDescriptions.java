@@ -5,7 +5,11 @@ import java.util.Map;
 
 public final class MathFunctionsDescriptions {
 
-    public static final Map<String, String> DESCRIPTIONS = new HashMap<>();
+    private static final Map<String, String> DESCRIPTIONS = new HashMap<>();
+
+    public static Map<String, String> get() {
+        return DESCRIPTIONS;
+    }
 
     static {
         DESCRIPTIONS.put("abs",          "Absolute value(value).                     ");

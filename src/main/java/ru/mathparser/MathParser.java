@@ -5,71 +5,20 @@ import java.util.*;
 
 public final class MathParser implements MathConstants {
 
-    private static final List<String> SORTED_NAMES = new ArrayList<>();
-
-    static {
-        SORTED_NAMES.addAll(MATH_CONSTANTS.keySet());
-
-        SORTED_NAMES.sort((o1, o2) -> Integer.compare(o2.length(), o1.length()));
-    }
-
     private MathParser() throws InstantiationException {
         throw new InstantiationException();
     }
 
     public static String replaceConstants(final String function) {
-
-        StringBuilder changed = new StringBuilder(function);
-
-        boolean exist = false;
-
-        for (var name: SORTED_NAMES) {
-            exist |= changed.toString().matches(".*\\b" + name + "\\b.*");
-        }
-
-        if (!exist)
-            return function;
-
-        for (var name : SORTED_NAMES) {
-            String value = Precision.format(MATH_CONSTANTS.get(name));
-
-            int i = 0;
-            int index = 0;
-
-            if (changed.toString().matches(".*\\b" + name + "\\b.*")) {
-                while (changed.indexOf(name, i) != -1 && i < changed.length()) {
-
-                    char prev = index != 0
-                            ? changed.charAt(index - 1)
-                            : ' ';
-
-                    char next = index + name.length() < changed.length()
-                            ? changed.charAt(index + name.length())
-                            : ' ';
-
-                    if (!Character.isLetter(prev) && !Character.isLetter(next)) {
-                        index = changed.indexOf(name, i);
-                        changed.insert(index, PREFIX);
-                        i = index + name.length() + 1;
-                    } else {
-                        index = changed.indexOf(name, i);
-                        i++;
-                    }
-                }
-
-                changed = new StringBuilder(changed.toString().replace(PREFIX + name, value));
-            }
-        }
-
-        return changed.toString();
+        return Parser.replace(function, MATH_CONSTANTS, 0, function.length());
     }
 
     public static boolean isParsable(final String expression) {
-        return getParsingResult(expression) != ParsingResult.ERROR;
+        return getParsingResult(expression) == ParsingResult.EXPRESSION;
     }
 
     public static ParsingResult getParsingResult(final String expression) {
-        if (expression.isEmpty()) {
+        if (expression == null || expression.isEmpty() || expression.isBlank()) {
             return ParsingResult.ERROR;
         }
 
@@ -77,143 +26,50 @@ public final class MathParser implements MathConstants {
             return ParsingResult.ERROR;
         }
 
-        Exception ex = null;
-        String changed = replaceConstants(expression);
+        Throwable exception = null;
 
         try {
-            parseNoHandling(changed);
-        } catch (Exception e) {
-            ex = e;
-        }
-
-        if (ex == null)
-            return ParsingResult.EXPRESSION;
-
-        try {
-            MathFunctionParser.isDeclaredImplicit(changed);
-        } catch (StringIndexOutOfBoundsException e) {
-            return ParsingResult.ERROR;
-        }
-
-        Exception last = null;
-        String pf = changed;
-
-        try {
-            var coefficients = MathFunctionParser.Parametric.getCoefficients(changed);
-            for (var c: coefficients) {
-                pf = MathFunctionParser.Parametric.replaceCoefficient(pf, c, 1.0);
-            }
-            parseNoHandling(pf);
-        } catch (Exception e) {
-            last = e;
-        }
-
-        if (last == null && !MathFunctionParser.Explicit.isFunction(pf))
-            return ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMETERS;
-
-        if (MathFunctionParser.Parametric.isFunction(changed)) {
-            final double t = 1.0;
-
-            String pchanged = changed;
-            Exception exception = null;
-
-            try {
-                parseNoHandling(pchanged);
-            } catch (Exception e) {
-                exception = e;
-            }
-
-            if (exception == null)
-                return ParsingResult.EXPRESSION;
-
-            exception = null;
-
-            try {
-                pchanged = MathFunctionParser.Parametric.replaceVariable(pchanged, t);
-                parseNoHandling(pchanged);
-            } catch (Exception e) {
-
-                exception = e;
-                Exception err = null;
-
-                try {
-                    for (var s: MathFunctionParser.Parametric.getCoefficients(pchanged))
-                        pchanged = MathFunctionParser.Parametric.replaceCoefficient(pchanged, s, t);
-
-                    parseNoHandling(pchanged);
-                } catch (Exception error) {
-                    err = error;
-                }
-
-                if (err == null)
-                    return ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMETERS;
-            }
-
-            if (exception == null)
-                return ParsingResult.PARAMETRIC_FUNCTION;
-        }
-
-        if (!MathFunctionParser.isDeclaredImplicit(changed)) {
-            final double x = 1.0;
-
-            try {
-                parseNoHandling(expression);
-            } catch (IndexOutOfBoundsException e) {
-                return ParsingResult.ERROR;
-            } catch (MathParserException notExpression) {
-
-                try {
-                    changed = MathFunctionParser.Explicit.replaceVariable(changed, x);
-
-                    if (changed.isEmpty()) {
-                        return ParsingResult.ERROR;
-                    }
-
-                    double ignored = parseNoHandling(changed);
-                } catch (MathParserException notFunction) {
-
-                    try {
-
-                        for (var coefficient : MathFunctionParser.Explicit.getCoefficients(changed)) {
-                            changed = MathFunctionParser.Explicit.replaceCoefficient(changed, coefficient, x);
-                        }
-
-                        double ignored = parseNoHandling(changed);
-
-                    } catch (IllegalArgumentException | IndexOutOfBoundsException | MathParserException e) {
-                        return ParsingResult.ERROR;
-
-                    }
-
-                    return ParsingResult.EXPLICIT_FUNCTION_WITH_PARAMETERS;
-                } catch (IllegalArgumentException | IndexOutOfBoundsException ill) {
-                    return ParsingResult.ERROR;
-
-                }
-
-                return ParsingResult.EXPLICIT_FUNCTION;
-            }
-
-        } else {
-
-        }
-
-        Exception exception = null;
-
-        try {
-            MathParser.parseNoHandling(changed);
-        } catch (MathParserException | IllegalArgumentException | IndexOutOfBoundsException e) {
+            MathParser.parseNoHandling(MathParser.replaceConstants(expression));
+        } catch (MathParserException e) {
             exception = e;
         }
 
         if (exception == null)
             return ParsingResult.EXPRESSION;
-        else
+
+        if (!MathFunctionParser.Explicit.isNotFunction(expression))
+            if (MathFunctionParser.Explicit.hasCoefficients(expression))
+                return (MathFunctionParser.Explicit.isValid(expression))
+                        ? ParsingResult.EXPLICIT_FUNCTION_WITH_PARAMETERS
+                        : ParsingResult.ERROR;
+            else
+                return (MathFunctionParser.Explicit.isValid(expression))
+                        ? ParsingResult.EXPLICIT_FUNCTION
+                        : ParsingResult.ERROR;
+
+        if (MathFunctionParser.Parametric.isFunction(expression))
+            if (MathFunctionParser.Parametric.hasCoefficients(expression))
+                return (MathFunctionParser.Parametric.isValid(expression))
+                        ? ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMETERS
+                        : ParsingResult.ERROR;
+            else
+                return (MathFunctionParser.Parametric.isValid(expression))
+                        ? ParsingResult.PARAMETRIC_FUNCTION
+                        : ParsingResult.ERROR;
+
+        try {
+            MathParser.parseNoHandling(MathParser.replaceConstants(expression));
+        } catch (MathParserException e) {
             return ParsingResult.ERROR;
+        }
+
+        return ParsingResult.ERROR;
     }
 
     public static double parseNoHandling(final String expression) {
-        return Syntax.expression(new TokenBuffer(tokenize(replaceConstants(expression))));
+        var t = tokenize(replaceConstants(expression));
+
+        return Syntax.expression(new TokenBuffer(t));
     }
 
     public static double parse(final String expression) {
@@ -236,7 +92,7 @@ public final class MathParser implements MathConstants {
         return 0;
     }
 
-    public static List<Token> tokenize(String expression) {
+    private static List<Token> tokenize(String expression) {
         List<Token> tokenList = new ArrayList<>();
 
         Stack<Character> stack = new Stack<>();
@@ -365,7 +221,7 @@ public final class MathParser implements MathConstants {
 //
 //
 
-    public static final class Syntax {
+    private static final class Syntax {
 
         private Syntax() throws InstantiationException {
             throw new InstantiationException();
@@ -396,6 +252,7 @@ public final class MathParser implements MathConstants {
                     case RIGHT_BRACKET:
                     case COMMA:
                         tokenBuffer.returnBack();
+
                         return value;
                     default:
                         throw new MathParserSyntaxException("Unexpected token: '" + token.getTokenType() + "' at pos " + tokenBuffer.getPos() + " in expression");
@@ -420,6 +277,7 @@ public final class MathParser implements MathConstants {
                     case OPERATOR_ADD:
                     case OPERATOR_SUB:
                         tokenBuffer.returnBack();
+
                         return value;
                     default:
                         throw new MathParserSyntaxException("Unexpected token: '" + token.getTokenType() + "' at pos " + tokenBuffer.getPos() + " in expression");
@@ -443,8 +301,8 @@ public final class MathParser implements MathConstants {
                     case COMMA:
                     case OPERATOR_ADD:
                     case OPERATOR_SUB:
-
                         tokenBuffer.returnBack();
+
                         return value;
 
                     default:
@@ -473,6 +331,7 @@ public final class MathParser implements MathConstants {
                     if (token.getTokenType() != TokenType.RIGHT_BRACKET) {
                         throw new MathParserSyntaxException("Unexpected token: '" + token.getTokenType() + "' at pos " + tokenBuffer.getPos() + " in expression");
                     }
+
                     return value;
 
                 default:

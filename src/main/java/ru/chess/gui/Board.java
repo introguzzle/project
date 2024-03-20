@@ -24,7 +24,7 @@ public class Board extends JPanel {
     private boolean   drawPiece;
 
     public Board(int vertical, int horizontal) {
-        super(true);
+        super();
 
         VERTICAL_BOUND   = vertical;
         HORIZONTAL_BOUND = horizontal;
@@ -86,8 +86,11 @@ public class Board extends JPanel {
         Font  oldFont  = g2d.getFont();
 
         g2d.setColor(outlineColor);
-        g2d.setFont(new Font(oldFont.getFontName(), oldFont.getStyle(), oldFont.getSize() + outlineWidth));
-        g2d.drawString(string, fx, fy);
+
+        g2d.drawString(string, fx - outlineWidth, fy - outlineWidth);
+        g2d.drawString(string, fx - outlineWidth, fy + outlineWidth);
+        g2d.drawString(string, fx + outlineWidth, fy - outlineWidth);
+        g2d.drawString(string, fx + outlineWidth, fy + outlineWidth);
 
         g2d.setColor(oldColor);
         g2d.setFont(oldFont);
@@ -136,7 +139,7 @@ public class Board extends JPanel {
                     ? ColorUtilities.darken(GUI.Cell.WHITE_COLOR, 0.5)
                     : ColorUtilities.darken(GUI.Cell.BLACK_COLOR, 0.5);
 
-            paintFontShadow(g2d, s, dx, dy, 1, shadowColor);
+            paintFontOutline(g2d, s, dx, dy, 1, shadowColor);
             g2d.drawString(s, dx, dy);
         }
 
@@ -155,7 +158,7 @@ public class Board extends JPanel {
                     ? ColorUtilities.darken(GUI.Cell.WHITE_COLOR, 0.5)
                     : ColorUtilities.darken(GUI.Cell.BLACK_COLOR, 0.5);
 
-            paintFontShadow(g2d, s, dx, dy, 1, shadowColor);
+            paintFontOutline(g2d, s, dx, dy, 1, shadowColor);
             g2d.drawString(pos.getChessPosition().substring(0, 1), dx, dy);
         }
     }

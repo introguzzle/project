@@ -14,86 +14,72 @@ public class AcceleratingAnimator extends Animator {
 
     @Override
     public Timer timer() {
+        model.botMoveOngoing = true;
+
         this.board.repaint();
 
-        final double[] progress = {0};
+        double startDistance = start.distance(end);
 
-        final double[] startDistance = {start.distance(end)};
-        final double[] distance = {startDistance[0]};
+        double[] distance = {startDistance};
 
-        final double[] fromX = {start.x};
-        final double[] fromY = {start.y};
+        final int steps = 50;
 
-        final int steps = 35;
+        double[] xDelta = {(end.x - start.x) / (double) steps};
+        double[] yDelta = {(end.y - start.y) / (double) steps};
 
-        final double[] xDelta = {(end.x - fromX[0]) / (double) steps};
-        final double[] yDelta = {(end.y - fromY[0]) / (double) steps};
-
-        final double[] dx = {fromX[0]};
-        final double[] dy = {fromY[0]};
+        double[] dx = {start.x};
+        double[] dy = {start.y};
 
         return new Timer(0, (event) -> {
-            progress[0] += 1.0 / (double) steps;
             // Will not stop at 1, that's why its max is approx 1.6 or 1.7,
             // since max distance is basically movement from a1 to h8
 
-            double multiplier = getMultiplier(startDistance[0], progress[0]);
+            double multiplier = scale(distance[0], startDistance);
 
             dx[0] += xDelta[0] * multiplier;
             dy[0] += yDelta[0] * multiplier;
 
+            double m = multiplier * multiplier;
+
             board.setDrawingPoint(new Point((int) dx[0], (int) dy[0]));
             board.repaint();
 
-            distance[0] -= Math.sqrt(xDelta[0] * multiplier * multiplier * xDelta[0]
-                    + yDelta[0] * multiplier * multiplier * yDelta[0]);
+            distance[0] -= Math.sqrt(xDelta[0] * xDelta[0] * m + yDelta[0] * yDelta[0] * m);
 
-            if (distance[0] < 0.0) {
+            if (distance[0] <= 0.0) {
                 stop(event);
             }
         });
     }
 
-    private double getMultiplier(double startDistance, double progress) {
-        double multiplier;
-
-        if (startDistance > 480) {
-
-            multiplier = easeInOut(progress, 1.75, 1.0);
-        } else if (startDistance > 240) {
-
-            multiplier = easeInOut(progress, 2.0, 1.25);
-        } else {
-
-            multiplier = easeInOut(progress, 3.0, 2.0);
-        }
-
-        return multiplier;
+    private static double normalize(double currentDistance,
+                                    double totalDistance) {
+        return Math.min(1.0, (totalDistance - currentDistance) / totalDistance);
     }
 
-    private double easeInOut(double t,
-                             double beforeAcceleration,
-                             double afterAcceleration) {
-        // I believe t is changing between 0 and MAX ( calculated empirically )
-        // upd: It can be calculated with this formula:
+    private static final double MAX_DISTANCE;
 
-        // x_delta = x_delta * multiplier
-        // y_delta = y_delta * multiplier
-        // MAX_T = overall_distance / sqrt(x_delta ^ 2 + y_delta ^ 2)
+    static {
+        double max   = Math.max(AbstractModel.HORIZONTAL_BOUND, AbstractModel.VERTICAL_BOUND);
+        double hypot = Math.sqrt(CELL_HEIGHT * CELL_HEIGHT + CELL_WIDTH * CELL_WIDTH);
 
-        double MINIMAL_RESULT = 0.1;
-        double SLOWDOWN = 0.7;
+        MAX_DISTANCE = (max - 2) * hypot + hypot;
+    }
 
-        double DOOM_POINT = 0.3; // After this value, animation slows
-        double MAX = 1.7; // Max t
+    private static double scale(double currentDistance,
+                                double totalDistance) {
+        double f = totalDistance / MAX_DISTANCE;
 
-        if (t <= DOOM_POINT)
-            return beforeAcceleration * t * t;
+        return inOut(currentDistance, totalDistance, 1.6 - f);
+    }
 
-        t = MAX - t;
+    private static double inOut(double currentDistance,
+                                double totalDistance,
+                                double factor) {
+        double t = (normalize(currentDistance, totalDistance) + 2.7) / 0.24;
+        double f = Math.max(factor, 1.0);
 
-        // Calling MAX function to prevent negative speed
-
-        return Math.max(afterAcceleration * t * (MAX - t) * SLOWDOWN + DOOM_POINT, MINIMAL_RESULT);
+        //return (Math.sin(t / 0.3) + Math.cos(t / 0.3) + factor) / 2.0;
+        return Math.sin(t) + Math.cos(t) / (0.8 * f) + f;
     }
 }

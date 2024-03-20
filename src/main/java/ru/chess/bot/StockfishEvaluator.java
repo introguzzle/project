@@ -12,7 +12,7 @@ public class StockfishEvaluator implements Evaluator {
 
     @Override
     public double evaluate() {
-        StockfishProcessor processor = new StockfishProcessor();
+        StockfishProcessor processor = StockfishProcessor.getInstance();
 
         StringBuilder sb = new StringBuilder(fen);
         int index = fen.indexOf(" ") + 1;

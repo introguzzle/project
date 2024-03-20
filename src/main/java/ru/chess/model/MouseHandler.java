@@ -36,7 +36,7 @@ public class MouseHandler extends MouseAdapter {
 
         // Avoid static init
         if (model.initPawnPromotion) {
-            PreStartConditions.promotePawns(model);
+            StartConditions.promotePawns(model);
             return;
         }
 
@@ -78,10 +78,12 @@ public class MouseHandler extends MouseAdapter {
                 model.setPiece(chosenCell.getPosition(), grabbedCellPieceType);
                 board.repaint();
 
+                Move move = new Move(grabbedCellPosition, chosenCell.getPosition(), grabbedCellPieceType);
+
                 SwingWorker<Void, Void> handler = new SwingWorker<>() {
                     @Override
                     protected Void doInBackground() {
-                        model.handleMove(grabbedCellPosition, chosenCell.getPosition(), grabbedCellPieceType);
+                        model.handleMove(move);
                         return null;
                     }
                 };

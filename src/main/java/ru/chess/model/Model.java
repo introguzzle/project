@@ -111,8 +111,8 @@ public class Model extends AbstractModel {
             loadPreset(PresetFactory.create());
         }
 
-        PreStartConditions.initCastling(this);
-        PreStartConditions.checkPawnPromotion(this);
+        StartConditions.initCastling(this);
+        StartConditions.checkPawnPromotion(this);
 
         evaluationBar.setValue(evaluate());
     }
@@ -143,8 +143,8 @@ public class Model extends AbstractModel {
             initPreset = preset;
             initLoad   = false;
 
-            PreStartConditions.initCastling(this);
-            PreStartConditions.checkPawnPromotion(this);
+            StartConditions.initCastling(this);
+            StartConditions.checkPawnPromotion(this);
 
         } else {
             Presets.Loader.load(this, preset);
@@ -159,48 +159,34 @@ public class Model extends AbstractModel {
         }
     }
 
-    public void handleMove(Position  oldPosition,
-                           Position  newPosition,
-                           PieceType movedPieceType) {
+    public void handleMove(Move move) {
         SoundPlayer.playMoveSound();
 
-        MoveHandler.updateCastling(this);
-
-        if (movedPieceType == PieceType.WHITE_PAWN || movedPieceType == PieceType.BLACK_PAWN) {
-            if (newPosition.getChessHeight() == (movedPieceType.absolute().isWhite() ? VERTICAL_BOUND : 1))
-                MoveHandler.executePawnPromotion(this, newPosition, movedPieceType.absolute());
-
-            MoveHandler.executeEnPassant(this, oldPosition, newPosition, movedPieceType);
-            MoveHandler.notifyEnPassant(this, oldPosition, newPosition, movedPieceType);
-        }
-
-        if (movedPieceType == PieceType.WHITE_KING || movedPieceType == PieceType.BLACK_KING)
-            if (Math.abs(oldPosition.getWidth() - newPosition.getWidth()) == 2)
-                MoveHandler.executeCastling(this, newPosition, movedPieceType.absolute());
-
-        MoveHandler.checkGuaranteedStalemate(this);
-        MoveHandler.checkFiftyMoveRule(this, movedPieceType);
-        MoveHandler.handleState(this, movedPieceType.absolute().invert());
-        MoveHandler.notifyLastMoved(this, movedPieceType);
+        Conditions.phaseOne(this, move);
 
         evaluated = evaluate();
         evaluationBar.setValue(evaluated);
+
+        Conditions.phaseTwo(this, move);
 
         turn = !turn;
 
         history.push(Presets.Reader.read(this));
 
-        MoveHandler.notifyCastling(this, newPosition);
+        Conditions.notifyCastling(this, move);
 
         if (isOver())
-            MoveHandler.callMateDialog(this, movedPieceType);
+            Conditions.callMateDialog(this, move);
 
         if (enabledBot && !turn && state == State.ONGOING) {
+            botMoveOngoing = true;
             Move bestMove = bot.get();
 
             lastMoveDestroyed = board.getCell(bestMove.to()).pieceType.isNotNone();
 
-            movePiece(bestMove, () -> handleMove(bestMove.from(), bestMove.to(), bestMove.moved()));
+            movePiece(bestMove, () -> {
+                handleMove(bestMove);
+            });
         }
     }
 
@@ -224,10 +210,10 @@ public class Model extends AbstractModel {
         if (!enabledBot)
             return turn == (absolutePieceType == AbsolutePieceType.WHITE);
         else
-            return turn && absolutePieceType == AbsolutePieceType.WHITE;
+            return turn == (absolutePieceType == AbsolutePieceType.WHITE) && !botMoveOngoing;
     }
 
-    public JPanel getEvaluationBar() {
+    public EvaluationBar getEvaluationBar() {
         return evaluationBar;
     }
 

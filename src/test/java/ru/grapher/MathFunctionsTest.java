@@ -13,11 +13,11 @@ import ru.mathparser.MathFunctionsDescriptions;
 public class MathFunctionsTest {
 
     @Test
-    public void functionMatch() throws Exception {
+    public void functionMatch() {
 
         List<String> f1 = new ArrayList<>(MathFunctions.FUNCTION_MAP.keySet());
         List<String> f2 = new ArrayList<>(MathFunctions.REQUIRED_ARGS.keySet());
-        List<String> f3 = new ArrayList<>(MathFunctionsDescriptions.DESCRIPTIONS.keySet());
+        List<String> f3 = new ArrayList<>(MathFunctionsDescriptions.get().keySet());
 
         f1.sort((o1, o2) -> Integer.compare(o2.length(), o1.length()));
 

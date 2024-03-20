@@ -1,19 +1,23 @@
 package ru.calculator;
 
-import ru.grapher.DynamicButton;
-import ru.grapher.GrapherGUI;
+import ru.grapher.core.DynamicButton;
+import ru.grapher.GUI;
 import ru.mathparser.MathParser;
 
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
 import java.awt.*;
 import java.awt.event.WindowEvent;
+
 import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class Calculator extends JFrame {
 
@@ -27,28 +31,33 @@ public class Calculator extends JFrame {
 
     private final JSeparator separator  = new JSeparator();
 
-    private final ArrayList<String> resultHistory = new ArrayList<>();
-    private final ArrayList<String> exprHistory   = new ArrayList<>();
-    private final ArrayList<Date>   dates         = new ArrayList<>();
+    private final List<String> resultHistory = new ArrayList<>();
+    private final List<String> exprHistory   = new ArrayList<>();
+    private final List<Date>   dates         = new ArrayList<>();
 
     private static final Color GRAY = new Color(70, 70, 70);
     private static final Color INV  = new Color(220, 220, 220);
 
     private static final SimpleDateFormat DATE_FORMAT   = new SimpleDateFormat("HH:mm:ss");
 
-    public Calculator() {
+    private final JFrame owner;
+
+    public Calculator(JFrame owner) {
+        this.owner = owner;
+
         initComponents();
         initLayout();
+        initFrame();
     }
 
     private void initComponents() {
 
-        inputField.setFont(GrapherGUI.getDefaultFont(21));
-        inputField.setBorder(GrapherGUI.__UNIVERSAL_BORDER);
+        inputField.setFont(GUI.font(21));
+        inputField.setBorder(GUI.__UNIVERSAL_BORDER);
         inputField.setBackground(Color.WHITE);
         inputField.setForeground(Color.BLACK);
 
-        resultField.setFont(GrapherGUI.getDefaultFont(21));
+        resultField.setFont(GUI.font(21));
         resultField.setBorder(new CompoundBorder(
                 BorderFactory.createLineBorder(INV, 1, false),
                 BorderFactory.createEmptyBorder(0, 0, 0, 0)
@@ -57,7 +66,7 @@ public class Calculator extends JFrame {
         resultField.setBackground(GRAY);
         resultField.setForeground(INV);
 
-        prevField.setFont(GrapherGUI.getDefaultFont(21));
+        prevField.setFont(GUI.font(21));
         prevField.setBorder(new CompoundBorder(
                 BorderFactory.createLineBorder(INV, 1, false),
                 BorderFactory.createEmptyBorder(0, 0, 0, 0)
@@ -75,7 +84,7 @@ public class Calculator extends JFrame {
             historyTable.setLocationRelativeTo(null);
             historyTable.setAlwaysOnTop(true);
             historyTable.setTitle("Calculator history");
-            historyTable.setIconImage(GrapherGUI.__IMAGE);
+            historyTable.setIconImage(GUI.LOGO);
 
             historyTable.setVisible(true);
         });
@@ -189,8 +198,25 @@ public class Calculator extends JFrame {
         pack();
     }
 
-    public static void main(String... ___) {
+    public void initFrame() {
+        this.setLocationRelativeTo(null);
+        this.setAlwaysOnTop(true);
+        this.setTitle("Calculator");
 
-        EventQueue.invokeLater(() -> new Calculator().setVisible(true));
+        this.link();
+    }
+
+    private void link() {
+        if (this.owner != null) {
+            this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            this.setIconImage(this.owner.getIconImage());
+        } else {
+            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        }
+
+    }
+
+    public static void main(String... ___) {
+        EventQueue.invokeLater(() -> new Calculator(null).setVisible(true));
     }
 }

@@ -4,20 +4,30 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StockfishProcessor {
+class StockfishProcessor {
 
     private static final String EXECUTABLE_PATH = ".\\src\\main\\java\\ru\\chess\\engine\\stockfish.exe";
 
     private final Process process;
 
-    private final BufferedReader input;
-    private final BufferedWriter output;
+    private final BufferedReader reader;
+    private final BufferedWriter writer;
 
-    public StockfishProcessor() {
+    private static final StockfishProcessor instance;
+
+    static {
+        instance = new StockfishProcessor();
+    }
+
+    public static StockfishProcessor getInstance() {
+        return instance;
+    }
+
+    private StockfishProcessor() {
         try {
             process = Runtime.getRuntime().exec(EXECUTABLE_PATH);
-            input = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            output = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
+            reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -32,8 +42,8 @@ public class StockfishProcessor {
         sendCommand("quit");
         process.destroy();
         try {
-            input.close();
-            output.close();
+            reader.close();
+            writer.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -64,8 +74,8 @@ public class StockfishProcessor {
 
     private void sendCommand(String command) {
         try {
-            output.write(command + "\n");
-            output.flush();
+            writer.write(command + "\n");
+            writer.flush();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -85,7 +95,7 @@ public class StockfishProcessor {
             List<String> lines = new ArrayList<>();
 
             while (true) {
-                String line = input.readLine();
+                String line = reader.readLine();
 
                 lines.add(line);
 

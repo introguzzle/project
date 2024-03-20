@@ -13,6 +13,7 @@ import ru.chess.position.Position;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -56,7 +57,8 @@ public class ConstructorModel extends AbstractModel {
     }
 
     public void feedbackSet(Cell cell) {
-        cell.setBackground(cell.getBackground().brighter());
+        cell.brighten();
+        SoundPlayer.playMoveSound();
 
         Timer timer = new Timer(50, (e) -> {
             ((Timer) e.getSource()).stop();
@@ -65,12 +67,11 @@ public class ConstructorModel extends AbstractModel {
         });
 
         timer.start();
-
-        SoundPlayer.playMoveSound();
     }
 
     public void feedbackRemove(Cell cell) {
         cell.noteLose();
+        SoundPlayer.playMoveSound();
 
         Timer timer = new Timer(50, (e) -> {
             ((Timer) e.getSource()).stop();
@@ -79,8 +80,6 @@ public class ConstructorModel extends AbstractModel {
         });
 
         timer.start();
-
-        SoundPlayer.playMoveSound();
     }
 
 
@@ -277,7 +276,5 @@ public class ConstructorModel extends AbstractModel {
                 }
             }
         }
-
-
     }
 }

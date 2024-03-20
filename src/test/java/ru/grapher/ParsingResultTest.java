@@ -5,7 +5,6 @@ import ru.mathparser.MathParser;
 import ru.mathparser.ParsingResult;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class ParsingResultTest {
 

@@ -30,7 +30,7 @@ public class MiniMaxBot extends AbstractBot {
 
             ValidMoves.movePiece(model.getBoard().cells, move);
             int value = minimax(model, depth - 1, false);
-            ValidMoves.movePiece(model.getBoard().cells, new Move(move.to(), move.from(), move.moved()));
+            ValidMoves.movePiece(model.getBoard().cells, new Move(move.to(), move.from(), move.type()));
 
             if (maybeDestroyed.isNotNone()) {
                 model.getBoard().cells[move.to().getHeight()][move.to().getWidth()].setPiece(maybeDestroyed);
@@ -59,7 +59,7 @@ public class MiniMaxBot extends AbstractBot {
 
                 ValidMoves.movePiece(model.getBoard().cells, move);
                 int value = minimax(model, depth - 1, false);
-                ValidMoves.movePiece(model.getBoard().cells, new Move(move.to(), move.from(), move.moved()));
+                ValidMoves.movePiece(model.getBoard().cells, new Move(move.to(), move.from(), move.type()));
 
                 if (maybeDestroyed.isNotNone()) {
                     model.getBoard().cells[move.to().getHeight()][move.to().getWidth()].setPiece(maybeDestroyed);
@@ -80,7 +80,7 @@ public class MiniMaxBot extends AbstractBot {
 
                 ValidMoves.movePiece(model.getBoard().cells, move);
                 int value = minimax(model, depth - 1, true);
-                ValidMoves.movePiece(model.getBoard().cells, new Move(move.to(), move.from(), move.moved()));
+                ValidMoves.movePiece(model.getBoard().cells, new Move(move.to(), move.from(), move.type()));
 
                 if (maybeDestroyed.isNotNone()) {
                     model.getBoard().cells[move.to().getHeight()][move.to().getWidth()].setPiece(maybeDestroyed);

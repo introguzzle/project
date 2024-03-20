@@ -287,7 +287,7 @@ public final class ValidMoves {
     public static void movePiece(Cell[][] cells,
                                  Move move) {
         cells[move.from().getHeight()][move.from().getWidth()].removePiece();
-        cells[move.to().getHeight()][move.to().getWidth()].setPiece(move.moved());
+        cells[move.to().getHeight()][move.to().getWidth()].setPiece(move.type());
     }
 
 

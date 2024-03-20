@@ -1,8 +1,16 @@
 package ru.utils;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class ColorUtilities {
+
+    public static Color newColor(int r, int g, int b) {
+        int mr = Math.min(255, Math.max(r, 0));
+        int mg = Math.min(255, Math.max(g, 0));
+        int mb = Math.min(255, Math.max(b, 0));
+
+        return new Color(mr, mg, mb);
+    }
 
     public static String toHex(Color color) {
         return String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getRed());
@@ -47,19 +55,7 @@ public class ColorUtilities {
     }
 
     public static Color darken(Color color, double factor) {
-        int r = color.getRed();
-        int g = color.getGreen();
-        int b = color.getBlue();
-
-        int mr = (int) (r * factor);
-        int mg = (int) (g * factor);
-        int mb = (int) (b * factor);
-
-        mr = Math.min(255, Math.max(mr, 0));
-        mg = Math.min(255, Math.max(mg, 0));
-        mb = Math.min(255, Math.max(mb, 0));
-
-        return new Color(mr, mg, mb, color.getAlpha());
+        return newColor((int) (color.getRed() * factor), (int) (color.getGreen() * factor), (int) (color.getBlue() * factor));
     }
 
     public static Color brighten(Color color, double factor) {
@@ -71,10 +67,6 @@ public class ColorUtilities {
         int mg = (int) (g + (255 - g) * factor);
         int mb = (int) (b * (255 - b) * factor);
 
-        mr = Math.min(255, Math.max(mr, 0));
-        mg = Math.min(255, Math.max(mg, 0));
-        mb = Math.min(255, Math.max(mb, 0));
-
-        return new Color(mr, mg, mb, color.getAlpha());
+        return newColor(mr, mg, mb);
     }
 }

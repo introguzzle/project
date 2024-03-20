@@ -13,7 +13,7 @@ import java.util.function.Predicate;
 public final class PseudoValidMoves {
 
     private PseudoValidMoves() {
-
+        throw new RuntimeException();
     }
 
     static List<Position> get(Cell[][] cells, Cell cell) {

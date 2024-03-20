@@ -43,7 +43,7 @@ public class SimpleBot extends AbstractBot {
                 bestMove = m;
             }
 
-            Move back = new Move(m.to(), m.from(), m.moved());
+            Move back = new Move(m.to(), m.from(), m.type());
             ValidMoves.movePiece(cells, back);
 
             if (maybeDestroyed.isNotNone()) {

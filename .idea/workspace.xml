@@ -5,63 +5,225 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="912ac5a4-e8a8-42a8-a147-180b456244bb" name="Changes" comment="XD">
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/utils/Test.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/TODO.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/BasicGrapher.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/ChartBuild.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/Compute.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/GrapherKeyListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/addbutton/BasicFunctionPanel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/addbutton/ConfirmButton.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/addbutton/FunctionDialog.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/addbutton/GeneratorHolder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/addbutton/Utils.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/addbutton/parametric/BasicParametricFunctionPanel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/addbutton/parametric/ParametricFunctionDialog.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/core/ActionInvokingDialog.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/core/ChoiceBox.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/core/ChoiceBoxListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/core/DelayedMouseListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/core/DocumentChangeListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/core/EventListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/core/HyperlinkAdapter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/core/KeyPressListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/core/LinkedMenuItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/core/LinkedPanel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/core/Mappable.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/core/Separator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/core/TextField.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/core/WindowAction.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/core/WindowClosingListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/exit/ExitDialog.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/menu/AboutMenuItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/menu/ExitMenuItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/menu/HelpMenuItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/menu/MainMenu.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/menu/MainMenuBar.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/range/RangeDialog.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/range/RangePanel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/mathparser/Parser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/calculator/Calculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/calculator/Calculator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/calculator/CalculatorHistoryTableFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/calculator/CalculatorHistoryTableFrame.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/Fen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/Fen.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/bot/RandomBot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/bot/RandomBot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/bot/MiniMaxAlphaBetaBot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/bot/MiniMaxAlphaBetaBot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/bot/MiniMaxBot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/bot/MiniMaxBot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/bot/SimpleBot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/bot/SimpleBot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/bot/StockfishBot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/bot/StockfishBot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/bot/StockfishEvaluator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/bot/StockfishEvaluator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/bot/StockfishProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/bot/StockfishProcessor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/constructor/ConstructorModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/constructor/ConstructorModel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/constructor/out/fen.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/constructor/out/fen.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/constructor/out/saved.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/constructor/out/saved.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/gui/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/gui/Board.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/gui/GUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/gui/GUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/label/Action.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/label/Action.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/label/DynamicLabel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/label/DynamicLabel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/label/Cell.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/label/Cell.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/model/AbstractModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/AbstractModel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/model/EvaluationBar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/EvaluationBar.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/model/Model.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/Model.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/model/MouseHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/MouseHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/model/MoveHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/MoveHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/model/Move.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/Move.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/model/MoveHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/Conditions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/model/PreStartConditions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/StartConditions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/model/PseudoValidMoves.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/PseudoValidMoves.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/model/ValidMoves.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/ValidMoves.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/model/animator/AcceleratingAnimator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/animator/AcceleratingAnimator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/model/animator/Animator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/animator/Animator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/chess/model/animator/LinearAnimator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/chess/model/animator/LinearAnimator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/ChoiceBoxListCellRenderer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/ChoiceBoxUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/core/ChoiceBoxUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/CoefficientSlider.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/slider/CoefficientSlider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/DynamicButton.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/core/DynamicButton.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/ExitPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/exit/ExitPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/FunctionPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/addbutton/FunctionPanel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/Grapher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/Grapher.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/GrapherGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/GUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/GrapherUtilities.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/ChartUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/InputFunctionPanel.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/InputState.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/Mode.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/ParametricFunctionPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/addbutton/parametric/ParametricFunctionPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/RangePanel.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/ScopeSlider.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/slider/ScopeSlider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/SteppingSlider.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/slider/SteppingSlider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/SteppingSliderUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/slider/SteppingSliderUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/menu/AboutFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/menuframe/AboutFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/menu/HelpFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/menuframe/HelpFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/menu/HelpFrameScrollBarUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/menuframe/HelpFrameScrollBarUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/menu/InformationFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/menuframe/InformationFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/menu/MathFunctionsDescriptionsFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/menuframe/MathFunctionsDescriptionsFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/grapher/menu/MathFunctionsDescriptionsFrameScrollBarUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/grapher/menuframe/MathFunctionsDescriptionsFrameScrollBarUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mathparser/MathConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/mathparser/MathConstants.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mathparser/MathFunction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/mathparser/MathFunction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mathparser/MathFunctionParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/mathparser/MathFunctionParser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/mathparser/MathFunctions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/mathparser/MathFunctions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mathparser/MathFunctionsDescriptions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/mathparser/MathFunctionsDescriptions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mathparser/MathParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/mathparser/MathParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mathparser/ParsingResult.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/mathparser/ParsingResult.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/utils/ColorUtilities.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/utils/ColorUtilities.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/utils/LookTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/utils/LookTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/utils/Measure.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/utils/Measure.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/utils/Test.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ru/grapher/MathFunctionsTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ru/grapher/MathFunctionsTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ru/grapher/ParsingResultTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ru/grapher/ParsingResultTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/calculator/Calculator$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/calculator/Calculator$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/calculator/Calculator.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/calculator/Calculator.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/calculator/CalculatorHistoryTableFrame.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/calculator/CalculatorHistoryTableFrame.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/Chess.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/Chess.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/Fen.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/Fen.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/bot/RandomBot.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/bot/RandomBot.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/constructor/ConstructorHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/constructor/ConstructorHandler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/bot/MiniMaxAlphaBetaBot.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/bot/MiniMaxAlphaBetaBot.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/bot/MiniMaxBot.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/bot/MiniMaxBot.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/bot/SimpleBot.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/bot/SimpleBot.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/bot/StockfishBot.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/bot/StockfishBot.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/bot/StockfishEvaluator.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/bot/StockfishEvaluator.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/bot/StockfishProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/bot/StockfishProcessor.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/constructor/ConstructorModel$MouseHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/constructor/ConstructorModel$MouseHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/constructor/ConstructorSettingsDialog.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/constructor/ConstructorSettingsDialog.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/dialog/MateDialog$MatePanel.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/dialog/MateDialog$MatePanel.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/dialog/PawnPromotionDialog$PawnPromotionPanel.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/dialog/PawnPromotionDialog$PawnPromotionPanel.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/constructor/ConstructorModel.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/constructor/ConstructorModel.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/gui/Board.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/gui/Board.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/gui/GUI$Adapter.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/gui/GUI$Adapter.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/gui/GUI$Cell.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/gui/GUI$Cell.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/gui/GUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/gui/GUI.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/label/Action.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/label/Action.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/label/DynamicLabel$MouseHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/label/DynamicLabel$MouseHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/label/DynamicLabel.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/label/DynamicLabel.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/AbstractModel$NonLinearAnimator.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/label/Cell.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/label/Cell.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/AbstractModel.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/AbstractModel.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/EvaluationBar.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/EvaluationBar.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/Model$LeftArrowKeyHandleAction.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/Model$LeftArrowKeyHandleAction.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/Model.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/Model.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/MouseHandler$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/MouseHandler$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/MouseHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/MouseHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/MoveHandler$1Checker.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/MoveHandler$1Checker.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/MoveHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/MoveHandler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/Move.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/Move.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/MoveHandler$1Checker.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/MoveHandler.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/PreStartConditions.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/PseudoValidMoves.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/PseudoValidMoves.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/ValidMoves.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/ValidMoves.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/animator/AcceleratingAnimator.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/animator/AcceleratingAnimator.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/animator/Animator.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/animator/Animator.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/chess/model/animator/LinearAnimator.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/chess/model/animator/LinearAnimator.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Grapher$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/Grapher$5.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/ChoiceBoxListCellRenderer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/ChoiceBoxUI.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/CoefficientSlider$DefaultConfiguration.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/CoefficientSlider$Utility.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/CoefficientSlider.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/DynamicButton.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/ExitPanel.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/FunctionPanel$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/FunctionPanel$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/FunctionPanel$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/FunctionPanel$4.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/FunctionPanel$5.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/FunctionPanel$6.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/FunctionPanel.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Grapher$1$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Grapher$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/Grapher$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Grapher$10.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Grapher$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Grapher$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Grapher$4.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Grapher$5.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Grapher$6$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Grapher$6.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Grapher$7$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Grapher$7.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Grapher$8.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Grapher$9.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Grapher$RunConfiguration.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Grapher.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/Grapher.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/GrapherGUI.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/GrapherUtilities.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/InputFunctionPanel$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/InputFunctionPanel$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/InputFunctionPanel$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/InputFunctionPanel$4.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/InputFunctionPanel$5.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/InputFunctionPanel.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/InputState.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/MathFunctionsTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/MathFunctionsTest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/Mode.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/ParametricFunctionPanel$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/ParametricFunctionPanel$10.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/ParametricFunctionPanel$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/ParametricFunctionPanel$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/ParametricFunctionPanel$4.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/ParametricFunctionPanel$5.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/ParametricFunctionPanel$6.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/ParametricFunctionPanel$7.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/ParametricFunctionPanel$8.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/ParametricFunctionPanel$9.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/ParametricFunctionPanel.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/ParsingResultTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/grapher/ParsingResultTest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/RangePanel$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/RangePanel$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/RangePanel$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/RangePanel.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/ScopeSlider$DefaultConfiguration.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/ScopeSlider$Utilities.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/ScopeSlider.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/SteppingSlider$MouseHandler.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/SteppingSlider.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/SteppingSliderUI.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/menu/AboutFrame$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/menu/AboutFrame.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/menu/HelpFrame.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/menu/HelpFrameScrollBarUI.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/menu/InformationFrame$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/menu/InformationFrame$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/menu/InformationFrame.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/menu/MathFunctionsDescriptionsFrame$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/menu/MathFunctionsDescriptionsFrame.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/grapher/menu/MathFunctionsDescriptionsFrameScrollBarUI.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/mathparser/MathConstants.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/mathparser/MathConstants.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/mathparser/MathFunction.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/mathparser/MathFunction.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/mathparser/MathFunctionParser$Explicit.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/mathparser/MathFunctionParser$Explicit.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/mathparser/MathFunctionParser$Implicit.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/mathparser/MathFunctionParser$Implicit.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/mathparser/MathFunctionParser$Parametric.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/mathparser/MathFunctionParser$Parametric.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/mathparser/MathFunctionParser$SingleLetterUtilities.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/mathparser/MathFunctionParser.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/mathparser/MathFunctionParser.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/mathparser/MathFunctions$CiSi.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/mathparser/MathFunctions$CiSi.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/mathparser/MathFunctions$F.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/mathparser/MathFunctions.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/mathparser/MathFunctions.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/mathparser/MathFunctionsDescriptions.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/mathparser/MathFunctionsDescriptions.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/mathparser/MathParser$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/mathparser/MathParser$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/mathparser/MathParser$Syntax.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/mathparser/MathParser$Syntax.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/mathparser/MathParser.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/mathparser/MathParser.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/mathparser/ParsingResult.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/mathparser/ParsingResult.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ru/utils/ColorUtilities.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/utils/ColorUtilities.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/utils/LookTest$Look.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/utils/LookTest$Look.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/utils/Measure$Method.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ru/utils/Measure.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ru/utils/Measure.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/utils/Test.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/test-classes/ru/grapher/MathFunctionsTest$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/test-classes/ru/grapher/MathFunctionsTest$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/test-classes/ru/grapher/MathFunctionsTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/test-classes/ru/grapher/MathFunctionsTest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/test-classes/ru/grapher/ParsingResultTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/test-classes/ru/grapher/ParsingResultTest.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,8 +235,8 @@
       <list>
         <option value="JUnit4 Test Class" />
         <option value="Enum" />
-        <option value="Interface" />
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>
@@ -118,83 +280,95 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;Application.AboutFrame.executor&quot;: &quot;Run&quot;,
-    &quot;Application.AdvancedEvaluator.executor&quot;: &quot;Run&quot;,
-    &quot;Application.AnimationExample.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Board.executor&quot;: &quot;Run&quot;,
-    &quot;Application.BooleanVector.executor&quot;: &quot;Run&quot;,
-    &quot;Application.C.executor&quot;: &quot;Debug&quot;,
-    &quot;Application.Calculator.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Chess.executor&quot;: &quot;Run&quot;,
-    &quot;Application.ColorUtilities.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Constructor.executor&quot;: &quot;Run&quot;,
-    &quot;Application.ConstructorHandler.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Demo.executor&quot;: &quot;Run&quot;,
-    &quot;Application.ExitPanel.executor&quot;: &quot;Run&quot;,
-    &quot;Application.FunctionPanel.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Graph.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Grapher.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Grid.executor&quot;: &quot;Run&quot;,
-    &quot;Application.HelpFrame.executor&quot;: &quot;Run&quot;,
-    &quot;Application.IndexedMap.executor&quot;: &quot;Run&quot;,
-    &quot;Application.InputFunctionPanel.executor&quot;: &quot;Run&quot;,
-    &quot;Application.InputFunctionPanel0.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
-    &quot;Application.MathFunctionsDescriptionsFrame.executor&quot;: &quot;Run&quot;,
-    &quot;Application.MathFunctionsTest.executor&quot;: &quot;Run&quot;,
-    &quot;Application.ParametricFunctionPanel.executor&quot;: &quot;Run&quot;,
-    &quot;Application.PawnPromotionDialog.executor&quot;: &quot;Run&quot;,
-    &quot;Application.PawnPromotionPanel.executor&quot;: &quot;Run&quot;,
-    &quot;Application.RangePanel.executor&quot;: &quot;Run&quot;,
-    &quot;Application.RotateApp.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Run.executor&quot;: &quot;Run&quot;,
-    &quot;Application.SteppingSliderUI.executor&quot;: &quot;Run&quot;,
-    &quot;Application.StockfishBot.executor&quot;: &quot;Run&quot;,
-    &quot;Application.StockfishProcessor.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Styles.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Test.executor&quot;: &quot;Run&quot;,
-    &quot;Application.TestButton.executor&quot;: &quot;Run&quot;,
-    &quot;Application.TestLabel.executor&quot;: &quot;Run&quot;,
-    &quot;Application.chess.executor&quot;: &quot;Run&quot;,
-    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;false&quot;,
-    &quot;JUnit.MathFunctionsTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ParsingResultTest.executor&quot;: &quot;Run&quot;,
-    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
-    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
-    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;TestNG.MathFunctionsTest.executor&quot;: &quot;Run&quot;,
-    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit4&quot;,
-    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit4&quot;: &quot;&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/666/Downloads/Stockfish-Java-master&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.44921467&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;aDefault&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.projectsettings.compiler.javacompiler&quot;,
-    &quot;settings.editor.splitter.proportion&quot;: &quot;0.24664879&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "Application.AboutFrame.executor": "Run",
+    "Application.AdvancedEvaluator.executor": "Run",
+    "Application.AnimationExample.executor": "Run",
+    "Application.BasicGrapher.executor": "Run",
+    "Application.BasicParametricFunctionPanel.executor": "Run",
+    "Application.Board.executor": "Run",
+    "Application.BooleanVector.executor": "Run",
+    "Application.C.executor": "Debug",
+    "Application.Calculator.executor": "Run",
+    "Application.Chess.executor": "Run",
+    "Application.ChoiceBox.executor": "Run",
+    "Application.ColorUtilities.executor": "Run",
+    "Application.Constructor.executor": "Run",
+    "Application.ConstructorHandler.executor": "Run",
+    "Application.Demo.executor": "Run",
+    "Application.ExitPanel.executor": "Run",
+    "Application.FunctionPanel.executor": "Run",
+    "Application.Graph.executor": "Run",
+    "Application.Grapher.executor": "Run",
+    "Application.Grid.executor": "Run",
+    "Application.HelpFrame.executor": "Run",
+    "Application.IndexedMap.executor": "Run",
+    "Application.InputFunctionPanel.executor": "Run",
+    "Application.InputFunctionPanel0.executor": "Run",
+    "Application.KeyTypeListener.executor": "Run",
+    "Application.M.executor": "Run",
+    "Application.Main.executor": "Run",
+    "Application.MathFunctions.executor": "Run",
+    "Application.MathFunctionsDescriptionsFrame.executor": "Run",
+    "Application.MathFunctionsTest.executor": "Run",
+    "Application.ParametricFunctionPanel.executor": "Run",
+    "Application.Parser.executor": "Run",
+    "Application.PawnPromotionDialog.executor": "Run",
+    "Application.PawnPromotionPanel.executor": "Run",
+    "Application.RangePanel.executor": "Run",
+    "Application.RotateApp.executor": "Run",
+    "Application.Run.executor": "Run",
+    "Application.SteppingSliderUI.executor": "Run",
+    "Application.StockfishBot.executor": "Run",
+    "Application.StockfishProcessor.executor": "Run",
+    "Application.Styles.executor": "Run",
+    "Application.Test.executor": "Run",
+    "Application.TestButton.executor": "Run",
+    "Application.TestLabel.executor": "Run",
+    "Application.Unnamed.executor": "Run",
+    "Application.Utils.executor": "Run",
+    "Application.chess.executor": "Run",
+    "Application.grapher.executor": "Run",
+    "Downloaded.Files.Path.Enabled": "false",
+    "JUnit.MathFunctionsTest.executor": "Run",
+    "JUnit.ParsingResultTest.executor": "Run",
+    "Repository.Attach.Annotations": "false",
+    "Repository.Attach.JavaDocs": "false",
+    "Repository.Attach.Sources": "false",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "TestNG.MathFunctionsTest.executor": "Run",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit4",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit4": "",
+    "git-widget-placeholder": "master",
+    "kotlin-language-version-configured": "true",
+    "last_directory_selection": "C:/Users/666/IdeaProjects/Project/src/main/java/ru/grapher",
+    "last_opened_file_path": "C:/Users/666/Downloads/Stockfish-Java-master",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.44921467",
+    "run.code.analysis.last.selected.profile": "aDefault",
+    "settings.editor.selected.configurable": "reference.projectsettings.compiler.javacompiler",
+    "settings.editor.splitter.proportion": "0.24664879"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
+      <recent name="ru.grapher.menu" />
       <recent name="ru.chess.model" />
       <recent name="ru.chess.bot" />
       <recent name="ru.chess" />
       <recent name="ru.grapher" />
     </key>
     <key name="MoveMembersDialog.RECENTS_KEY">
+      <recent name="ru.grapher.addbutton.Utilities" />
+      <recent name="ru.grapher.slider.CoefficientSlider" />
+      <recent name="ru.grapher.Compute" />
+      <recent name="ru.grapher.ParametricFunctionPanel.Style" />
       <recent name="ru.chess.model.Presets" />
-      <recent name="ru.grapher.math.TokenBuffer" />
-      <recent name="ru.grapher.math.Token" />
-      <recent name="ru.chess.ChessGUI.Cell" />
-      <recent name="ru.grapher.Grapher.RunConfiguration" />
     </key>
     <key name="CreateTestDialog.Recents.Supers">
       <recent name="" />
@@ -203,18 +377,18 @@
       <recent name="C:\Users\666\IdeaProjects\Project\src\main\java\ru\grapher\images" />
     </key>
     <key name="MoveInnerDialog.RECENTS_KEY">
+      <recent name="ru.grapher.addbutton" />
+      <recent name="ru.grapher" />
       <recent name="ru.chess.bot" />
       <recent name="ru.chess.cell" />
       <recent name="ru.chess.model" />
-      <recent name="ru.grapher.math" />
-      <recent name="ru.grapher" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
-      <recent name="ru.chess" />
-      <recent name="ru.chess.constructor" />
-      <recent name="ru.chess.gui" />
-      <recent name="ru.chess.dialog" />
-      <recent name="ru.chess.position" />
+      <recent name="ru.grapher.core" />
+      <recent name="ru.grapher.addbutton.parametric" />
+      <recent name="ru.grapher.menu" />
+      <recent name="ru.grapher.addbutton" />
+      <recent name="ru.grapher.exit" />
     </key>
     <key name="CreateTestDialog.RecentsKey">
       <recent name="ru.grapher" />

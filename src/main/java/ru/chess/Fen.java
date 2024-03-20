@@ -1,6 +1,5 @@
 package ru.chess;
 
-import ru.chess.label.Cell;
 import ru.chess.model.AbstractModel;
 import ru.chess.model.Model;
 

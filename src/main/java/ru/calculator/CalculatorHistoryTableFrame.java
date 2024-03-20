@@ -1,7 +1,7 @@
 package ru.calculator;
 
-import ru.grapher.GrapherGUI;
-import ru.grapher.menu.MathFunctionsDescriptionsFrameScrollBarUI;
+import ru.grapher.GUI;
+import ru.grapher.menuframe.MathFunctionsDescriptionsFrameScrollBarUI;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -106,7 +106,7 @@ public class CalculatorHistoryTableFrame extends JFrame {
     private static JTable createTable(String[][] data, String[] columnNames) {
         JTable table = new JTable(data, columnNames);
 
-        table.setFont(GrapherGUI.getDefaultFont(ROW_FONT_SIZE));
+        table.setFont(GUI.font(ROW_FONT_SIZE));
         table.setGridColor(Color.DARK_GRAY);
 
         table.setRowHeight(24);
@@ -121,8 +121,8 @@ public class CalculatorHistoryTableFrame extends JFrame {
 
         table.setModel(uneditable);
 
-        table.getTableHeader().setBackground(GrapherGUI.SCROLLBAR_BACK_COLOR);
-        table.getTableHeader().setFont(GrapherGUI.getDefaultFont(HEADER_FONT_SIZE));
+        table.getTableHeader().setBackground(GUI.SCROLLBAR_BACK_COLOR);
+        table.getTableHeader().setFont(GUI.font(HEADER_FONT_SIZE));
         table.getTableHeader().setBorder(BorderFactory.createStrokeBorder(new BasicStroke(0.8f)));
 
         table.getColumnModel().getColumn(0).setPreferredWidth(EXPRESSION_WIDTH);

@@ -18,6 +18,8 @@ public class LinearAnimator extends Animator {
 
     @Override
     protected Timer timer() {
+        model.botMoveOngoing = true;
+
         int delay = 0;
 
         final int[] fromX = {start.x};
