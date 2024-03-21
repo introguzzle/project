@@ -107,10 +107,12 @@ public final class MathParser implements MathConstants {
                     tokenList.add(new Token(TokenType.LEFT_BRACKET, character));
                     pos++;
                     stack.push(character);
+
                     continue;
                 case ')':
                     tokenList.add(new Token(TokenType.RIGHT_BRACKET, character));
                     pos++;
+
                     if (stack.isEmpty())
                         throw new MathParserTokenizeException("Illegal brackets");
                     else
@@ -125,16 +127,17 @@ public final class MathParser implements MathConstants {
                     pos++;
                     continue;
                 case '*':
-                    if (expression.charAt(pos + 1) == '*') {
+                    if (pos + 1 != expression.length() && expression.charAt(pos + 1) == '*') {
                         tokenList.add(new Token(
                                 TokenType.OPERATOR_EXP,
-                                String.valueOf(character) + String.valueOf(expression.charAt(pos + 1)))
+                                character + String.valueOf(expression.charAt(pos + 1)))
                         );
                         pos += 2;
                     } else {
                         tokenList.add(new Token(TokenType.OPERATOR_MUL, character));
                         pos++;
                     }
+
                     continue;
                 case '/':
                     tokenList.add(new Token(TokenType.OPERATOR_DIV, character));

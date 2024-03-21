@@ -120,8 +120,8 @@ class ParametricFunctionPanel extends StatelessParametricFunctionPanel {
     private void checkValues() {
         ready = !coefficientMap.containsValue(null);
 
-        ready &= firstResult.value != ParsingResult.ERROR
-                && secondResult.value != ParsingResult.ERROR;
+        ready &= (firstResult.value != ParsingResult.ERROR
+                && secondResult.value != ParsingResult.ERROR);
     }
 
     private void updateOnFunctions() {
@@ -192,6 +192,9 @@ class ParametricFunctionPanel extends StatelessParametricFunctionPanel {
                     otherResult.value != ParsingResult.PARAMETRIC_FUNCTION_WITH_PARAMETERS)
                 choiceBox.clear();
         }
+
+        firstResult.value  = MathParser.getParsingResult(xTextField.getText());
+        secondResult.value = MathParser.getParsingResult(yTextField.getText());
 
         updateCoefficients();
 

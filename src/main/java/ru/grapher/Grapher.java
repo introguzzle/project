@@ -52,9 +52,10 @@ public class Grapher extends StatelessGrapher {
 
     public Grapher() {
         super();
+
+        initComponentActions();
     }
 
-    @Override
     void initComponentActions() {
         this.initBoxActions();
         this.initButtonActions();
@@ -125,8 +126,6 @@ public class Grapher extends StatelessGrapher {
     }
 
     private void initKeyListener() {
-        this.addKeyListener(new GrapherKeyListener(this));
-
         this.addKeyListener(new KeyAdapter() {
             public void shift(boolean sign) {
                 coefficientSlider.setValue(coefficientSlider.getValue() + (sign ? 1 : -1));
@@ -152,6 +151,8 @@ public class Grapher extends StatelessGrapher {
                 }
             }
         });
+
+        this.addKeyListener(new GrapherKeyListener(this));
     }
 
     private void initButtonActions() {
@@ -215,16 +216,11 @@ public class Grapher extends StatelessGrapher {
                 String description = entry.getKey().getDescription();
 
                 if (description.contains("x(t)")) {
-                    String x = description.substring(
-                            description.indexOf("=") + 2,
-                            description.indexOf("y(t)") - 2);
-
-                    String y = description.substring(description.lastIndexOf("=") + 2);
-
-                    series = Compute.createParametricXYSeriesRealTimeStream(x, y, coefficientMap);
+                    String[] t = resolveParametricFunction(description);
+                    series = Compute.createParametricXYSeries(t, coefficientMap);
 
                 } else {
-                    series = Compute.createXYSeriesRealTimeStream(description, coefficientMap);
+                    series = Compute.createXYSeries(description, coefficientMap);
                 }
 
                 currentXYSeriesCollection.addSeries(series);
@@ -232,5 +228,15 @@ public class Grapher extends StatelessGrapher {
 
             }
         }
+    }
+
+    private static String[] resolveParametricFunction(String description) {
+        String x = description.substring(
+                    description.indexOf("=") + 2,
+                    description.indexOf("y(t)") - 2);
+
+        String y = description.substring(description.lastIndexOf("=") + 2);
+
+        return new String[] {x, y};
     }
 }

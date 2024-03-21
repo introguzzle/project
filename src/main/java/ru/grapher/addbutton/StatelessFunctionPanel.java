@@ -66,14 +66,11 @@ abstract class StatelessFunctionPanel extends LinkedPanel {
         super();
 
         initLayout();
-        initComponentActions();
     }
 
     public Map<String, Double> getCoefficientMap() {
         return this.coefficientMap;
     }
-
-    abstract void initComponentActions();
 
     private void initLayout() {
         GroupLayout layout = new GroupLayout(this);

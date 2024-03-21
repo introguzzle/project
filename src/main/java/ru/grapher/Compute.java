@@ -53,8 +53,8 @@ public final class Compute {
     }
 
     public static
-    XYSeries createXYSeriesRealTimeStream(final String function,
-                                          final Map<String, Double> coefficientMap) {
+    XYSeries createXYSeries(final String function,
+                            final Map<String, Double> coefficientMap) {
         XYSeries series = new XYSeries(function, true, true);
         series.setDescription(function);
 
@@ -70,10 +70,15 @@ public final class Compute {
     }
 
     public static
-    XYSeries createParametricXYSeriesRealTimeStream(final String xt,
-                                                    final String yt,
-                                                    final Map<String, Double> coefficientMap) {
+    XYSeries createParametricXYSeries(final String[] f,
+                                      final Map<String, Double> coefficientMap) {
+        return createParametricXYSeries(f[0], f[1], coefficientMap);
+    }
 
+    public static
+    XYSeries createParametricXYSeries(final String xt,
+                                      final String yt,
+                                      final Map<String, Double> coefficientMap) {
         String key = "x(t) = " + xt + ", y(t) = " + yt;
 
         XYSeries series = new XYSeries(key, false, true);

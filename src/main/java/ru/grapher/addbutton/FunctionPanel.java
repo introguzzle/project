@@ -23,10 +23,11 @@ class FunctionPanel extends StatelessFunctionPanel {
     FunctionPanel() {
         super();
         this.setFocusTraversalKeysEnabled(false);
+
+        initComponentActions();
     }
 
-    @Override
-    void initComponentActions() {
+    private void initComponentActions() {
         initFieldActions();
         initBoxActions();
         initButtonActions();

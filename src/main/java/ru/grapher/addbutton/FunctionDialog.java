@@ -34,7 +34,7 @@ public class FunctionDialog extends ActionInvokingDialog {
         Map<String, Double> coefficientMap = panel.getCoefficientMap();
 
         grapher.getCoefficientMap().putAll(coefficientMap);
-        grapher.addToXYSeriesCollection(Compute.createXYSeriesRealTimeStream(panel.getFunction(), coefficientMap));
+        grapher.addToXYSeriesCollection(Compute.createXYSeries(panel.getFunction(), coefficientMap));
         grapher.addCoefficients(coefficientMap);
     }
 }

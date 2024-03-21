@@ -63,8 +63,6 @@ abstract class StatelessGrapher extends JFrame {
         this.getContentPane().add(chartPanel);
         this.getContentPane().add(handlePanel);
 
-        this.initComponentActions();
-
         this.setupMenuBar();
         this.pack();
 
@@ -83,8 +81,6 @@ abstract class StatelessGrapher extends JFrame {
 
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     }
-
-    abstract void initComponentActions();
 
     private void initChart() {
         chart = ChartBuild.createChart(currentXYSeriesCollection);

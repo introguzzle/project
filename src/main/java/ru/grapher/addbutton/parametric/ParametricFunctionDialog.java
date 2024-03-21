@@ -30,7 +30,7 @@ public class ParametricFunctionDialog extends ActionInvokingDialog {
         Map<String, Double> coefficientMap = panel.getCoefficientMap();
 
         grapher.getCoefficientMap().putAll(coefficientMap);
-        grapher.addParametricToXYSeriesCollection(Compute.createParametricXYSeriesRealTimeStream(
+        grapher.addParametricToXYSeriesCollection(Compute.createParametricXYSeries(
                 panel.getFirstFunction(),
                 panel.getSecondFunction(),
                 coefficientMap
