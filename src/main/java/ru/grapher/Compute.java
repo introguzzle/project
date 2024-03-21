@@ -19,7 +19,7 @@ public final class Compute {
         throw new InstantiationException();
     }
 
-    private static final int PRECISION_DIGITS = 2;
+    private static final int    PRECISION_DIGITS = 2;
     private static final double COMPUTATION_BOUND = (double) ScopeSlider.DefaultConfiguration.
             SCOPE_DOMAIN_VALUES.getLast() * DEFAULT_X / 100.0;
 

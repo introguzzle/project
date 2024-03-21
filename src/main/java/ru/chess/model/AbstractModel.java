@@ -8,6 +8,9 @@ import ru.chess.model.animator.AcceleratingAnimator;
 import ru.chess.position.AbstractPosition;
 import ru.chess.position.Position;
 
+import javax.swing.*;
+import java.awt.*;
+
 public abstract class AbstractModel {
 
     public boolean botMoveOngoing;

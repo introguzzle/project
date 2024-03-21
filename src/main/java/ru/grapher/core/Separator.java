@@ -5,6 +5,10 @@ import java.awt.*;
 
 public class Separator extends JSeparator {
 
+    public Separator(Color color) {
+        this(color, color);
+    }
+
     public Separator(Color b, Color f) {
         super();
 

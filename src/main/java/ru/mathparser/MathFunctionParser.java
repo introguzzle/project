@@ -53,7 +53,7 @@ public final class MathFunctionParser {
             try {
                 String f = parse(function, bind(getCoefficients(function)), 1.0);
 
-                MathParser.parseNoHandling(f);
+                MathParser.uncheckedParse(f);
 
             } catch (MathParserException e) {
                 return false;
@@ -152,7 +152,7 @@ public final class MathFunctionParser {
                 if (cut.isEmpty() || cut.isBlank())
                     return false;
                 else
-                    MathParser.parseNoHandling(cut);
+                    MathParser.uncheckedParse(cut);
 
             } catch (Exception e) {
                 return false;

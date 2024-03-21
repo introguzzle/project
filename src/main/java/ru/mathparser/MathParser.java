@@ -29,7 +29,7 @@ public final class MathParser implements MathConstants {
         Throwable exception = null;
 
         try {
-            MathParser.parseNoHandling(MathParser.replaceConstants(expression));
+            MathParser.uncheckedParse(MathParser.replaceConstants(expression));
         } catch (MathParserException e) {
             exception = e;
         }
@@ -58,7 +58,7 @@ public final class MathParser implements MathConstants {
                         : ParsingResult.ERROR;
 
         try {
-            MathParser.parseNoHandling(MathParser.replaceConstants(expression));
+            MathParser.uncheckedParse(MathParser.replaceConstants(expression));
         } catch (MathParserException e) {
             return ParsingResult.ERROR;
         }
@@ -66,7 +66,7 @@ public final class MathParser implements MathConstants {
         return ParsingResult.ERROR;
     }
 
-    public static double parseNoHandling(final String expression) {
+    public static double uncheckedParse(final String expression) {
         var t = tokenize(replaceConstants(expression));
 
         return Syntax.expression(new TokenBuffer(t));

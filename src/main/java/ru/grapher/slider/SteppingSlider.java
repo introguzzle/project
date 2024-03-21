@@ -29,6 +29,7 @@ public abstract class SteppingSlider<T> extends JSlider {
         this.setSnapToTicks(true);
         this.setMajorTickSpacing(1);
         this.setFocusable(false);
+        this.setOrientation(JSlider.VERTICAL);
 
         this.domainValues = domainValues;
         this.size = domainValues.size();

@@ -15,12 +15,10 @@ import ru.grapher.slider.CoefficientSlider;
 
 import ru.mathparser.MathFunctionParser;
 
-import javax.swing.*;
-import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
-public class Grapher extends BasicGrapher {
+public class Grapher extends StatelessGrapher {
 
     public static final class RunConfiguration {
         public static final boolean ASK_CONFIRMATION        = true;
@@ -40,6 +38,12 @@ public class Grapher extends BasicGrapher {
         // so bound of computation is [-80, 80]
     }
 
+    double currentScope       = 1.0;
+    String currentCoefficient = null;
+
+    double xShift = 1.0;
+    double yShift = 1.0;
+
     double currentLowerY = -RunConfiguration.DEFAULT_Y;
     double currentUpperY = RunConfiguration.DEFAULT_Y;
 
@@ -51,20 +55,20 @@ public class Grapher extends BasicGrapher {
     }
 
     @Override
-    void initComponents() {
-        this.initBox();
-        this.initButtons();
-        this.initSliders();
+    void initComponentActions() {
+        this.initBoxActions();
+        this.initButtonActions();
+        this.initSliderActions();
 
         this.initWindowListener();
         this.initKeyListener();
     }
 
-    private void initBox() {
+    private void initBoxActions() {
         coefficientBox.setLinkedComponent(coefficientSlider);
     }
 
-    private void initSliders() {
+    private void initSliderActions() {
         MouseListener coefficientSliderMouseListener = new DelayedMouseListener((e) -> {
             if (coefficientSlider.isEnabled()) {
                 currentCoefficient = coefficientBox.getSelectedItem();
@@ -78,16 +82,6 @@ public class Grapher extends BasicGrapher {
         });
 
         coefficientSlider.addMouseListener(coefficientSliderMouseListener);
-
-        scopeSlider.setPaintLabels(true);
-        scopeSlider.setOrientation(JSlider.VERTICAL);
-        scopeSlider.setFocusable(false);
-        scopeSlider.setBackground(Color.WHITE);
-        scopeSlider.setThumbColor(Color.RED);
-        scopeSlider.setPreferredSize(new Dimension(20, GUI.SLIDER_HEIGHT));
-        scopeSlider.setForeground(Color.BLACK);
-        scopeSlider.setBorder(GUI.__UNIVERSAL_BORDER);
-        scopeSlider.setFont(GUI.font(12));
 
         scopeSlider.addChangeListener(e -> {
             currentScope = scopeSlider.getDomainValue() / 100.0;
@@ -160,7 +154,7 @@ public class Grapher extends BasicGrapher {
         });
     }
 
-    private void initButtons() {
+    private void initButtonActions() {
         addButton.addActionListener(this::addAction);
         clearButton.addActionListener(this::clearAction);
         resetButton.addActionListener(this::resetAction);
@@ -169,7 +163,7 @@ public class Grapher extends BasicGrapher {
     }
 
     private void calculatorAction(ActionEvent event) {
-        EventQueue.invokeLater(() -> new Calculator(this).setVisible(true));
+        Calculator.run(this);
     }
 
     private void rangeAction(ActionEvent event) {

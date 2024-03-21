@@ -33,7 +33,6 @@ public class AcceleratingAnimator extends Animator {
         return new Timer(0, (event) -> {
             // Will not stop at 1, that's why its max is approx 1.6 or 1.7,
             // since max distance is basically movement from a1 to h8
-
             double multiplier = scale(distance[0], startDistance);
 
             dx[0] += xDelta[0] * multiplier;

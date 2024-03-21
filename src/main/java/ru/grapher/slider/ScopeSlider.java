@@ -3,6 +3,7 @@ package ru.grapher.slider;
 import ru.grapher.GUI;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
@@ -19,6 +20,16 @@ public class ScopeSlider extends SteppingSlider<Integer> {
                 ScopeSlider.DefaultConfiguration.SCOPE_DOMAIN_VALUES.size() / 2,
                 PAINT_TICKS
         );
+
+        this.setBackground(Color.WHITE);
+        this.setForeground(Color.BLACK);
+
+        this.setThumbColor(Color.RED);
+
+        this.setPreferredSize(new Dimension(20, GUI.SLIDER_HEIGHT));
+
+        this.setBorder(GUI.__UNIVERSAL_BORDER);
+        this.setFont(GUI.font(12));
     }
 
     public ScopeSlider(final List<Integer> domainValues,
@@ -46,6 +57,10 @@ public class ScopeSlider extends SteppingSlider<Integer> {
                         1000
                 )
         );
+    }
+
+    public static ScopeSlider createDefault() {
+        return new ScopeSlider();
     }
 
     public static final class Utilities {

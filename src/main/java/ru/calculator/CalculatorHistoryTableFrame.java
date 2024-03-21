@@ -11,10 +11,9 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
-public class CalculatorHistoryTableFrame extends JFrame {
+class CalculatorHistoryTableFrame extends JFrame {
 
     private record TableElement(String expression, String result, Date date) {
-
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
@@ -29,27 +28,28 @@ public class CalculatorHistoryTableFrame extends JFrame {
         }
     }
 
-    private static final int WIDTH  = 800;
-    private static final int HEIGHT = 700;
+    static final int WIDTH  = 800;
+    static final int HEIGHT = 700;
 
-    private static final int EXPRESSION_WIDTH   = 550;
-    private static final int DATE_WIDTH         = 100;
-    private static final int RESULT_WIDTH       = WIDTH - EXPRESSION_WIDTH - DATE_WIDTH;
+    static final int EXPRESSION_WIDTH   = 550;
+    static final int DATE_WIDTH         = 100;
+    static final int RESULT_WIDTH       = WIDTH - EXPRESSION_WIDTH - DATE_WIDTH;
 
-    private static final int HEADER_FONT_SIZE   = 14;
-    private static final int ROW_FONT_SIZE      = 18;
+    static final int HEADER_FONT_SIZE   = 14;
+    static final int ROW_FONT_SIZE      = 18;
 
-    private static final Dimension DIMENSION =
+    static final Dimension DIMENSION =
             new Dimension(WIDTH, HEIGHT);
 
-    private final ArrayList<TableElement> elementList;
+    final ArrayList<TableElement> elementList;
 
-    private final SimpleDateFormat DATE_FORMAT;
+    final SimpleDateFormat DATE_FORMAT;
 
-    public CalculatorHistoryTableFrame(List<String> exprHistory,
-                                       List<String> resultHistory,
-                                       List<Date> dates,
-                                       SimpleDateFormat dateFormat) {
+    CalculatorHistoryTableFrame(List<String> exprHistory,
+                                List<String> resultHistory,
+                                List<Date> dates,
+                                SimpleDateFormat dateFormat) {
+        super("History");
 
         Collections.reverse(exprHistory);
         Collections.reverse(resultHistory);
@@ -69,6 +69,13 @@ public class CalculatorHistoryTableFrame extends JFrame {
         elementList.sort((o1, o2) -> o2.date.compareTo(o1.date));
 
         initComponents();
+        initFrame();
+    }
+
+    private void initFrame() {
+        this.setLocationRelativeTo(null);
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.setAlwaysOnTop(true);
     }
 
     private void initComponents() {

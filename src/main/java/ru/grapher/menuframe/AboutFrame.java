@@ -1,12 +1,9 @@
 package ru.grapher.menuframe;
 
-import ru.grapher.core.HyperlinkAdapter;
+import ru.grapher.core.BrowserRedirector;
 
 import javax.swing.*;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.text.BadLocationException;
 import java.awt.*;
-import java.net.URI;
 import java.util.Map;
 
 public class AboutFrame extends InformationFrame {
@@ -84,7 +81,7 @@ public class AboutFrame extends InformationFrame {
         this.remove(exitButton);
         this.remove(showButton);
 
-        this.textPane.addHyperlinkListener(new HyperlinkAdapter(Map.of(
+        this.textPane.addHyperlinkListener(new BrowserRedirector(Map.of(
                 "stackoverflow.com", "http://stackoverflow.com"
         )));
     }

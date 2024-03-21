@@ -20,9 +20,10 @@ public final class GUI {
     public static final int    SLIDER_HEIGHT    = 366;
 
     public static final String LOGO_PATH = ".\\src\\main\\java\\ru\\grapher\\images\\logo.jpg";
-    public static final Image  LOGO = new ImageIcon(LOGO_PATH).getImage();
+    public static final Image  LOGO      = new ImageIcon(LOGO_PATH).getImage();
 
-    public static final int    SLIDER_FONT_SIZE = 13;
+    public static final int    SLIDER_FONT_SIZE     = 13;
+
     public static final double DIMENSION_MULTIPLIER = 1.2;
 
     public static final Border __UNIVERSAL_BORDER      = new CompoundBorder(

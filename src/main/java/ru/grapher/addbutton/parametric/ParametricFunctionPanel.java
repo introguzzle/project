@@ -18,7 +18,7 @@ import javax.swing.event.DocumentListener;
 /**
  * Should be accessed only via dialog in same package
  */
-class ParametricFunctionPanel extends BasicParametricFunctionPanel {
+class ParametricFunctionPanel extends StatelessParametricFunctionPanel {
 
     static final class Result {
         ParsingResult value;

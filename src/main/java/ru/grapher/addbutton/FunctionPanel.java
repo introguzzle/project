@@ -14,28 +14,25 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-class FunctionPanel extends BasicFunctionPanel {
+class FunctionPanel extends StatelessFunctionPanel {
 
     boolean        ready             = false;
     boolean        coefficientsExist = false;
     ParsingResult  result            = ParsingResult.ERROR;
 
-    final HashMap<String, Double> coefficientMap = new HashMap<>();
-
     FunctionPanel() {
         super();
         this.setFocusTraversalKeysEnabled(false);
-
-        initComponents();
     }
 
-    private void initComponents() {
-        initFields();
-        initBox();
-        initButtons();
+    @Override
+    void initComponentActions() {
+        initFieldActions();
+        initBoxActions();
+        initButtonActions();
     }
 
-    private void initBox() {
+    private void initBoxActions() {
         choiceCoefficientBox.addActionListener(e -> {
             String t = String.valueOf(coefficientMap.get(choiceCoefficientBox.getSelectedItem()));
 
@@ -48,7 +45,7 @@ class FunctionPanel extends BasicFunctionPanel {
 
     }
 
-    private void initFields() {
+    private void initFieldActions() {
         DocumentListener coefficientDocumentListener
                 = new DocumentChangeListener(this::updateOnCoefficients);
 
@@ -70,7 +67,7 @@ class FunctionPanel extends BasicFunctionPanel {
         this.updateOnFunction();
     }
 
-    private void initButtons() {
+    private void initButtonActions() {
         exitButton.addActionListener(this::exitAction);
         generateButton.addActionListener(this::generateAction);
         confirmButton.addActionListener(this::confirmAction);
@@ -198,19 +195,7 @@ class FunctionPanel extends BasicFunctionPanel {
         confirmButton.setEnabled(this.ready);
     }
 
-    public Map<String, Double> getCoefficientMap() {
-        return this.coefficientMap;
-    }
-
     public String getFunction() {
         return this.functionTextField.getText();
-    }
-
-
-    public static void main(String[] args) {
-        JFrame f = new JFrame();
-        f.add(new FunctionPanel());
-        f.pack();
-        f.setVisible(true);
     }
 }
