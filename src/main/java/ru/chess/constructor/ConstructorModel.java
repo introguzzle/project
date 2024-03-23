@@ -13,11 +13,10 @@ import ru.chess.position.Position;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class ConstructorModel extends AbstractModel {
+class ConstructorModel extends AbstractModel {
 
     public final int vertical;
     public final int horizontal;
@@ -26,7 +25,7 @@ public class ConstructorModel extends AbstractModel {
     private final JTextField textField;
     private final JTextField fenTextField;
 
-    public ConstructorModel(int vertical, int horizontal) {
+    ConstructorModel(int vertical, int horizontal) {
         super(vertical, horizontal);
 
         this.vertical   = vertical;

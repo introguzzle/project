@@ -39,21 +39,21 @@ public class EvaluationBar extends JPanel {
     @Override
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        GUI.setQuality(g2d, 2);
+        g2d.setRenderingHints(GUI.Q_RENDERING_HINTS);
         super.paint(g2d);
 
         int divisor = (int) (HEIGHT * (1.0 - normalize()));
 
-        Rectangle white = new Rectangle(0, divisor, WIDTH, HEIGHT);
-        Rectangle black = new Rectangle(0, 0, WIDTH, divisor);
+        Rectangle WHITE_RECTANGLE = new Rectangle(0, divisor, WIDTH, HEIGHT);
+        Rectangle BLACK_RECTANGLE = new Rectangle(0, 0, WIDTH, divisor);
 
         g2d.setColor(WHITE_COLOR);
-        g2d.draw(white);
-        g2d.fill(white);
+        g2d.draw(WHITE_RECTANGLE);
+        g2d.fill(WHITE_RECTANGLE);
 
         g2d.setColor(BLACK_COLOR);
-        g2d.draw(black);
-        g2d.fill(black);
+        g2d.draw(BLACK_RECTANGLE);
+        g2d.fill(BLACK_RECTANGLE);
 
         g2d.setColor(Color.BLACK);
 

@@ -7,28 +7,26 @@ import ru.chess.label.DynamicLabel;
 import javax.swing.*;
 import java.awt.*;
 
-public class ConstructorSettingsDialog extends JDialog {
+class ConstructorSettingsDialog extends JDialog {
 
-    public static final Font      FONT      = new Font("Arial", Font.PLAIN, 20);
-    public static final Dimension DIMENSION = new Dimension(200, 80);
+    static final Font      FONT      = new Font("Arial", Font.PLAIN, 20);
+    static final Dimension DIMENSION = new Dimension(200, 80);
 
-    public boolean valid = false;
+    boolean valid = false;
 
     private final ConstructorSettingsPanel panel;
 
-    public DynamicLabel label;
+    int difficulty;
+    int timeToMove;
 
-    public int difficulty;
-    public int timeToMove;
-
-    public ConstructorSettingsDialog(JFrame owner) {
+    ConstructorSettingsDialog(JFrame owner) {
         super(owner, true);
 
         this.setLayout(new FlowLayout());
 
         panel = new ConstructorSettingsPanel(this);
 
-        label = new DynamicLabel(
+        DynamicLabel label = new DynamicLabel(
                 this.getBackground(),
                 Color.GREEN.darker(),
                 ImageReader.get("Play", Board.DIMENSION_CELL),

@@ -1,15 +1,15 @@
 package ru.chess.gui;
 
 import ru.chess.position.Position;
-import ru.chess.label.BlackCell;
 import ru.chess.label.Cell;
 import ru.chess.label.WhiteCell;
 import ru.utils.ColorUtilities;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Iterator;
 
-public class Board extends JPanel {
+public class Board extends JPanel implements Iterable<Cell> {
 
     public static int HORIZONTAL_BOUND;
     public static int VERTICAL_BOUND;
@@ -19,9 +19,9 @@ public class Board extends JPanel {
 
     public Cell[][]  cells;
 
-    private ImageIcon activePieceImage;
-    private Point     drawingPoint;
-    private boolean   drawPiece;
+    ImageIcon activePieceImage;
+    Point     drawingPoint;
+    boolean   drawPiece;
 
     public Board(int vertical, int horizontal) {
         super();
@@ -33,34 +33,12 @@ public class Board extends JPanel {
 
         DIMENSION_WINDOW = new Dimension(
                 (int) (DIMENSION_CELL.getWidth()  * HORIZONTAL_BOUND),
-                (int) (DIMENSION_CELL.getHeight() * VERTICAL_BOUND));
+                (int) (DIMENSION_CELL.getHeight() * VERTICAL_BOUND)
+        );
 
         this.cells = new Cell[VERTICAL_BOUND][HORIZONTAL_BOUND];
 
         init();
-    }
-
-    public Cell getCell(Position position) {
-        return this.cells[position.getHeight()][position.getWidth()];
-    }
-
-    public static Cell[][] createCellMatrix() {
-        Cell[][] cells = new Cell[VERTICAL_BOUND][HORIZONTAL_BOUND];
-
-        for (int h = 0; h < VERTICAL_BOUND; h++) {
-            for (int w = 0; w < HORIZONTAL_BOUND; w++) {
-                if (Math.floorMod(h, 2) == 0)
-                    cells[h][w] = Math.floorMod(w, 2) == 0
-                            ? new WhiteCell(new Position(h, w))
-                            : new BlackCell(new Position(h, w));
-                else
-                    cells[h][w] = Math.floorMod(w, 2) == 1
-                            ? new WhiteCell(new Position(h, w))
-                            : new BlackCell(new Position(h, w));
-            }
-        }
-
-        return cells;
     }
 
     private void init() {
@@ -76,46 +54,11 @@ public class Board extends JPanel {
         }
     }
 
-    public static void paintFontOutline(Graphics2D g2d,
-                                 String     string,
-                                 int        fx,
-                                 int        fy,
-                                 int        outlineWidth,
-                                 Color      outlineColor) {
-        Color oldColor = g2d.getColor();
-        Font  oldFont  = g2d.getFont();
-
-        g2d.setColor(outlineColor);
-
-        g2d.drawString(string, fx - outlineWidth, fy - outlineWidth);
-        g2d.drawString(string, fx - outlineWidth, fy + outlineWidth);
-        g2d.drawString(string, fx + outlineWidth, fy - outlineWidth);
-        g2d.drawString(string, fx + outlineWidth, fy + outlineWidth);
-
-        g2d.setColor(oldColor);
-        g2d.setFont(oldFont);
+    public static Cell[][] createCellMatrix() {
+        return BoardSupport.createCellMatrix(VERTICAL_BOUND, HORIZONTAL_BOUND);
     }
 
-    public static void paintFontShadow(Graphics2D g2d,
-                                       String     string,
-                                       int        fx,
-                                       int        fy,
-                                       int        shadowWidth,
-                                       Color      shadowColor) {
-        Color old = g2d.getColor();
-
-        g2d.setColor(shadowColor);
-        g2d.drawString(string, fx + shadowWidth, fy);
-        g2d.drawString(string, fx, fy + shadowWidth);
-        g2d.drawString(string, fx - shadowWidth, fy);
-        g2d.drawString(string, fx, fy - shadowWidth );
-
-        g2d.setColor(old);
-    }
-
-    public void paintNotation(Graphics2D g2d) {
-        GUI.setQuality(g2d, 2);
-
+    private void paintNotation(Graphics2D g2d) {
         Font font = GUI.Adapter.getFittingFont(
                 cells[0][0],
                 g2d,
@@ -139,7 +82,7 @@ public class Board extends JPanel {
                     ? ColorUtilities.darken(GUI.Cell.WHITE_COLOR, 0.5)
                     : ColorUtilities.darken(GUI.Cell.BLACK_COLOR, 0.5);
 
-            paintFontOutline(g2d, s, dx, dy, 1, shadowColor);
+            BoardDraw.paintFontOutline(g2d, s, dx, dy, 1, shadowColor);
             g2d.drawString(s, dx, dy);
         }
 
@@ -158,7 +101,7 @@ public class Board extends JPanel {
                     ? ColorUtilities.darken(GUI.Cell.WHITE_COLOR, 0.5)
                     : ColorUtilities.darken(GUI.Cell.BLACK_COLOR, 0.5);
 
-            paintFontOutline(g2d, s, dx, dy, 1, shadowColor);
+            BoardDraw.paintFontOutline(g2d, s, dx, dy, 1, shadowColor);
             g2d.drawString(pos.getChessPosition().substring(0, 1), dx, dy);
         }
     }
@@ -166,7 +109,7 @@ public class Board extends JPanel {
     @Override
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        GUI.setQuality(g2d, 2);
+        g2d.setRenderingHints(GUI.Q_RENDERING_HINTS);
 
         super.paint(g2d);
 
@@ -180,6 +123,42 @@ public class Board extends JPanel {
         }
 
         this.paintNotation(g2d);
+    }
+
+    @Override
+    public Iterator<Cell> iterator() {
+        return new It();
+    }
+
+    private class It implements Iterator<Cell> {
+        int h = 0;
+        int w = 0;
+
+        @Override
+        public boolean hasNext() {
+            return h < VERTICAL_BOUND && w < HORIZONTAL_BOUND;
+        }
+
+        @Override
+        public Cell next() {
+            Cell nextCell = cells[h][w];
+
+            w++;
+            reset();
+
+            return nextCell;
+        }
+
+        private void reset() {
+            if (w >= HORIZONTAL_BOUND) {
+                w = 0;
+                h++;
+            }
+        }
+    }
+
+    public Cell getCell(Position position) {
+        return this.cells[position.getHeight()][position.getWidth()];
     }
 
     public ImageIcon getActivePieceImage() {

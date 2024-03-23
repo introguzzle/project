@@ -66,14 +66,13 @@ public final class MathParser implements MathConstants {
         return ParsingResult.ERROR;
     }
 
-    public static double uncheckedParse(final String expression) {
+    public static double uncheckedParse(final String expression) throws MathParserException {
         var t = tokenize(replaceConstants(expression));
 
         return Syntax.expression(new TokenBuffer(t));
     }
 
     public static double parse(final String expression) {
-
         List<Token> tokenList = new ArrayList<>();
         try {
             tokenList = tokenize(replaceConstants(expression));
@@ -89,7 +88,7 @@ public final class MathParser implements MathConstants {
 
         }
 
-        return 0;
+        return Double.NaN;
     }
 
     private static List<Token> tokenize(String expression) {

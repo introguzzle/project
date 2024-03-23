@@ -85,7 +85,7 @@ public class Constructor extends JFrame {
         };
     }
 
-    public ConstructorModel getModel() {
+    ConstructorModel getModel() {
         return this.model;
     }
 }

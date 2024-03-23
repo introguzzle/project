@@ -117,8 +117,12 @@ public class Model extends AbstractModel {
         evaluationBar.setValue(evaluate());
     }
 
+    public List<Position> generateMoves(int i, int j) {
+        return generateMoves(getCell(i, j));
+    }
+
     public List<Position> generateMoves(Position position) {
-        return generateMoves(board.getCell(position));
+        return generateMoves(getCell(position));
     }
 
     public List<Position> generateMoves(Cell cell) {
@@ -191,9 +195,9 @@ public class Model extends AbstractModel {
     }
 
     public boolean isOver() {
-        return this.state == State.STALEMATE
-                || this.state == State.CHECKMATE_TO_WHITE
-                || this.state == State.CHECKMATE_TO_BLACK;
+        return state == State.STALEMATE
+                || state == State.CHECKMATE_TO_WHITE
+                || state == State.CHECKMATE_TO_BLACK;
     }
 
     private void undoMove() {
@@ -228,8 +232,8 @@ public class Model extends AbstractModel {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            this.model.undoMove();
-            this.model.getBoard().repaint();
+            model.undoMove();
+            model.getBoard().repaint();
         }
     }
 }

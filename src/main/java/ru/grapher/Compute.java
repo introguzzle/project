@@ -40,7 +40,7 @@ public final class Compute {
     parametricCompute(final String expression,
                       final double value,
                       final Map<String, Double> coefficientMap) {
-        String r = MathFunctionParser.Parametric.parse(expression, coefficientMap, value);
+        String r = MathFunctionParser.Parametric.transform(expression, coefficientMap, value);
         return MathParser.parse(r);
     }
 
@@ -48,7 +48,7 @@ public final class Compute {
     compute(final String expression,
             final double value,
             final Map<String, Double> coefficientMap) {
-        String r = MathFunctionParser.Explicit.parse(expression, coefficientMap, value);
+        String r = MathFunctionParser.Explicit.transform(expression, coefficientMap, value);
         return MathParser.parse(r);
     }
 

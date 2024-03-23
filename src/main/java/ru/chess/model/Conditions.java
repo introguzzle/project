@@ -61,44 +61,41 @@ public final class Conditions {
     }
 
     public static void updateCastling(Model model) {
-        for (int i = 0; i < VERTICAL_BOUND; i++)
-            for (int j = 0; j < HORIZONTAL_BOUND; j++) {
-                Cell cell = model.getBoard().cells[i][j];
+        for (Cell cell: model) {
+            if (cell.pieceType == PieceType.WHITE_KING) {
+                List<Position> whiteKingPositions = model.generateMoves(cell);
 
-                if (cell.pieceType == PieceType.WHITE_KING) {
-                    List<Position> whiteKingPositions = model.generateMoves(cell);
+                for (Position p: whiteKingPositions) {
+                    if (p.getWidth() - cell.getPosition().getWidth() == -2
+                            && p.getHeight() == Model.VERTICAL_BOUND - 1)
+                        if (!model.castling.contains("Q"))
+                            model.castling = model.castling.concat("Q");
 
-                    for (Position p: whiteKingPositions) {
-                        if (p.getWidth() - cell.getPosition().getWidth() == -2
-                                && p.getHeight() == Model.VERTICAL_BOUND - 1)
-                            if (!model.castling.contains("Q"))
-                                model.castling = model.castling.concat("Q");
-
-                        if (p.getWidth() - cell.getPosition().getWidth() == 2
-                                && p.getHeight() == Model.VERTICAL_BOUND - 1)
-                            if (!model.castling.contains("K"))
-                                model.castling = model.castling.concat("K");
-                    }
-                }
-
-                if (cell.pieceType == PieceType.BLACK_KING) {
-                    List<Position> blackKingPositions = model.generateMoves(cell);
-
-                    for (Position p: blackKingPositions) {
-                        if (p.getWidth() - cell.getPosition().getWidth() == -2
-                                && p.getHeight() == 0)
-
-                            if (!model.castling.contains("q"))
-                                model.castling = model.castling.concat("q");
-
-                        if (p.getWidth() - cell.getPosition().getWidth() == 2
-                                && p.getHeight() == 0)
-
-                            if (!model.castling.contains("k"))
-                                model.castling = model.castling.concat("k");
-                    }
+                    if (p.getWidth() - cell.getPosition().getWidth() == 2
+                            && p.getHeight() == Model.VERTICAL_BOUND - 1)
+                        if (!model.castling.contains("K"))
+                            model.castling = model.castling.concat("K");
                 }
             }
+
+            if (cell.pieceType == PieceType.BLACK_KING) {
+                List<Position> blackKingPositions = model.generateMoves(cell);
+
+                for (Position p: blackKingPositions) {
+                    if (p.getWidth() - cell.getPosition().getWidth() == -2
+                            && p.getHeight() == 0)
+
+                        if (!model.castling.contains("q"))
+                            model.castling = model.castling.concat("q");
+
+                    if (p.getWidth() - cell.getPosition().getWidth() == 2
+                            && p.getHeight() == 0)
+
+                        if (!model.castling.contains("k"))
+                            model.castling = model.castling.concat("k");
+                }
+            }
+        }
     }
 
     public static void executeCastling(Model model, Move move) {
@@ -124,7 +121,7 @@ public final class Conditions {
             if (newKingPosition.equals(model.whiteKingPosition.right().right())) {
                 Move rookMove = new Move(model.whiteRightRookPosition, newKingPosition.left(), PieceType.WHITE_ROOK);
 
-                model.getBoard().getCell(newKingPosition.left()).pieceType = PieceType.WHITE_ROOK;
+                model.getCell(newKingPosition.left()).pieceType = PieceType.WHITE_ROOK;
                 model.movePiece(rookMove, L.done(model, move));
 
                 model.castling = model.castling.replace("K", "");
@@ -134,7 +131,7 @@ public final class Conditions {
             if (newKingPosition.equals(model.whiteKingPosition.left().left())) {
                 Move rookMove = new Move(model.whiteLeftRookPosition, newKingPosition.right(), PieceType.WHITE_ROOK);
 
-                model.getBoard().getCell(newKingPosition.right()).pieceType = PieceType.WHITE_ROOK;
+                model.getCell(newKingPosition.right()).pieceType = PieceType.WHITE_ROOK;
                 model.movePiece(rookMove, L.done(model, move));
 
                 model.castling = model.castling.replace("Q", "");
@@ -146,7 +143,7 @@ public final class Conditions {
 
                 Move rookMove = new Move(model.blackRightRookPosition, newKingPosition.left(), PieceType.BLACK_ROOK);
 
-                model.getBoard().getCell(newKingPosition.left()).pieceType = PieceType.BLACK_ROOK;
+                model.getCell(newKingPosition.left()).pieceType = PieceType.BLACK_ROOK;
                 model.movePiece(rookMove, L.done(model, move));
 
                 model.castling = model.castling.replace("k", "");
@@ -157,7 +154,7 @@ public final class Conditions {
 
                 Move rookMove = new Move(model.blackLeftRookPosition, newKingPosition.right(), PieceType.BLACK_ROOK);
 
-                model.getBoard().getCell(newKingPosition.right()).pieceType = PieceType.BLACK_ROOK;
+                model.getCell(newKingPosition.right()).pieceType = PieceType.BLACK_ROOK;
                 model.movePiece(rookMove, L.done(model, move));
 
                 model.castling = model.castling.replace("q", "");
@@ -226,13 +223,11 @@ public final class Conditions {
 
         class Checker {
             static boolean isEmptyForAll(Model model, AbsolutePieceType absolutePieceType) {
-                for (int i = 0; i < VERTICAL_BOUND; i++)
-                    for (int j = 0; j < HORIZONTAL_BOUND; j++) {
-
-                        if (model.getBoard().cells[i][j].absolutePieceType == absolutePieceType)
-                            if (!model.generateMoves(model.getBoard().cells[i][j]).isEmpty())
-                                return false;
-                    }
+                for (Cell cell: model) {
+                    if (cell.absolutePieceType == absolutePieceType)
+                        if (!model.generateMoves(cell).isEmpty())
+                            return false;
+                }
 
                 return true;
             }
@@ -241,8 +236,8 @@ public final class Conditions {
                 PieceType         kingType       = absoluteKingType.isWhite() ? PieceType.WHITE_KING : PieceType.BLACK_KING;
                 AbsolutePieceType enemyPieceType = kingType.absolute().invert();
 
-                for (Position p: ValidMoves.acquireAllMoves(model.getBoard().cells, enemyPieceType)) {
-                    if (model.getBoard().getCell(p).pieceType == kingType) {
+                for (Position p: ValidMoves.acquireAllMoves(model, enemyPieceType)) {
+                    if (model.getCell(p).pieceType == kingType) {
                         return true;
                     }
                 }
@@ -272,13 +267,12 @@ public final class Conditions {
     public static void checkGuaranteedStalemate(Model model) {
         List<PieceType> pieceTypes = new ArrayList<>();
 
-        for (int i = 0; i < VERTICAL_BOUND; i++)
-            for (int j = 0; j < HORIZONTAL_BOUND; j++) {
-                PieceType pieceType = model.getBoard().cells[i][j].pieceType;
+        for (Cell cell: model) {
+            var pieceType = cell.pieceType;
 
-                if (pieceType.isNotNone())
-                    pieceTypes.add(pieceType);
-            }
+            if (pieceType.isNotNone())
+                pieceTypes.add(pieceType);
+        }
 
         if (pieceTypes.size() == 2)
             model.state = State.STALEMATE;
@@ -321,7 +315,7 @@ public final class Conditions {
     private static void highlightLoseCause(Model model, Move move, State state) {
         PieceType pieceType = move.type();
 
-        Cell[][] cells = model.getBoard().cells;
+        Cell[][] cells = model.getCells();
 
         if (state == State.CHECKMATE_TO_WHITE || state == State.CHECKMATE_TO_BLACK) {
             var       winnerType       = pieceType.absolute();
@@ -329,27 +323,25 @@ public final class Conditions {
 
             Position  lostKingPosition = null;
 
-            for (int i = 0; i < VERTICAL_BOUND; i++)
-                for (int j = 0; j < HORIZONTAL_BOUND; j++) {
-                    if (cells[i][j].pieceType == lostKing) {
-                        cells[i][j].noteLose();
-                        lostKingPosition = cells[i][j].getPosition();
-                    }
+            for (Cell cell: model) {
+                if (cell.pieceType == lostKing) {
+                    cell.noteLose();
+                    lostKingPosition = cell.getPosition();
                 }
+            }
 
-            for (Cell c : PseudoValidMoves.getIntersecting(cells, lostKingPosition, lostKing.absolute()))
-                c.noteLose();
+            for (Cell cell : PseudoValidMoves.getIntersecting(cells, lostKingPosition, lostKing.absolute()))
+                cell.noteLose();
         }
 
         if (state == Model.State.STALEMATE) {
-            for (int i = 0; i < VERTICAL_BOUND; i++)
-                for (int j = 0; j < HORIZONTAL_BOUND; j++) {
-                    if (cells[i][j].pieceType == PieceType.WHITE_KING)
-                        cells[i][j].noteDraw();
+            for (Cell cell: model) {
+                if (cell.pieceType == PieceType.WHITE_KING)
+                    cell.noteDraw();
 
-                    if (cells[i][j].pieceType == PieceType.BLACK_KING)
-                        cells[i][j].noteDraw();
-                }
+                if (cell.pieceType == PieceType.BLACK_KING)
+                    cell.noteDraw();
+            }
         }
     }
 

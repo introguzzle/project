@@ -11,11 +11,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 
-public class ConstructorHandler extends JPanel {
+class ConstructorHandler extends JPanel {
 
-    public final ConstructorModel model;
+    final ConstructorModel model;
 
-    public ConstructorHandler(ConstructorModel model) {
+    ConstructorHandler(ConstructorModel model) {
         super();
 
         this.model = model;

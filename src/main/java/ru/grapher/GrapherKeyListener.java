@@ -33,10 +33,10 @@ class GrapherKeyListener extends KeyPressListener {
     }
 
     private Runnable moveHorizontal(boolean direction) {
-        double sign  = direction ? 1.0 : -1.0;
-        double shift = grapher.xShift * sign;
-
         return () -> {
+            double sign  = direction ? 1.0 : -1.0;
+            double shift = grapher.xShift * sign;
+
             NumberAxis xAxis = (NumberAxis) grapher.chart.getXYPlot().getDomainAxis();
 
             if (Compute.isCorrectValue(xAxis.getUpperBound() + shift)) {
@@ -54,10 +54,10 @@ class GrapherKeyListener extends KeyPressListener {
     }
 
     private Runnable moveVertical(boolean direction) {
-        double sign  = direction ? 1.0 : -1.0;
-        double shift = grapher.yShift * sign;
-
         return () -> {
+            double sign  = direction ? 1.0 : -1.0;
+            double shift = grapher.yShift * sign;
+
             NumberAxis yAxis = (NumberAxis) grapher.chart.getXYPlot().getRangeAxis();
 
             yAxis.setRange(new Range(

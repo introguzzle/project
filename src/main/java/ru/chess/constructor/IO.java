@@ -3,15 +3,11 @@ package ru.chess.constructor;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
-public final class IO {
+final class IO {
 
     private static final String PATH                = ".\\src\\main\\java\\ru\\chess\\constructor\\out\\";
     private static final String SAVED_FILE_NAME     = "saved.txt";
     private static final String FEN_SAVED_FILE_NAME = "fen.txt";
-
-    private IO() {
-
-    }
 
     private static void create(String fileName) {
         File file = new File(PATH + fileName);
@@ -25,7 +21,7 @@ public final class IO {
         }
     }
 
-    public static void write(ConstructorModel model) {
+    static void write(ConstructorModel model) {
         create(SAVED_FILE_NAME);
         create(FEN_SAVED_FILE_NAME);
 
@@ -56,7 +52,7 @@ public final class IO {
         }
     }
 
-    public static void load(ConstructorModel model) {
+    static void load(ConstructorModel model) {
         String read = "";
 
         try (BufferedReader reader = new BufferedReader(new FileReader(PATH + SAVED_FILE_NAME))) {

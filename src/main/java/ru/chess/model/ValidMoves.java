@@ -312,6 +312,10 @@ public final class ValidMoves {
         return positions;
     }
 
+    public static List<Position> acquireAllMoves(Model model, AbsolutePieceType absolutePieceType) {
+        return acquireAllMoves(model.getBoard().cells, absolutePieceType);
+    }
+
     /**
      * Advanced version of method acquireAllMoves that returns list of positions
      * @param model Model which handles the board

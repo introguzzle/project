@@ -101,14 +101,8 @@ public class Grapher extends StatelessGrapher {
             ChartUtils.normalizeTick(xAxis, true);
             ChartUtils.normalizeTick(yAxis, false);
 
-            xShift = Objects.requireNonNull(ChartUtils.getNormalNumberTickUnit(
-                    (NumberAxis) chart.getXYPlot().
-                            getDomainAxis(), true)).getSize();
-
-            yShift = Objects.requireNonNull(ChartUtils.getNormalNumberTickUnit(
-                    (NumberAxis) chart.getXYPlot().
-                            getRangeAxis(), false)).getSize();
-
+            xShift = ChartUtils.getNormalNumberTickUnit(xAxis, true).getSize();
+            yShift = ChartUtils.getNormalNumberTickUnit(yAxis, false).getSize();
         });
 
         coefficientBox.addActionListener(evt -> {

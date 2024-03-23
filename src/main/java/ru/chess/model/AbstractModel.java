@@ -8,10 +8,9 @@ import ru.chess.model.animator.AcceleratingAnimator;
 import ru.chess.position.AbstractPosition;
 import ru.chess.position.Position;
 
-import javax.swing.*;
-import java.awt.*;
+import java.util.Iterator;
 
-public abstract class AbstractModel {
+public abstract class AbstractModel implements Iterable<Cell> {
 
     public boolean botMoveOngoing;
 
@@ -53,13 +52,6 @@ public abstract class AbstractModel {
         board.getCell(position).setPiece(pieceType);
     }
 
-    public void movePiece(Move move) {
-        this.removePiece(move.from());
-        this.board.getCell(move.to()).pieceType = move.type();
-
-        new AcceleratingAnimator(this, move, null).execute();
-    }
-
     public void movePiece(Move move, Runnable callback) {
         this.removePiece(move.from());
         this.board.getCell(move.to()).pieceType = move.type();
@@ -86,9 +78,26 @@ public abstract class AbstractModel {
 
     }
 
-    public abstract void loadPreset(String preset);
+    @Override
+    public Iterator<Cell> iterator() {
+        return board.iterator();
+    }
+
+    public Cell[][] getCells() {
+        return board.cells;
+    }
+
+    public Cell getCell(Position position) {
+        return board.getCell(position);
+    }
+
+    public Cell getCell(int i, int j) {
+        return board.cells[i][j];
+    }
 
     public Board getBoard() {
-        return this.board;
+        return board;
     }
+
+    public abstract void loadPreset(String preset);
 }

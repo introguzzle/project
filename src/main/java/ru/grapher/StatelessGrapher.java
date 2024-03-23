@@ -20,9 +20,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 abstract class StatelessGrapher extends JFrame {
 
-    JFreeChart chart;
-    ChartPanel chartPanel;
-    JPanel     handlePanel;
+    JFreeChart   chart;
+    GrapherPanel chartPanel;
+    JPanel       handlePanel;
 
     public static final class CoefficientBox extends ChoiceBox {
         CoefficientBox() {
@@ -34,6 +34,8 @@ abstract class StatelessGrapher extends JFrame {
             this.setBorder(GUI.__UNIVERSAL_BORDER);
         }
     }
+
+    MainMenuBar menuBar;
 
     final JButton addButton        = new DynamicButton("Add", 20);
     final JButton clearButton      = new DynamicButton("Clear", 20);
@@ -85,14 +87,7 @@ abstract class StatelessGrapher extends JFrame {
     private void initChart() {
         chart = ChartBuild.createChart(currentXYSeriesCollection);
 
-        chartPanel = new ChartPanel(chart) {
-            @Override
-            public void paint(Graphics g) {
-                Graphics2D g2d = (Graphics2D) g;
-                g2d.setRenderingHints(GUI.Q_RENDERING_HINTS);
-                super.paint(g2d);
-            }
-        };
+        chartPanel = new GrapherPanel(chart, this);
 
         chartPanel.setDomainZoomable(true);
         chartPanel.setRangeZoomable(true);
@@ -103,7 +98,7 @@ abstract class StatelessGrapher extends JFrame {
     }
 
     private void setupMenuBar() {
-        JMenuBar menuBar = new MainMenuBar(this);
+        menuBar = new MainMenuBar(this);
         this.setJMenuBar(menuBar);
     }
 

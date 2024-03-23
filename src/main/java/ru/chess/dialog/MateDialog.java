@@ -57,7 +57,7 @@ public class MateDialog extends JDialog {
                 @Override
                 public void paint(Graphics g) {
                     Graphics2D g2d = (Graphics2D) g;
-                    GUI.setQuality(g2d, 2);
+                    g2d.setRenderingHints(GUI.Q_RENDERING_HINTS);
                     super.paint(g2d);
                 }
             };

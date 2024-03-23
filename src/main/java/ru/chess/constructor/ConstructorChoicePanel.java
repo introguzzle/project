@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
 
-public class ConstructorChoicePanel extends JPanel {
+class ConstructorChoicePanel extends JPanel {
 
     private final int vertical;
 
@@ -65,8 +65,7 @@ public class ConstructorChoicePanel extends JPanel {
     @Override
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-
-        GUI.setQuality(g2d, 2);
+        g2d.setRenderingHints(GUI.Q_RENDERING_HINTS);
 
         super.paint(g2d);
 

@@ -36,9 +36,9 @@ public final class MathFunctionParser {
             return Explicit.replaceCoefficients(parametricFunction, coefficients);
         }
 
-        public static String parse(final String parametricFunction,
-                                   final Map<String, Double> coefficients,
-                                   final double value) {
+        public static String transform(final String parametricFunction,
+                                       final Map<String, Double> coefficients,
+                                       final double value) {
             String f1 = MathParser.replaceConstants(parametricFunction);
             String f2 = replaceCoefficients(f1, coefficients);
 
@@ -51,7 +51,7 @@ public final class MathFunctionParser {
 
         public static boolean isValid(final String function) {
             try {
-                String f = parse(function, bind(getCoefficients(function)), 1.0);
+                String f = transform(function, bind(getCoefficients(function)), 1.0);
 
                 MathParser.uncheckedParse(f);
 
@@ -124,9 +124,9 @@ public final class MathFunctionParser {
             return Parser.find(f, List.of(getVariable(f)), 0, f.length());
         }
 
-        public static String parse(final String function,
-                                   final Map<String, Double> coefficients,
-                                   final double value) {
+        public static String transform(final String function,
+                                       final Map<String, Double> coefficients,
+                                       final double value) {
             String f1 = MathParser.replaceConstants(function);
             String f2 = replaceCoefficients(f1, coefficients);
 
@@ -146,7 +146,7 @@ public final class MathFunctionParser {
 
         public static boolean isValid(final String function) {
             try {
-                String f = parse(function, bind(getCoefficients(function)), 1.0);
+                String f = transform(function, bind(getCoefficients(function)), 1.0);
                 String cut = cut(f);
 
                 if (cut.isEmpty() || cut.isBlank())
