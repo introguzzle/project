@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use AmoCRM\Client\AmoCRMApiClient;
 use App\Http\Requests\EndpointRequest;
 
 use App\Services\ContactService;
@@ -20,10 +19,8 @@ final class EndpointController extends Controller
     private ContactService $contactService;
     private LeadService $leadService;
     private TaskService $taskService;
-    private AmoCRMApiClient $client;
 
     public function __construct(
-        AmoCRMApiClient $client,
         ContactService $contactService,
         LeadService $leadService,
         TaskService $taskService
@@ -32,7 +29,6 @@ final class EndpointController extends Controller
         $this->contactService = $contactService;
         $this->leadService = $leadService;
         $this->taskService = $taskService;
-        $this->client = $client;
     }
 
     public function index(): View
