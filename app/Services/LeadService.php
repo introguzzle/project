@@ -5,14 +5,15 @@ namespace App\Services;
 
 use AmoCRM\Client\AmoCRMApiClient;
 
-use AmoCRM\Collections\CatalogElementsCollection;
 use AmoCRM\Collections\ContactsCollection;
 
+use AmoCRM\Collections\LinksCollection;
 use AmoCRM\Models\CatalogElementModel;
 use AmoCRM\Models\CatalogModel;
 use AmoCRM\Models\ContactModel;
 use AmoCRM\Models\LeadModel;
 
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 final class LeadService
@@ -37,19 +38,24 @@ final class LeadService
         $contacts = (new ContactsCollection())
             ->add($contact);
 
-        $catalogElementLinks = (new CatalogElementsCollection())
-            ->add($this->createCatalogElement('Товар 1'))
-            ->add($this->createCatalogElement('Товар 2'));
-
         $lead = (new LeadModel())
             ->setResponsibleUserId($contact->getResponsibleUserId())
             ->setAccountId($contact->getAccountId())
-            ->setContacts($contacts)
-            ->setCatalogElementsLinks($catalogElementLinks);
+            ->setContacts($contacts);
 
         try {
-            return $this->client->leads()->addOne($lead);
-        } catch (Throwable) {
+            $lead = $this->client->leads()->addOne($lead);
+
+            $this->client->leads()->link(
+                $lead,
+                (new LinksCollection())
+                    ->add($this->createCatalogElement('Товар 1'))
+                    ->add($this->createCatalogElement('Товар 2'))
+            );
+
+            return $lead;
+        } catch (Throwable $t) {
+            Log::error($t);
             return null;
         }
     }
@@ -71,7 +77,8 @@ final class LeadService
                 }
             }
 
-        } catch (Throwable) {
+        } catch (Throwable $t) {
+            Log::error($t);
             return null;
         }
 
@@ -96,7 +103,8 @@ final class LeadService
             return $this->client->catalogElements($catalog->getId())
                 ->addOne($catalogElement)
                 ->setAccountId($catalog->getAccountId());
-        } catch (Throwable) {
+        } catch (Throwable $t) {
+            Log::error($t);
             return null;
         }
     }

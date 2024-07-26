@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Services;
 
@@ -6,7 +7,8 @@ use AmoCRM\Client\AmoCRMApiClient;
 use AmoCRM\Models\LeadModel;
 use AmoCRM\Models\TaskModel;
 use Carbon\Carbon;
-use Carbon\CarbonInterface;
+use DateTimeZone;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 final class TaskService
@@ -30,7 +32,7 @@ final class TaskService
             ->setAccountId($lead->getAccountId())
             ->setResponsibleUserId($lead->getResponsibleUserId())
             ->setIsCompleted(false)
-            ->setText(rand(0, 100))
+            ->setText((string)$lead->getId())
             ->setEntityId($lead->getId())
             ->setEntityType($lead->getType());
 
@@ -40,15 +42,14 @@ final class TaskService
             return null;
         }
 
-        $duration = abs($completeTill->diffInSeconds(Carbon::now()));
-
         $task
             ->setCompleteTill($completeTill->getTimestamp())
-            ->setDuration($duration);
+            ->setDuration(60 * 60 * 9);
 
         try {
             return $this->client->tasks()->addOne($task);
-        } catch (Throwable) {
+        } catch (Throwable $t) {
+            Log::error($t);
             return null;
         }
     }
@@ -60,30 +61,19 @@ final class TaskService
      */
     private function calculateDueDate(): ?Carbon
     {
-        $now = Carbon::now();
-        $workStart = $now->copy()->setTime(9, 0);
-        $workEnd = $now->copy()->setTime(18, 0);
+        $completeTill = self::now()->addDays(4);
 
-        if ($now->gt($workEnd)) {
-            $now->addDay()->setTime(9, 0);
-        } else if ($now->lt($workStart)) {
-            $now->setTime(9, 0);
-        }
-
-        if ($now->isWeekend()) {
-            $now->next(CarbonInterface::MONDAY);
-        }
-
-        $completeTill = $now;
-        for ($i = 0; $i < 4; $i++) {
+        while ($completeTill->isWeekend()) {
             $completeTill->addDay();
-            while ($completeTill->isWeekend()) {
-                $completeTill->addDay();
-            }
         }
 
-        $completeTill->setTime(18, 0);
+        $completeTill->setTime(9, 0);
 
         return $completeTill;
+    }
+
+    private static function now(): Carbon
+    {
+        return Carbon::now(new DateTimeZone('Europe/Moscow'));
     }
 }

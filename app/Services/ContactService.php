@@ -23,11 +23,14 @@ use AmoCRM\Models\CustomFieldsValues\ValueCollections\BaseCustomFieldValueCollec
 use AmoCRM\Models\CustomFieldsValues\ValueModels\BaseCustomFieldValueModel;
 use AmoCRM\Models\UserModel;
 
+use App\Other\ContactResult;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 final class ContactService
 {
     private const ENTITY_TYPE = 'contacts';
+    private const SUCCESS_CODE = 142;
     private CustomFieldsCollection $cachedCustomFields;
     private AmoCRMApiClient $client;
 
@@ -38,44 +41,60 @@ final class ContactService
 
     /**
      * Создает контакт на основе данных из массива.
-     * Если контакт уже существует, возвращает существующий контакт.
-     * Если у существующего контакта есть связанные сделки со статусом 142, создает покупателя.
      *
      * @param array $data
-     * @return ContactModel|null
+     * @return ContactResult
      */
-    public function submitContact(array $data): ?ContactModel
+    public function submitContact(array $data): ContactResult
     {
         try {
+            /**
+             * Проверяем, есть ли уже контакт.
+             * Если его нет, переходим к созданию нового
+             */
+
             $existingContact = $this->findContactByPhone($data['phone']);
             if ($existingContact !== null) {
+                $allAreSuccess = true;
                 $linkedLeads = $existingContact->getLeads();
+
                 if ($linkedLeads !== null && !$linkedLeads->isEmpty()) {
-                    if ((int) $linkedLeads->first()->getStatusId() === 142) {
-                        $this->createCustomer($existingContact);
+                    foreach ($linkedLeads as $lead) {
+                        $fetchedLead = $this->client->leads()->getOne($lead->getId());
+                        $allAreSuccess &= ((int) $fetchedLead->getStatusId() === self::SUCCESS_CODE);
                     }
                 }
 
-                return $existingContact;
+                if ($allAreSuccess) {
+                    $this->createCustomer($existingContact);
+                }
+
+                return new ContactResult($existingContact, $linkedLeads->isEmpty());
             }
 
-            $customFieldsValues = (new CustomFieldsValuesCollection())
+            /**
+             * Создаем новый контакт
+             */
+
+            $customFieldsValuesCollection = (new CustomFieldsValuesCollection())
                 ->add($this->createCustomFieldValues('Почта', $data['email']))
                 ->add($this->createCustomFieldValues('Телефон', $data['phone']))
-                ->add($this->createCustomFieldValues('Пол', $data['gender']));
+                ->add($this->createCustomFieldValues('Пол', $data['gender'] === 'male'
+                    ? 'Мужской'
+                    : 'Женский')
+                );
 
             $contact = (new ContactModel())
                 ->setFirstName($data['first_name'])
                 ->setLastName($data['last_name'])
-                ->setCustomFieldsValues($customFieldsValues)
+                ->setCustomFieldsValues($customFieldsValuesCollection)
                 ->setResponsibleUserId($this->getRandomUser()->getId())
                 ->setAccountId($this->client->account()->getCurrent()->getId());
 
-            return $this->client->contacts()->addOne($contact);
-        } catch (Throwable $e) {
-            // Обработка исключений
-            dd($e);
-            return null;
+            return new ContactResult($this->client->contacts()->addOne($contact), true);
+        } catch (Throwable $t) {
+            Log::error($t);
+            return new ContactResult(null, false);
         }
     }
 
@@ -118,7 +137,7 @@ final class ContactService
     private function findContactByPhone(string $phone): ?ContactModel
     {
         try {
-            $contactsCollection = $this->client->contacts()->get();
+            $contactsCollection = $this->client->contacts()->get(null, ['leads', 'statuses']);
 
             foreach ($contactsCollection as $contact) {
                 $contactPhones = $this->getFieldValues($contact, 'Телефон');
@@ -126,8 +145,8 @@ final class ContactService
                     return $contact;
                 }
             }
-        } catch (Throwable $e) {
-            dd($e);
+        } catch (Throwable $t) {
+            Log::error($t);
             return null;
         }
 
@@ -166,11 +185,8 @@ final class ContactService
      */
     private function getCustomFields(): CustomFieldsCollection
     {
-        if (!isset($this->cachedCustomFields)) {
-            $this->cachedCustomFields = $this->client->customFields(self::ENTITY_TYPE)->get();
-        }
-
-        return $this->cachedCustomFields;
+        return $this->cachedCustomFields ??=
+            $this->client->customFields(self::ENTITY_TYPE)->get();
     }
 
     /**
@@ -258,8 +274,8 @@ final class ContactService
 
         try {
             return $this->client->customers()->addOne($customer);
-        } catch (Throwable $e) {
-            dd($e);
+        } catch (Throwable $t) {
+            Log::error($t);
             return null;
         }
     }

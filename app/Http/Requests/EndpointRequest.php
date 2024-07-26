@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 /**
  * @property string $first_name
@@ -35,5 +37,15 @@ final class EndpointRequest extends FormRequest
             'age'        => 'required|integer|min:0|max:120',
             'gender'     => 'required|in:male,female',
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        $errors = $validator->errors();
+        $jsonResponse = response()->json([
+            'errors' => $errors
+        ], 422);
+
+        throw new HttpResponseException($jsonResponse);
     }
 }

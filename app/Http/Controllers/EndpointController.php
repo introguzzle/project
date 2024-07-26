@@ -7,12 +7,13 @@ use AmoCRM\Client\AmoCRMApiClient;
 use App\Http\Requests\EndpointRequest;
 
 use App\Services\ContactService;
-
 use App\Services\LeadService;
 use App\Services\TaskService;
-use Illuminate\Http\RedirectResponse;
+
+use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\Response;
 
 final class EndpointController extends Controller
 {
@@ -28,10 +29,10 @@ final class EndpointController extends Controller
         TaskService $taskService
     )
     {
-        $this->client = $client;
         $this->contactService = $contactService;
         $this->leadService = $leadService;
         $this->taskService = $taskService;
+        $this->client = $client;
     }
 
     public function index(): View
@@ -39,11 +40,11 @@ final class EndpointController extends Controller
         return view('endpoint');
     }
 
-    public function submit(EndpointRequest $request): RedirectResponse
+    public function submit(EndpointRequest $request): JsonResponse
     {
-        $response = redirect()->route('endpoint.index');
+        $flush = [];
 
-        $contact = $this->contactService->submitContact([
+        $contactResult = $this->contactService->submitContact([
             'email'      => $request->email,
             'phone'      => $request->phone,
             'gender'     => $request->gender,
@@ -51,22 +52,39 @@ final class EndpointController extends Controller
             'last_name'  => $request->last_name,
         ]);
 
-        if ($contact === null) {
-            return $response->with(['error' => 'Произошла ошибка при создании контакта']);
+        $flush['contactResult'] = $contactResult;
+
+        if ($contactResult->getContactModel() === null) {
+            return response()
+                ->json(['error' => 'Произошла ошибка при создании контакта'])
+                ->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        $lead = $this->leadService->submitLead($contact);
+        if ($contactResult->shouldCreateLead()) {
+            $lead = $this->leadService->submitLead($contactResult->getContactModel());
 
-        if ($lead === null) {
-            return $response->with(['error' => 'Произошла ошибка при создании сделки']);
+            if ($lead === null) {
+                return response()
+                    ->json(['error' => 'Произошла ошибка при создании сделки'])
+                    ->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+
+            $task = $this->taskService->submitTask($lead);
+
+            if ($task === null) {
+                return response()
+                    ->json(['error' => 'Произошла ошибка при создании задачи'])
+                    ->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+
+            $flush['lead'] = $lead->toArray();
+            $flush['task'] = $task->toArray();
         }
 
-        $task = $this->taskService->submitTask($lead);
-        if ($task === null) {
-            return $response->with(['error' => 'Произошла ошибка при создании задачи']);
-        }
+        $flush['success'] = 'Успешно добавлено';
 
-
-        return $response->with(['success' => 'Успешно добавлено']);
+        return response()
+            ->json($flush)
+            ->setStatusCode(Response::HTTP_OK);
     }
 }
