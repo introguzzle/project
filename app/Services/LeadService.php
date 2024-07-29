@@ -1,18 +1,16 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Services;
 
 use AmoCRM\Client\AmoCRMApiClient;
-
 use AmoCRM\Collections\ContactsCollection;
-
 use AmoCRM\Collections\LinksCollection;
 use AmoCRM\Models\CatalogElementModel;
 use AmoCRM\Models\CatalogModel;
 use AmoCRM\Models\ContactModel;
 use AmoCRM\Models\LeadModel;
-
 use Illuminate\Support\Facades\Log;
 use Throwable;
 

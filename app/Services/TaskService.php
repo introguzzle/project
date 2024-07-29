@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Services;
@@ -11,14 +12,11 @@ use DateTimeZone;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
-final class TaskService
+final readonly class TaskService
 {
-    private AmoCRMApiClient $client;
-
-    public function __construct(AmoCRMApiClient $client)
-    {
-        $this->client = $client;
-    }
+    public function __construct(
+        private AmoCRMApiClient $client
+    ) {}
 
     /**
      * Создает задачу и привязывает её к сделку

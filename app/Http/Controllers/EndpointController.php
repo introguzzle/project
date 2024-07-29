@@ -1,14 +1,13 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
 use App\Http\Requests\EndpointRequest;
-
 use App\Services\ContactService;
 use App\Services\LeadService;
 use App\Services\TaskService;
-
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\View\View;
@@ -16,20 +15,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class EndpointController extends Controller
 {
-    private ContactService $contactService;
-    private LeadService $leadService;
-    private TaskService $taskService;
-
     public function __construct(
-        ContactService $contactService,
-        LeadService $leadService,
-        TaskService $taskService
-    )
-    {
-        $this->contactService = $contactService;
-        $this->leadService = $leadService;
-        $this->taskService = $taskService;
-    }
+        private readonly ContactService $contactService,
+        private readonly LeadService $leadService,
+        private readonly TaskService $taskService
+    ) {}
 
     public function index(): View
     {
@@ -38,7 +28,7 @@ final class EndpointController extends Controller
 
     public function submit(EndpointRequest $request): JsonResponse
     {
-        $flush = [];
+        $responseData = [];
 
         $contactResult = $this->contactService->submitContact([
             'email'      => $request->email,
@@ -48,7 +38,7 @@ final class EndpointController extends Controller
             'last_name'  => $request->last_name,
         ]);
 
-        $flush['contactResult'] = $contactResult;
+        $responseData['contactResult'] = $contactResult;
 
         if ($contactResult->getContactModel() === null) {
             return response()
@@ -73,14 +63,14 @@ final class EndpointController extends Controller
                     ->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
             }
 
-            $flush['lead'] = $lead->toArray();
-            $flush['task'] = $task->toArray();
+            $responseData['lead'] = $lead->toArray();
+            $responseData['task'] = $task->toArray();
         }
 
-        $flush['success'] = 'Успешно добавлено';
+        $responseData['success'] = 'Успешно добавлено';
 
         return response()
-            ->json($flush)
+            ->json($responseData)
             ->setStatusCode(Response::HTTP_OK);
     }
 }

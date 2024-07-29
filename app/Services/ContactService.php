@@ -1,19 +1,17 @@
 <?php
+
 declare(strict_types = 1);
 
 namespace App\Services;
 
 use AmoCRM\Client\AmoCRMApiClient;
-
 use AmoCRM\Collections\ContactsCollection;
 use AmoCRM\Collections\CustomFields\CustomFieldsCollection;
 use AmoCRM\Collections\CustomFieldsValuesCollection;
-
 use AmoCRM\Exceptions\AmoCRMApiException;
 use AmoCRM\Exceptions\AmoCRMMissedTokenException;
 use AmoCRM\Exceptions\AmoCRMoAuthApiException;
 use AmoCRM\Exceptions\InvalidArgumentException;
-
 use AmoCRM\Models\ContactModel;
 use AmoCRM\Models\Customers\CustomerModel;
 use AmoCRM\Models\CustomFields\CustomFieldModel;
@@ -22,7 +20,6 @@ use AmoCRM\Models\CustomFieldsValues\BaseCustomFieldValuesModel;
 use AmoCRM\Models\CustomFieldsValues\ValueCollections\BaseCustomFieldValueCollection;
 use AmoCRM\Models\CustomFieldsValues\ValueModels\BaseCustomFieldValueModel;
 use AmoCRM\Models\UserModel;
-
 use App\Other\ContactResult;
 use Illuminate\Support\Facades\Log;
 use Throwable;

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Other;
@@ -8,17 +9,10 @@ use JsonSerializable;
 
 final class ContactResult implements JsonSerializable
 {
-    private ?ContactModel $contactModel;
-    private bool $shouldCreateLead;
-
     public function __construct(
-        ContactModel $contactModel = null,
-        bool $shouldCreateLead = false
-    )
-    {
-        $this->contactModel = $contactModel;
-        $this->shouldCreateLead = $shouldCreateLead;
-    }
+        private ?ContactModel $contactModel = null,
+        private bool $shouldCreateLead = false
+    ) {}
 
     public function getContactModel(): ?ContactModel
     {

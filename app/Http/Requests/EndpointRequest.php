@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Http\Requests;
@@ -7,6 +8,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @property string $first_name
@@ -16,7 +18,6 @@ use Illuminate\Http\Exceptions\HttpResponseException;
  * @property string $age
  * @property string $gender
  */
-
 final class EndpointRequest extends FormRequest
 {
     public function authorize(): bool
@@ -39,12 +40,10 @@ final class EndpointRequest extends FormRequest
         ];
     }
 
-    protected function failedValidation(Validator $validator)
+    protected function failedValidation(Validator $validator): void
     {
         $errors = $validator->errors();
-        $jsonResponse = response()->json([
-            'errors' => $errors
-        ], 422);
+        $jsonResponse = response()->json(['errors' => $errors], Response::HTTP_BAD_REQUEST);
 
         throw new HttpResponseException($jsonResponse);
     }
