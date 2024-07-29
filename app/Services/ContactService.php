@@ -5,20 +5,20 @@ declare(strict_types = 1);
 namespace App\Services;
 
 use AmoCRM\Client\AmoCRMApiClient;
-use AmoCRM\Collections\ContactsCollection;
 use AmoCRM\Collections\CustomFields\CustomFieldsCollection;
 use AmoCRM\Collections\CustomFieldsValuesCollection;
 use AmoCRM\Exceptions\AmoCRMApiException;
 use AmoCRM\Exceptions\AmoCRMMissedTokenException;
 use AmoCRM\Exceptions\AmoCRMoAuthApiException;
 use AmoCRM\Exceptions\InvalidArgumentException;
+use AmoCRM\Helpers\EntityTypesInterface;
 use AmoCRM\Models\ContactModel;
-use AmoCRM\Models\Customers\CustomerModel;
 use AmoCRM\Models\CustomFields\CustomFieldModel;
 use AmoCRM\Models\CustomFields\TextCustomFieldModel;
 use AmoCRM\Models\CustomFieldsValues\BaseCustomFieldValuesModel;
-use AmoCRM\Models\CustomFieldsValues\ValueCollections\BaseCustomFieldValueCollection;
+use AmoCRM\Models\CustomFieldsValues\ValueCollections\TextCustomFieldValueCollection;
 use AmoCRM\Models\CustomFieldsValues\ValueModels\BaseCustomFieldValueModel;
+use AmoCRM\Models\CustomFieldsValues\ValueModels\TextCustomFieldValueModel;
 use AmoCRM\Models\UserModel;
 use AmoCRM\Models\LeadModel;
 use App\Other\ContactResult;
@@ -28,12 +28,13 @@ use Throwable;
 
 final class ContactService
 {
-    private const ENTITY_TYPE = 'contacts';
     private const SUCCESS_CODE = 142;
     private CustomFieldsCollection $cachedCustomFields;
 
     public function __construct(
-        private readonly AmoCRMApiClient $client
+        private readonly AmoCRMApiClient $client,
+        private readonly CustomerService $customerService,
+        private readonly NoteService     $noteService
     ) {}
 
     /**
@@ -52,7 +53,7 @@ final class ContactService
 
             $existingContact = $this->findContactByPhone($data['phone']);
             if ($existingContact !== null) {
-                $allAreSuccess = true;
+                $hasSuccessLead = false;
                 $linkedLeads = $existingContact->getLeads();
 
                 if ($linkedLeads !== null && !$linkedLeads->isEmpty()) {
@@ -61,12 +62,18 @@ final class ContactService
                      */
                     foreach ($linkedLeads as $lead) {
                         $fetchedLead = $this->client->leads()->getOne($lead->getId());
-                        $allAreSuccess &= ((int) $fetchedLead->getStatusId() === self::SUCCESS_CODE);
+
+                        if (($fetchedLead !== null) && ((int)$fetchedLead->getStatusId() === self::SUCCESS_CODE)) {
+                            $hasSuccessLead = true;
+                            break;
+                        }
                     }
                 }
 
-                if ($allAreSuccess) {
-                    $this->createCustomer($existingContact);
+                if ($hasSuccessLead) {
+                    $this->customerService->createCustomer($existingContact);
+                } else {
+                    $this->noteService->createNotUniqueNote($existingContact);
                 }
 
                 return new ContactResult($existingContact, $linkedLeads->isEmpty());
@@ -136,11 +143,14 @@ final class ContactService
     private function findContactByPhone(string $phone): ?ContactModel
     {
         try {
-            $contactsCollection = $this->client->contacts()->get(null, ['leads', 'statuses']);
+            $contactsCollection = $this->client->contacts()->get(
+                null,
+                [EntityTypesInterface::LEADS]
+            );
 
             foreach ($contactsCollection as $contact) {
                 $contactPhones = $this->getFieldValues($contact, 'Телефон');
-                if (in_array($phone, $contactPhones)) {
+                if (in_array($phone, $contactPhones, true)) {
                     return $contact;
                 }
             }
@@ -165,11 +175,15 @@ final class ContactService
     {
         $usersCollection = $this->client->users()->get();
 
-        try {
-            return $usersCollection[rand(0, $usersCollection->count() - 1)];
-        } catch (Throwable) {
-            return $usersCollection[0];
+        if ($usersCollection !== null) {
+            try {
+                return $usersCollection[random_int(0, $usersCollection->count() - 1)];
+            } catch (Throwable) {
+                return $usersCollection->first();
+            }
         }
+
+        return null;
     }
 
     /**
@@ -185,7 +199,7 @@ final class ContactService
     private function getCustomFields(): CustomFieldsCollection
     {
         return $this->cachedCustomFields ??=
-            $this->client->customFields(self::ENTITY_TYPE)->get();
+            $this->client->customFields(EntityTypesInterface::CONTACTS)->get();
     }
 
     /**
@@ -228,54 +242,29 @@ final class ContactService
     private function createCustomFieldValues(
         string $name,
         string $value
-    ): BaseCustomFieldValuesModel
-    {
+    ): BaseCustomFieldValuesModel {
         $customField = $this->findCustomField($name);
 
         if ($customField === null) {
             $model = (new TextCustomFieldModel())
                 ->setName($name)
-                ->setEntityType(self::ENTITY_TYPE);
+                ->setEntityType(EntityTypesInterface::CONTACTS);
 
             $customField = $this->client
-                ->customFields(self::ENTITY_TYPE)
+                ->customFields(EntityTypesInterface::CONTACTS)
                 ->addOne($model);
         }
 
-        $model = new BaseCustomFieldValueModel();
-        $model->setValue($value);
+        $valueModel = new TextCustomFieldValueModel();
+        $valueModel->setValue($value);
 
-        $valuesCollection = new BaseCustomFieldValueCollection();
-        $valuesCollection->add($model);
+        $valuesCollection = new TextCustomFieldValueCollection();
+        $valuesCollection->add($valueModel);
 
         return (new BaseCustomFieldValuesModel())
             ->setFieldId($customField->getId())
             ->setFieldCode($customField->getCode())
             ->setFieldName($customField->getName())
             ->setValues($valuesCollection);
-    }
-
-
-    /**
-     * Создает покупателя на основе данных контакта.
-     *
-     * @param ContactModel $contact
-     * @return CustomerModel|null
-     */
-    private function createCustomer(ContactModel $contact): ?CustomerModel
-    {
-        $customer = (new CustomerModel())
-            ->setName($contact->getName())
-            ->setAccountId($contact->getAccountId())
-            ->setResponsibleUserId($contact->getResponsibleUserId())
-            ->setContacts((new ContactsCollection())
-                ->add($contact));
-
-        try {
-            return $this->client->customers()->addOne($customer);
-        } catch (Throwable $t) {
-            Log::error($t);
-            return null;
-        }
     }
 }

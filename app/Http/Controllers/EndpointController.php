@@ -13,12 +13,12 @@ use Illuminate\Routing\Controller;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\Response;
 
-final readonly class EndpointController extends Controller
+final class EndpointController extends Controller
 {
     public function __construct(
-        private ContactService $contactService,
-        private LeadService    $leadService,
-        private TaskService    $taskService
+        private readonly ContactService $contactService,
+        private readonly LeadService    $leadService,
+        private readonly TaskService    $taskService
     ) {}
 
     public function index(): View

@@ -14,10 +14,11 @@ use AmoCRM\Models\LeadModel;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
-final class LeadService
+final readonly class LeadService
 {
     public function __construct(
-        private readonly AmoCRMApiClient $client
+        private AmoCRMApiClient $client,
+        private CatalogService  $catalogService
     ) {}
 
     /**
@@ -28,14 +29,15 @@ final class LeadService
      */
     public function submitLead(
         ?ContactModel $contact = null
-    ): ?LeadModel
-    {
+    ): ?LeadModel {
+        if ($contact === null) {
+            return null;
+        }
+
         $contacts = (new ContactsCollection())
             ->add($contact);
 
         $lead = (new LeadModel())
-            ->setResponsibleUserId($contact->getResponsibleUserId())
-            ->setAccountId($contact->getAccountId())
             ->setContacts($contacts);
 
         try {
@@ -44,60 +46,11 @@ final class LeadService
             $this->client->leads()->link(
                 $lead,
                 (new LinksCollection())
-                    ->add($this->createCatalogElement('Товар 1'))
-                    ->add($this->createCatalogElement('Товар 2'))
+                    ->add($this->catalogService->createCatalogElement('Товар 1'))
+                    ->add($this->catalogService->createCatalogElement('Товар 2'))
             );
 
             return $lead;
-        } catch (Throwable $t) {
-            Log::error($t);
-            return null;
-        }
-    }
-
-    /**
-     * Возвращает каталог продуктов, если он есть в аккаунте
-     * @return CatalogModel|null
-     */
-    private function getProductCatalog(): ?CatalogModel
-    {
-        try {
-            /**
-             * @var CatalogModel $catalog
-             */
-
-            foreach ($this->client->catalogs()->get() as $catalog) {
-                if ($catalog->getCatalogType() === 'products') {
-                    return $catalog;
-                }
-            }
-
-        } catch (Throwable $t) {
-            Log::error($t);
-            return null;
-        }
-
-        return null;
-    }
-
-    /**
-     * Создает случайный элемент в списке
-     * @param string $name
-     * @return CatalogElementModel|null
-     */
-    private function createCatalogElement(string $name): ?CatalogElementModel
-    {
-        $catalog = $this->getProductCatalog();
-
-        $catalogElement = (new CatalogElementModel())
-            ->setName($name)
-            ->setCatalogId($catalog->getId())
-            ->setQuantity(1);
-
-        try {
-            return $this->client->catalogElements($catalog->getId())
-                ->addOne($catalogElement)
-                ->setAccountId($catalog->getAccountId());
         } catch (Throwable $t) {
             Log::error($t);
             return null;
