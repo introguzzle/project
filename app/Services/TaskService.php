@@ -27,7 +27,6 @@ final readonly class TaskService
     public function submitTask(LeadModel $lead): ?TaskModel
     {
         $task = (new TaskModel())
-            ->setAccountId($lead->getAccountId())
             ->setResponsibleUserId($lead->getResponsibleUserId())
             ->setIsCompleted(false)
             ->setText((string)$lead->getId())
@@ -42,7 +41,7 @@ final readonly class TaskService
 
         $task
             ->setCompleteTill($completeTill->getTimestamp())
-            ->setDuration(60 * 60 * 9);
+            ->setDuration(60 * 60 * 9); // 9:00 - 18:00
 
         try {
             return $this->client->tasks()->addOne($task);

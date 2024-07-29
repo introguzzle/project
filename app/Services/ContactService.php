@@ -20,7 +20,9 @@ use AmoCRM\Models\CustomFieldsValues\BaseCustomFieldValuesModel;
 use AmoCRM\Models\CustomFieldsValues\ValueCollections\BaseCustomFieldValueCollection;
 use AmoCRM\Models\CustomFieldsValues\ValueModels\BaseCustomFieldValueModel;
 use AmoCRM\Models\UserModel;
+use AmoCRM\Models\LeadModel;
 use App\Other\ContactResult;
+use App\Other\Gender;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
@@ -29,12 +31,10 @@ final class ContactService
     private const ENTITY_TYPE = 'contacts';
     private const SUCCESS_CODE = 142;
     private CustomFieldsCollection $cachedCustomFields;
-    private AmoCRMApiClient $client;
 
-    public function __construct(AmoCRMApiClient $client)
-    {
-        $this->client = $client;
-    }
+    public function __construct(
+        private readonly AmoCRMApiClient $client
+    ) {}
 
     /**
      * Создает контакт на основе данных из массива.
@@ -42,10 +42,10 @@ final class ContactService
      * @param array $data
      * @return ContactResult
      */
-    public function submitContact(array $data): ContactResult
+    public function handleContact(array $data): ContactResult
     {
         try {
-            /**
+            /*
              * Проверяем, есть ли уже контакт.
              * Если его нет, переходим к созданию нового
              */
@@ -56,6 +56,9 @@ final class ContactService
                 $linkedLeads = $existingContact->getLeads();
 
                 if ($linkedLeads !== null && !$linkedLeads->isEmpty()) {
+                    /**
+                     * @var LeadModel $lead
+                     */
                     foreach ($linkedLeads as $lead) {
                         $fetchedLead = $this->client->leads()->getOne($lead->getId());
                         $allAreSuccess &= ((int) $fetchedLead->getStatusId() === self::SUCCESS_CODE);
@@ -69,24 +72,25 @@ final class ContactService
                 return new ContactResult($existingContact, $linkedLeads->isEmpty());
             }
 
-            /**
+            /*
              * Создаем новый контакт
              */
 
             $customFieldsValuesCollection = (new CustomFieldsValuesCollection())
                 ->add($this->createCustomFieldValues('Почта', $data['email']))
                 ->add($this->createCustomFieldValues('Телефон', $data['phone']))
-                ->add($this->createCustomFieldValues('Пол', $data['gender'] === 'male'
-                    ? 'Мужской'
-                    : 'Женский')
+                ->add($this->createCustomFieldValues(
+                    'Пол',
+                    $data['gender'] === 'male'
+                        ? Gender::MALE->value
+                        : Gender::FEMALE->value
+                    )
                 );
 
             $contact = (new ContactModel())
                 ->setFirstName($data['first_name'])
                 ->setLastName($data['last_name'])
-                ->setCustomFieldsValues($customFieldsValuesCollection)
-                ->setResponsibleUserId($this->getRandomUser()->getId())
-                ->setAccountId($this->client->account()->getCurrent()->getId());
+                ->setCustomFieldsValues($customFieldsValuesCollection);
 
             return new ContactResult($this->client->contacts()->addOne($contact), true);
         } catch (Throwable $t) {
@@ -94,7 +98,6 @@ final class ContactService
             return new ContactResult(null, false);
         }
     }
-
 
     /**
      * Извлекает значения пользовательских полей по имени поля из контакта.
@@ -106,8 +109,7 @@ final class ContactService
     private function getFieldValues(
         ContactModel $contact,
         string $fieldName
-    ): array
-    {
+    ): array {
         $values = [];
 
         /**

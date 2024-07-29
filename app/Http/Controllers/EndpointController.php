@@ -13,12 +13,12 @@ use Illuminate\Routing\Controller;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\Response;
 
-final class EndpointController extends Controller
+final readonly class EndpointController extends Controller
 {
     public function __construct(
-        private readonly ContactService $contactService,
-        private readonly LeadService $leadService,
-        private readonly TaskService $taskService
+        private ContactService $contactService,
+        private LeadService    $leadService,
+        private TaskService    $taskService
     ) {}
 
     public function index(): View
@@ -30,7 +30,7 @@ final class EndpointController extends Controller
     {
         $responseData = [];
 
-        $contactResult = $this->contactService->submitContact([
+        $contactResult = $this->contactService->handleContact([
             'email'      => $request->email,
             'phone'      => $request->phone,
             'gender'     => $request->gender,

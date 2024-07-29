@@ -16,12 +16,9 @@ use Throwable;
 
 final class LeadService
 {
-    private AmoCRMApiClient $client;
-
-    public function __construct(AmoCRMApiClient $client)
-    {
-        $this->client = $client;
-    }
+    public function __construct(
+        private readonly AmoCRMApiClient $client
+    ) {}
 
     /**
      * Создает сделку и связывает её с контактом
