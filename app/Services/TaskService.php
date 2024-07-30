@@ -19,7 +19,7 @@ final readonly class TaskService
     ) {}
 
     /**
-     * Создает задачу и привязывает её к сделку
+     * Создает задачу и привязывает её к сделке
      *
      * @param LeadModel $lead
      * @return TaskModel|null

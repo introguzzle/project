@@ -28,7 +28,10 @@ use Throwable;
 
 final class ContactService
 {
-    private const SUCCESS_CODE = 142;
+    private const CUSTOM_FIELD_PHONE_ID = 797923;
+    private const CUSTOM_FIELD_EMAIL_ID = 872109;
+    private const CUSTOM_FIELD_GENDER_ID = 872113;
+
     private CustomFieldsCollection $cachedCustomFields;
 
     public function __construct(
@@ -50,7 +53,6 @@ final class ContactService
              * Проверяем, есть ли уже контакт.
              * Если его нет, переходим к созданию нового
              */
-
             $existingContact = $this->findContactByPhone($data['phone']);
             if ($existingContact !== null) {
                 $hasSuccessLead = false;
@@ -63,7 +65,7 @@ final class ContactService
                     foreach ($linkedLeads as $lead) {
                         $fetchedLead = $this->client->leads()->getOne($lead->getId());
 
-                        if (($fetchedLead !== null) && ((int)$fetchedLead->getStatusId() === self::SUCCESS_CODE)) {
+                        if (($fetchedLead !== null) && ((int)$fetchedLead->getStatusId() === LeadModel::WON_STATUS_ID)) {
                             $hasSuccessLead = true;
                             break;
                         }
@@ -82,16 +84,24 @@ final class ContactService
             /*
              * Создаем новый контакт
              */
-
             $customFieldsValuesCollection = (new CustomFieldsValuesCollection())
-                ->add($this->createCustomFieldValues('Почта', $data['email']))
-                ->add($this->createCustomFieldValues('Телефон', $data['phone']))
                 ->add($this->createCustomFieldValues(
+                    self::CUSTOM_FIELD_EMAIL_ID,
+                    'Почта',
+                    $data['email'])
+                )
+                ->add($this->createCustomFieldValues(
+                    self::CUSTOM_FIELD_PHONE_ID,
+                    'Телефон',
+                    $data['phone'])
+                )
+                ->add($this->createCustomFieldValues(
+                    self::CUSTOM_FIELD_GENDER_ID,
                     'Пол',
                     $data['gender'] === 'male'
                         ? Gender::MALE->value
                         : Gender::FEMALE->value
-                    )
+                )
                 );
 
             $contact = (new ContactModel())
@@ -110,12 +120,12 @@ final class ContactService
      * Извлекает значения пользовательских полей по имени поля из контакта.
      *
      * @param ContactModel $contact
-     * @param string $fieldName
+     * @param int $id
      * @return array
      */
     private function getFieldValues(
         ContactModel $contact,
-        string $fieldName
+        int $id,
     ): array {
         $values = [];
 
@@ -125,7 +135,7 @@ final class ContactService
          */
         foreach ($contact->getCustomFieldsValues() as $customFieldValue) {
             foreach ($customFieldValue->getValues() as $value) {
-                if ((string) $customFieldValue->getFieldName() === $fieldName) {
+                if ((int) $customFieldValue->getFieldId() === $id) {
                     $values[] = $value->getValue();
                 }
             }
@@ -148,8 +158,12 @@ final class ContactService
                 [EntityTypesInterface::LEADS]
             );
 
+            /**
+             * @var ContactModel $contact
+             */
+
             foreach ($contactsCollection as $contact) {
-                $contactPhones = $this->getFieldValues($contact, 'Телефон');
+                $contactPhones = $this->getFieldValues($contact, self::CUSTOM_FIELD_PHONE_ID);
                 if (in_array($phone, $contactPhones, true)) {
                     return $contact;
                 }
@@ -205,14 +219,14 @@ final class ContactService
     /**
      * Ищет пользовательское поле по имени.
      *
-     * @param string $name
-     * @throws InvalidArgumentException
+     * @param int $id
+     * @return CustomFieldModel|null
      * @throws AmoCRMApiException
      * @throws AmoCRMMissedTokenException
      * @throws AmoCRMoAuthApiException
-     * @return CustomFieldModel|null
+     * @throws InvalidArgumentException
      */
-    private function findCustomField(string $name): ?CustomFieldModel
+    private function findCustomField(int $id): ?CustomFieldModel
     {
         $customFieldsCollection = $this->getCustomFields();
 
@@ -220,7 +234,7 @@ final class ContactService
          * @var CustomFieldModel $customField
          */
         foreach ($customFieldsCollection as $customField) {
-            if ((string) $customField->getName() === $name) {
+            if ((int) $customField->getId() === $id) {
                 return $customField;
             }
         }
@@ -231,19 +245,21 @@ final class ContactService
     /**
      * Создает значения пользовательских полей.
      *
+     * @param int $id
      * @param string $name
      * @param string $value
-     * @throws InvalidArgumentException
+     * @return BaseCustomFieldValuesModel
      * @throws AmoCRMApiException
      * @throws AmoCRMMissedTokenException
      * @throws AmoCRMoAuthApiException
-     * @return BaseCustomFieldValuesModel
+     * @throws InvalidArgumentException
      */
     private function createCustomFieldValues(
+        int $id,
         string $name,
         string $value
     ): BaseCustomFieldValuesModel {
-        $customField = $this->findCustomField($name);
+        $customField = $this->findCustomField($id);
 
         if ($customField === null) {
             $model = (new TextCustomFieldModel())
