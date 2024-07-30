@@ -16,6 +16,9 @@ auth.json
 npm-debug.log
 yarn-error.log
 postgres-data
+postgres-data/
+/postgres-data/
+/postgres-data
 composer.lock
 vendor
 .gitattributes
