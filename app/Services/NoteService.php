@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use AmoCRM\Client\AmoCRMApiClient;
@@ -21,8 +23,10 @@ final readonly class NoteService
      */
     public function createNotUniqueNote(ContactModel $contact): ?NoteModel
     {
-        $text = "Была совершена попытка создать дубль контакта с названием {$contact->getFirstName()} {$contact->getLastName()}";
+        $template = 'Была совершена попытка создать дубль контакта с названием %s %s';
+        $text = sprintf($template, $contact->getFirstName(), $contact->getLastName());
         $note = (new CommonNote())
+            ->setEntityId($contact->getId())
             ->setText($text);
 
         try {

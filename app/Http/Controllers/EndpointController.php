@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use AmoCRM\Client\AmoCRMApiClient;
 use App\Http\Requests\EndpointRequest;
 use App\Services\ContactService;
 use App\Services\LeadService;
@@ -12,6 +13,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 final class EndpointController extends Controller
 {
@@ -21,6 +23,10 @@ final class EndpointController extends Controller
         private readonly TaskService    $taskService
     ) {}
 
+    /**
+     * @return View
+     * @throws Throwable
+     */
     public function index(): View
     {
         return view('endpoint');

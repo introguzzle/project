@@ -27,9 +27,4 @@ final class AmoCRMApiClientProvider extends ServiceProvider
             return $client;
         });
     }
-
-    public function boot(): void
-    {
-
-    }
 }

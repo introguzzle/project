@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use AmoCRM\Client\AmoCRMApiClient;
@@ -31,7 +33,6 @@ final readonly class CatalogService
                     return $catalog;
                 }
             }
-
         } catch (Throwable $t) {
             Log::error($t);
             return null;
