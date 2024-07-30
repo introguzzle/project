@@ -25,7 +25,8 @@ final readonly class NoteService
     {
         $text = "Была совершена попытка создать дубль контакта с названием {$contact->getFirstName()} {$contact->getLastName()}";
         $note = (new CommonNote())
-            ->setText($text);
+            ->setText($text)
+            ->setEntityId($contact->getId());
 
         try {
             return $this->client->notes('common')->addOne($note);
