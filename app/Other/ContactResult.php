@@ -22,6 +22,7 @@ final class ContactResult implements JsonSerializable
     public function setContactModel(?ContactModel $contactModel): ContactResult
     {
         $this->contactModel = $contactModel;
+
         return $this;
     }
 
@@ -33,6 +34,7 @@ final class ContactResult implements JsonSerializable
     public function setShouldCreateLead(bool $shouldCreateLead): ContactResult
     {
         $this->shouldCreateLead = $shouldCreateLead;
+
         return $this;
     }
 
